@@ -27,6 +27,10 @@ body {
   font-family: var(--font-montserrat);
 }
 
+button{
+  cursor: pointer;
+}
+
 .wrapper {
   max-width: 1600px;
   margin-left: auto;
@@ -91,3 +95,55 @@ body {
 .duration-200 {
   animation-duration: 200ms;
 }
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Custom scrollbar for announcements */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #B8956A #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #B8956A;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #A07D54;
+}
+
+
+@media only screen and (max-width: 1024px) {
+  .wrapper {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+
+@media only screen and (max-width: 768px) {
+  .wrapper {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+

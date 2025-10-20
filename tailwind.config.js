@@ -15,6 +15,7 @@ module.exports = {
       },
       maxWidth: {
         'container': '1500px',
+        'min-w-[1600px]': '1600px',
       },
       animation: {
         'background-shine': 'background-shine 2s linear infinite',

@@ -18,8 +18,26 @@
     "graduates": "Məzunlar üçün",
     "news": "Əlaqə"
   },
-  "news": {
-    "title": "XƏBƏRLƏR",
-    "announcements": "ELANLAR"
+  "home": {
+    "news": {
+      "title": "XƏBƏRLƏR",
+      "subtitle": "Universitetdə baş verən son hadisələr",
+      "viewAll": "Hamısına bax"
+    },
+    "announcements": {
+      "title": "ELANLAR",
+      "subtitle": "Aktual elanlar və bildirişlər",
+      "viewAll": "Hamısına bax"
+    },
+    "quickLinks": {
+      "title": "Faydalı Linklər",
+      "applicants": "Abituriyentlər üçün",
+      "students": "Tələbələr üçün",
+      "staff": "Əməkdaşlar üçün",
+      "contact": "Əlaqə"
+    },
+    "contact": {
+      "title": "Bizimlə Əlaqə"
+    }
   }
 }

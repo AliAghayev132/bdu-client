@@ -5,7 +5,7 @@ const SideBar = ({pageData, locale}) => {
     <>
     {pageData?.sidebar?.show && pageData.sidebar.items.length > 0 && (
         <aside className="lg:col-span-1">
-          <div className="bg-bg-light p-6 rounded-lg sticky top-24">
+          <div className="bg-bg-light p-6 rounded-lg sticky top-44">
             <h3 className="font-bold text-secondary mb-4 uppercase text-sm">
               {locale === "az" ? "Naviqasiya" : "Navigation"}
             </h3>

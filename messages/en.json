@@ -18,8 +18,26 @@
     "graduates": "For Graduates",
     "news": "Contact"
   },
-  "news": {
-    "title": "NEWS",
-    "announcements": "ANNOUNCEMENTS"
+  "home": {
+    "news": {
+      "title": "NEWS",
+      "subtitle": "Latest events at the university",
+      "viewAll": "View all"
+    },
+    "announcements": {
+      "title": "ANNOUNCEMENTS",
+      "subtitle": "Current announcements and notifications",
+      "viewAll": "View all"
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "applicants": "For Applicants",
+      "students": "For Students",
+      "staff": "For Staff",
+      "contact": "Contact"
+    },
+    "contact": {
+      "title": "Contact Us"
+    }
   }
 }

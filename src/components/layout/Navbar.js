@@ -71,7 +71,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
       <div className=" mx-auto">
         {/* Main Navigation - Top Nav */}
         <div 
-          className="bdu-nav-top wrapper flex items-center justify-between"
+          className="bdu-nav-top wrapper flex items-center justify-between py-2"
           style={{
             paddingLeft: "16px"
           }}
@@ -90,7 +90,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
             }
             closeTimeoutRef.current = setTimeout(() => {
               setActiveMenu(null);
-            }, 150);
+            }, 500);
           }}
         >
           {/* e-BDU Button */}
@@ -119,7 +119,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                   }}
                 >
                   <button
-                    className="px-4 py-6 text-sm font-medium hover:text-primary transition-colors uppercase"
+                    className="px-4 py-4 text-sm font-medium hover:text-primary transition-colors uppercase"
                   >
                     {getLabel(menuItem, locale)}
                   </button>
