@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary: #AA9674;
+  --secondary: #243749;
+  --container: #49637B;
+  --bg-light: #EFF0F1;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-container: var(--container);
+  --color-bg-light: var(--bg-light);
+  --font-sans: var(--font-montserrat);
+  --font-mono: var(--font-montserrat);
+  --breakpoint-container: 1500px;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-montserrat);
+}
+
+.wrapper {
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+/* Custom Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-left-1 {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-from-left-2 {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-in {
+  animation-duration: 150ms;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.slide-in-from-left-1 {
+  animation-name: slide-in-from-left-1;
+}
+
+.slide-in-from-left-2 {
+  animation-name: slide-in-from-left-2;
+}
+
+.duration-150 {
+  animation-duration: 150ms;
+}
+
+.duration-200 {
+  animation-duration: 200ms;
+}

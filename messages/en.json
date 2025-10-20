@@ -1,0 +1,25 @@
+{
+  "header": {
+    "university": "BAKU STATE UNIVERSITY",
+    "subtitle": "MINISTRY OF SCIENCE AND EDUCATION OF THE REPUBLIC OF AZERBAIJAN",
+    "rector": "Rector",
+    "rectorName": "Elchin Babayev"
+  },
+  "nav": {
+    "eBdu": "e-BSU",
+    "university": "UNIVERSITY",
+    "education": "EDUCATION",
+    "science": "SCIENCE AND INNOVATION",
+    "social": "SOCIAL ACTIVITY",
+    "cooperation": "COOPERATION",
+    "rectorOffice": "Appeal to Rector",
+    "applicants": "For Applicants",
+    "students": "For Students",
+    "graduates": "For Graduates",
+    "news": "Contact"
+  },
+  "news": {
+    "title": "NEWS",
+    "announcements": "ANNOUNCEMENTS"
+  }
+}

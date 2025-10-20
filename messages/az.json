@@ -1,0 +1,25 @@
+{
+  "header": {
+    "university": "BAKI DÖVLƏT UNİVERSİTETİ",
+    "subtitle": "AZƏRBAYCAN RESPUBLİKASININ ELM VƏ TƏHSİL NAZİRLİYİ",
+    "rector": "Rektor",
+    "rectorName": "Elçin Babayev"
+  },
+  "nav": {
+    "eBdu": "e-BDU",
+    "university": "UNİVERSİTET",
+    "education": "TƏHSİL",
+    "science": "ELM VƏ İNNOVASİYA",
+    "social": "SOSİAL FƏALİYYƏT",
+    "cooperation": "ƏMƏKDAŞLIQ",
+    "rectorOffice": "Rektora müraciət",
+    "applicants": "Abituriyentlər üçün",
+    "students": "Tələbələr üçün",
+    "graduates": "Məzunlar üçün",
+    "news": "Əlaqə"
+  },
+  "news": {
+    "title": "XƏBƏRLƏR",
+    "announcements": "ELANLAR"
+  }
+}
