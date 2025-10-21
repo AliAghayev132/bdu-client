@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useRef, useEffect } from "react";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
@@ -31,6 +30,12 @@ function SubMenuPanel({ items, parentLabel, locale, onClose, level = 0 }) {
     }
   };
 
+  useEffect(() => {
+  return () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+  };
+}, []);
+
   return (
     <div className="flex flex-1">
       {/* Current Level - Subitems */}
@@ -46,19 +51,19 @@ function SubMenuPanel({ items, parentLabel, locale, onClose, level = 0 }) {
               onMouseEnter={() => handleSubItemEnter(subIndex)}
               onMouseLeave={handleSubItemLeave}
             >
-              <Link
-                href={
-                  typeof subitem.href === "object"
-                    ? subitem.href[locale]
-                    : subitem.href
-                }
-                onClick={onClose}
-                className={`group flex items-center justify-between px-4 py-2 rounded-lg text-sm transition-all ${
-                  hoveredSubItem === subIndex
-                    ? "bg-white text-primary font-medium"
-                    : "text-gray-700 hover:bg-white/50"
-                }`}
-              >
+              <div onClick={onClose}>
+                <Link
+                  href={
+                    typeof subitem.href === "object"
+                      ? subitem.href[locale]
+                      : subitem.href
+                  }
+                  className={`group flex items-center justify-between px-4 py-2 rounded-lg text-sm transition-all ${
+                    hoveredSubItem === subIndex
+                      ? "bg-white text-primary font-medium"
+                      : "text-gray-700 hover:bg-white/50"
+                  }`}
+                >
                 <span>{getLabel(subitem, locale)}</span>
                 {subitem.subitems && (
                   <svg
@@ -76,6 +81,7 @@ function SubMenuPanel({ items, parentLabel, locale, onClose, level = 0 }) {
                   </svg>
                 )}
               </Link>
+              </div>
             </li>
           ))}
         </ul>
@@ -154,47 +160,37 @@ export default function MegaMenu({
   };
 
   // Animate mega menu open/close
-  useGSAP(() => {
-    if (!menuRef.current) return;
+useGSAP(() => {
+  if (!menuRef.current) return;
 
-    const ctx = gsap.context(() => {
-      if (isOpen) {
-        // Set display first, then animate
-        gsap.set(menuRef.current, { display: "block" });
-        gsap.to(menuRef.current, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.3,
-          ease: "power2.out",
-        });
-      } else {
-        // Animate out, then hide
-        gsap.to(menuRef.current, {
-          autoAlpha: 0,
-          y: -10,
-          duration: 0.2,
-          ease: "power2.in",
-          onComplete: () => {
-            if (menuRef.current) {
-              gsap.set(menuRef.current, { display: "none" });
-            }
-          },
-        });
-      }
-    });
+  const ctx = gsap.context(() => {
+    if (isOpen) {
+      gsap.set(menuRef.current, { display: "block" });
+      gsap.to(menuRef.current, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    } else {
+      gsap.to(menuRef.current, {
+        autoAlpha: 0,
+        y: -10,
+        duration: 0.2,
+        ease: "power2.in",
+        onComplete: () => {
+          gsap.set(menuRef.current, { display: "none" });
+        },
+      });
+    }
+  }, menuRef);
 
-    return () => {
-      ctx.revert();
-      // Cleanup timeouts on unmount
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
-      }
-      if (closeTimeoutRef.current) {
-        clearTimeout(closeTimeoutRef.current);
-      }
-    };
-  }, [isOpen]);
-
+  return () => {
+    ctx.revert(); // ✅ təmiz animation
+    clearTimeout(hoverTimeoutRef.current);
+    clearTimeout(closeTimeoutRef.current);
+  };
+}, [isOpen]);
 
   if (!activeMenu || !menuData[activeMenu]) return null;
 
@@ -266,19 +262,19 @@ export default function MegaMenu({
                   onMouseEnter={() => handleItemEnter(itemIndex)}
                   onMouseLeave={handleItemLeave}
                 >
-                  <Link
-                    href={
-                      typeof navItem.href === "object"
-                        ? navItem.href[locale]
-                        : navItem.href
-                    }
-                    onClick={onClose}
-                    className={`group flex items-center rounded-lg overflow-hidden justify-between px-6 py-2 transition-all duration-150 ${
-                      hoveredItem === itemIndex.toString()
-                        ? "bg-white text-primary"
-                        : "text-gray-700 hover:bg-white/50"
-                    }`}
-                  >
+                  <div onClick={onClose}>
+                    <Link
+                      href={
+                        typeof navItem.href === "object"
+                          ? navItem.href[locale]
+                          : navItem.href
+                      }
+                      className={`group flex items-center rounded-lg overflow-hidden justify-between px-6 py-2 transition-all duration-150 ${
+                        hoveredItem === itemIndex.toString()
+                          ? "bg-white text-primary"
+                          : "text-gray-700 hover:bg-white/50"
+                      }`}
+                    >
                     <div className="flex-1">
                       <div className="text-sm font-medium">
                         {getLabel(navItem, locale)}
@@ -305,6 +301,7 @@ export default function MegaMenu({
                       </svg>
                     )}
                   </Link>
+                  </div>
                 </li>
               ))}
             </ul>

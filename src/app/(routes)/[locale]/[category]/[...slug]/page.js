@@ -1,9 +1,15 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { buildBreadcrumbs, getPageDataFromMenu } from "@/data/menuData";
 import Breadcrumbs from "./(components)/Breadcrumbs";
 import NotFound from "./(components)/NotFound";
 import SideBar from "./(components)/SideBar";
+import PageHeader from "./(components)/PageHeader";
+import CardsGrid from "./(components)/CardsGrid";
+import DetailHeader from "./(components)/DetailHeader";
+import BlogContent from "./(components)/BlogContent";
+import SubPagesGrid from "./(components)/SubPagesGrid";
+import AuthorInfo from "./(components)/AuthorInfo";
+import StructuredData from "@/components/seo/StructuredData";
 
 // Bu dynamic page bütün nested route-ları handle edəcək
 // Məsələn:
@@ -32,6 +38,27 @@ export default async function DynamicPage({ params }) {
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
+      {/* Structured Data for SEO */}
+      <StructuredData type="breadcrumb" data={{ breadcrumbs }} locale={locale} />
+      {pageData.detailItem && (
+        <StructuredData type="person" data={{ person: pageData.detailItem }} locale={locale} />
+      )}
+      {pageData.content[locale]?.body && (
+        <StructuredData 
+          type="article" 
+          data={{ 
+            article: {
+              title: pageData.content[locale]?.title,
+              description: pageData.content[locale]?.description,
+              author: pageData.author,
+              updatedAt: pageData.updatedAt,
+              publishedAt: pageData.publishedAt
+            }
+          }} 
+          locale={locale} 
+        />
+      )}
+      
       {/* Breadcrumbs */}
       <Breadcrumbs breadcrumbs={breadcrumbs} />
 
@@ -43,175 +70,29 @@ export default async function DynamicPage({ params }) {
           <SideBar pageData={pageData} locale={locale} />
           {/* Main Content */}
           <main className="lg:col-span-3">
-            {/* Page Title */}
-            <h1 className="md:text-3xl sm:text-2xl text-xl font-bold text-secondary md:mb-6 sm:mb-4 mb-1">
-              {pageData.content[locale]?.title || "Səhifə"}
-            </h1>
-
-            {pageData.content[locale]?.description && (
-              <p className="md:text-lg sm:text-base text-sm text-gray-600 md:mb-6 mb-5 ">
-                {pageData.content[locale].description}
-              </p>
-            )}
+            <PageHeader
+              title={pageData.content[locale]?.title}
+              description={pageData.content[locale]?.description}
+            />
 
             {/* Render based on page type */}
-            {pageType === "card" &&
-            pageData.items &&
-            pageData.items.length > 0 ? (
-              /* Card Layout - for people/staff listings */
-              <div className="grid md:grid-cols-2 gap-6">
-                {pageData.items.map((person) => {
-                  // Auto-generate detail URL if hasDetail is true
-                  const hasDetailPage = person.hasDetail === true;
-                  const CardWrapper = hasDetailPage ? "a" : "div";
-
-                  // Generate URL: current path + card id
-                  const detailUrl = hasDetailPage
-                    ? `${fullPath}/${person.id}`
-                    : null;
-                  const cardProps = detailUrl ? { href: detailUrl } : {};
-
-                  return (
-                    <CardWrapper
-                      key={person.id}
-                      {...cardProps}
-                      className={`flex gap-4 bg-bg-light rounded-lg hover:shadow-lg transition-shadow ${
-                        hasDetailPage ? "cursor-pointer" : ""
-                      }`}
-                    >
-                      {person.image && (
-                        <div className="flex-shrink-0">
-                          <Image
-                            src={person.image}
-                            alt={person.name?.[locale] || ""}
-                            width={120}
-                            height={120}
-                            className="w-full h-full object-cover rounded"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1 p-6">
-                        <h3 className="font-bold text-lg text-secondary mb-1">
-                          {person.name?.[locale]}
-                        </h3>
-                        {person.position && (
-                          <p className="text-sm text-gray-600 mb-2">
-                            {person.position[locale]}
-                          </p>
-                        )}
-                        {person.phone && (
-                          <p className="text-sm text-gray-700">
-                            Tel.: {person.phone}
-                          </p>
-                        )}
-                        {person.email && (
-                          <p className="text-sm text-gray-700">
-                            E-mail: {person.email}
-                          </p>
-                        )}
-                      </div>
-                    </CardWrapper>
-                  );
-                })}
-              </div>
+            {pageType === "card" && pageData.items && pageData.items.length > 0 ? (
+              <CardsGrid items={pageData.items} locale={locale} fullPath={fullPath} />
             ) : (
-              /* Blog Layout - Quill.js content */
               <div>
-                {/* Detail page - Şəkil və əlaqə məlumatları */}
-                {pageData.detailItem && (
-                  <div className="flex gap-6 mb-8 bg-bg-light rounded-lg">
-                    {pageData.detailItem.image && (
-                      <div className="flex-shrink-0">
-                        <Image
-                          src={pageData.detailItem.image}
-                          alt={pageData.detailItem.name?.[locale] || ""}
-                          width={120}
-                          height={120}
-                          className="w-full h-full object-cover rounded"
-                        />
-                      </div>
-                    )}
-                    <div className="flex-1 p-6">
-                      <h2 className="text-xl font-bold text-secondary mb-2">
-                        {pageData.detailItem.name?.[locale]}
-                      </h2>
-                      <p className="text-gray-600 mb-4">
-                        {pageData.detailItem.position?.[locale]}
-                      </p>
-                      {pageData.detailItem.phone && (
-                        <p className="text-sm text-gray-700 mb-1">
-                          <strong>Tel.:</strong> {pageData.detailItem.phone}
-                        </p>
-                      )}
-                      {pageData.detailItem.email && (
-                        <p className="text-sm text-gray-700">
-                          <strong>E-mail:</strong> {pageData.detailItem.email}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Blog content */}
-                <article className="prose prose-lg max-w-none">
-                  <div
-                    className="bg-white prose prose-lg max-w-none"
-                    dangerouslySetInnerHTML={{
-                      __html: pageData.content[locale]?.body || "",
-                    }}
-                  />
-                </article>
+                <DetailHeader detailItem={pageData.detailItem} locale={locale} />
+                <BlogContent html={pageData.content[locale]?.body || ""} />
               </div>
             )}
 
             {/* Sub-pages links */}
             {pageData.subPages && pageData.subPages.length > 0 && (
-              <div className="mt-12">
-                <h2 className="text-xl font-bold text-secondary mb-6">
-                  {locale === "az" ? "Alt səhifələr" : "Sub-pages"}
-                </h2>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {pageData.subPages.map((subPage) => (
-                    <a
-                      key={subPage.id}
-                      href={
-                        typeof subPage.href === "object"
-                          ? subPage.href[locale]
-                          : subPage.href
-                      }
-                      className="block bg-bg-light p-6 rounded-lg hover:shadow-lg transition-shadow border border-gray-200"
-                    >
-                      <h3 className="font-bold text-primary mb-2 text-lg">
-                        {subPage.title[locale]}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {subPage.description[locale]}
-                      </p>
-                    </a>
-                  ))}
-                </div>
-              </div>
+              <SubPagesGrid subPages={pageData.subPages} locale={locale} />
             )}
 
             {/* Author & Date */}
             {pageData.author && (
-              <div className="mt-12 pt-6 border-t border-gray-200">
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div>
-                    <span className="font-medium">
-                      {pageData.author.name[locale]}
-                    </span>
-                    {" • "}
-                    <span>{pageData.author.role[locale]}</span>
-                  </div>
-                  <div>
-                    {locale === "az" ? "Yenilənib" : "Updated"}:{" "}
-                    {new Date(pageData.updatedAt).toLocaleDateString(
-                      locale === "az" ? "az-AZ" : "en-US"
-                    )}
-                  </div>
-                </div>
-              </div>
+              <AuthorInfo author={pageData.author} updatedAt={pageData.updatedAt} locale={locale} />
             )}
           </main>
         </div>
@@ -220,38 +101,109 @@ export default async function DynamicPage({ params }) {
   );
 }
 
-// Generate static params for known routes (optional - SEO üçün)
+// Generate static params for ISR/SSG
+// Backend API-dən bütün route-ları çəkib pre-render edir
 export async function generateStaticParams() {
-  // Backend-dən bütün mövcud route-ları gətirib generate edə bilərik
-  return [
-    { locale: "az", category: "university", slug: ["history"] },
-    { locale: "az", category: "university", slug: ["scientific-council"] },
-    {
-      locale: "az",
-      category: "university",
-      slug: ["scientific-council", "structure"],
-    },
-    {
-      locale: "az",
-      category: "university",
-      slug: ["scientific-council", "activities"],
-    },
-    {
-      locale: "az",
-      category: "university",
-      slug: ["scientific-council", "activities", "2025"],
-    },
-    // və s.
-  ];
+  try {
+    // Backend API-dən route-ları çək
+    const { fetchAllRoutes } = await import('@/lib/api');
+    const routes = await fetchAllRoutes();
+    
+    // Convert to Next.js params format
+    return routes.map(route => {
+      const pathParts = route.path.split('/').filter(Boolean);
+      const [category, ...slug] = pathParts;
+      
+      return {
+        locale: route.locale,
+        category,
+        slug: slug.length > 0 ? slug : undefined
+      };
+    });
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    // Fallback to some basic routes
+    return [
+      { locale: "az", category: "university", slug: ["history"] },
+      { locale: "en", category: "university", slug: ["history"] }
+    ];
+  }
 }
 
-// Metadata generation
+// ISR revalidation - hər 10 dəqiqədə yenilə
+export const revalidate = 600;
+
+// Metadata generation with full SEO support
 export async function generateMetadata({ params }) {
   const { locale, category, slug } = await params;
-  const pageTitle = slug ? slug[slug.length - 1].replace(/-/g, " ") : category;
-
+  const fullPath = `/${category}/${slug ? slug.join("/") : ""}`;
+  const pageData = getPageDataFromMenu(fullPath, locale);
+  
+  if (!pageData) {
+    return {
+      title: 'Page Not Found',
+      description: 'Bakı Dövlət Universiteti'
+    };
+  }
+  
+  const title = pageData.content[locale]?.title || category;
+  const description = pageData.content[locale]?.description || `Bakı Dövlət Universiteti - ${title}`;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bdu.info.az';
+  const canonicalPath = locale === 'az' ? fullPath : `/en${fullPath}`;
+  const canonicalUrl = `${baseUrl}${canonicalPath}`;
+  
   return {
-    title: `${pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)} - BDU`,
-    description: `Bakı Dövlət Universiteti - ${pageTitle}`,
+    title: `${title}`,
+    description,
+    keywords: pageData.keywords?.[locale] || 'Bakı Dövlət Universiteti, BDU, Azerbaijan, University',
+    
+    // Canonical URL
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        'az': `${baseUrl}${fullPath}`,
+        'en': `${baseUrl}/en${fullPath}`,
+        'x-default': `${baseUrl}${fullPath}`
+      }
+    },
+    
+    // Open Graph
+    openGraph: {
+      title: `${title}`,
+      description,
+      url: canonicalUrl,
+      siteName: 'Bakı Dövlət Universiteti',
+      locale: locale === 'az' ? 'az_AZ' : 'en_US',
+      type: 'website',
+      images: pageData.detailItem?.image ? [
+        {
+          url: `${baseUrl}${pageData.detailItem.image}`,
+          width: 1200,
+          height: 630,
+          alt: title
+        }
+      ] : []
+    },
+    
+    // Twitter Card
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title}`,
+      description,
+      images: pageData.detailItem?.image ? [`${baseUrl}${pageData.detailItem.image}`] : []
+    },
+    
+    // Robots
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1
+      }
+    }
   };
 }

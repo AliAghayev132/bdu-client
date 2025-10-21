@@ -347,7 +347,7 @@ export const bottomNavItems = [
   {
     id: 'rector-office',
     label: { az: 'Rektora müraciət', en: 'Appeal to Rector' },
-    href: { az: '/rektora-muraciet', en: '/rector' }
+    href: { az: '/rektora-muraciet', en: '/appeal-to-rector' }
   },
   {
     id: 'applicants',
@@ -357,7 +357,7 @@ export const bottomNavItems = [
   {
     id: 'students',
     label: { az: 'Tələbələr üçün', en: 'For Students' },
-    href: { az: '/telabeler', en: '/students' }
+    href: { az: '/telebeler', en: '/students' }
   },
   {
     id: 'employees',

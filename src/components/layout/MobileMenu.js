@@ -27,18 +27,21 @@ const MenuItem = memo(({ item, locale, onClose, onNavigate }) => {
   return (
     <div>
       {itemHref && !hasChildren ? (
-        <Link
-          href={itemHref}
-          onClick={onClose}
-          className="block px-4 py-3.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors border-b border-primary/10"
-        >
-          {itemLabel}
-        </Link>
-      ) : (
-        <button className="w-full flex items-center justify-between px-4 py-[9px] text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors border-b border-primary/10">
-          <Link onClick={onClose} className="w-full text-start" href={itemHref}>
+        <div onClick={onClose}>
+          <Link
+            href={itemHref}
+            className="block px-4 py-3.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors border-b border-primary/10"
+          >
             {itemLabel}
           </Link>
+        </div>
+      ) : (
+        <div className="w-full flex items-center justify-between px-4 py-[9px] text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors border-b border-primary/10">
+          <div onClick={onClose} className="w-full">
+            <Link className="w-full text-start block" href={itemHref}>
+              {itemLabel}
+            </Link>
+          </div>
           {hasChildren && (
             <button
               onClick={handleClick}
@@ -47,7 +50,7 @@ const MenuItem = memo(({ item, locale, onClose, onNavigate }) => {
               <ChevronRight size={18} className="text-gray-400" />
             </button>
           )}
-        </button>
+        </div>
       )}
     </div>
   );
@@ -287,14 +290,14 @@ function MobileMenu({ isOpen, onClose }) {
             const itemHref =
               typeof item.href === "object" ? item.href[locale] : item.href;
             return (
-              <Link
-                key={item.id}
-                href={itemHref}
-                onClick={onClose}
-                className="block px-4 py-3.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors border-b border-primary/10"
-              >
-                {getLabel(item, locale)}
-              </Link>
+              <div key={item.id} onClick={onClose}>
+                <Link
+                  href={itemHref}
+                  className="block px-4 py-3.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors border-b border-primary/10"
+                >
+                  {getLabel(item, locale)}
+                </Link>
+              </div>
             );
           })}
         </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "@/i18n/routing";
 
 const SideBar = ({pageData, locale}) => {
   return (
@@ -39,12 +40,12 @@ const SideBar = ({pageData, locale}) => {
 
                         return (
                           <div key={subIndex}>
-                            <a
+                            <Link
                               href={subHref}
                               className="block px-3 sm:py-2 py-1.5 sm:text-sm text-xs text-gray-600 hover:bg-white hover:text-primary rounded transition-colors"
                             >
                               {subLabel}
-                            </a>
+                            </Link>
                             {/* Rekursiv - daha dərin səviyyələr */}
                             {subitem.subitems &&
                               renderSubitems(subitem.subitems, level + 1)}
@@ -57,12 +58,12 @@ const SideBar = ({pageData, locale}) => {
 
                 return (
                   <div key={index}>
-                    <a
+                    <Link
                       href={itemHref}
                       className="block px-3 sm:py-2 py-1.5 sm:text-sm text-xs font-semibold text-gray-700 hover:bg-white hover:text-primary rounded transition-colors"
                     >
                       {itemLabel}
-                    </a>
+                    </Link>
                     {/* Render children rekursiv */}
                     {item.children && renderSubitems(item.children)}
                   </div>

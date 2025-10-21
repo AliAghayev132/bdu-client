@@ -57,11 +57,12 @@ const urlMap = {
   'lyceum': { az: 'genc-istedadlar-litseyi', en: 'lyceum' },
   
   // Bottom nav
-  'rektora-muraciet': { az: 'rektora-muraciet', en: 'rector' },
+  'rektora-muraciet': { az: 'rektora-muraciet', en: 'appeal-to-rector' },
+  'appeal-to-rector': { az: 'rektora-muraciet', en: 'appeal-to-rector' },
   'abituriyentler': { az: 'abituriyentler', en: 'applicants' },
   'applicants': { az: 'abituriyentler', en: 'applicants' },
-  'telabeler': { az: 'telabeler', en: 'students' },
-  'students': { az: 'telabeler', en: 'students' },
+  'telebeler': { az: 'telebeler', en: 'students' },
+  'students': { az: 'telebeler', en: 'students' },
   'emekdaslar': { az: 'emekdaslar', en: 'employees' },
   'employees': { az: 'emekdaslar', en: 'employees' },
   'mezunlar': { az: 'mezunlar', en: 'graduates' },

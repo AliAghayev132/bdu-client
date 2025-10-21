@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 
 const NotFound = ({ locale = 'az' }) => {
+
   const content = {
     az: {
       title: 'Səhifə tapılmadı',
@@ -77,7 +78,7 @@ const NotFound = ({ locale = 'az' }) => {
         </div>
 
         {/* Quick Links */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
+        {/* <div className="mt-12 pt-8 border-t border-gray-200">
           <p className="text-sm text-gray-500 mb-4">
             {locale === 'az' ? 'Populyar səhifələr:' : 'Popular pages:'}
           </p>
@@ -107,7 +108,7 @@ const NotFound = ({ locale = 'az' }) => {
               {locale === 'az' ? 'Əlaqə' : 'Contact'}
             </Link>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

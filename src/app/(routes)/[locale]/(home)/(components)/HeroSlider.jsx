@@ -52,7 +52,7 @@ const HeroSlider = () => {
     {
       id: 3,
       type: 'image',
-      image: "https://images.unsplash.com/photo-1562774053-701939374585?w=1920&q=80",
+      image: bdu1,
       alt: "University Building",
       year: "2024",
       title: {
