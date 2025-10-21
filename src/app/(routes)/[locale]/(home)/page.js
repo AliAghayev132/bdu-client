@@ -1,3 +1,4 @@
+import BlogSection from './(components)/BlogSection/BlogSection';
 import HeroSlider from './(components)/HeroSlider';
 import NewsSection from './(components)/NewsSection';
 
@@ -6,6 +7,7 @@ export default function HomePage() {
     <div className='home overflow-hidden'>
       <HeroSlider />
       <NewsSection />
+      <BlogSection/>
     </div>
   );
 }

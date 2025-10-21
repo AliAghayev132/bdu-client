@@ -21,7 +21,7 @@ const NewsCard = memo(({ news }) => {
     <Link
       href={`/news/${news.slug || news.id}`}
       style={{ willChange: 'transform' }}
-      className="group block bg-white rounded-2xl overflow-hidden transition-all duration-300 border border-primary/30 h-full"
+      className="group block bg-white rounded-2xl overflow-hidden transition-all duration-300 border-2 border-primary/20 h-full"
     >
       {/* Image Container */}
       <div className="relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10">
@@ -44,11 +44,11 @@ const NewsCard = memo(({ news }) => {
         
         {/* Date Badge - Top Left Corner */}
         <div className="absolute top-0 rounded-br-2xl left-0 bg-white shadow-md">
-          <div className="flex flex-col items-center justify-center w-16 h-16 p-2">
-            <time className="text-3xl font-bold text-primary leading-none" suppressHydrationWarning>
+          <div className="flex flex-col items-center justify-center lg:w-16 lg:h-16 md:w-14 md:h-14 w-12 h-12 p-2">
+            <time className="lg:text-3xl md:text-2xl text-lg font-bold text-primary leading-none" suppressHydrationWarning>
               {new Date(news.date).getDate()}
             </time>
-            <time className="text-[10px] font-medium text-gray-600 uppercase mt-0.5" suppressHydrationWarning>
+            <time className="md:text-[10px] text-[8px] font-medium text-gray-600 uppercase mt-0.5" suppressHydrationWarning>
               {new Date(news.date).toLocaleDateString(locale === 'az' ? 'az-AZ' : 'en-US', { month: 'short' })}
             </time>
           </div>
@@ -56,11 +56,11 @@ const NewsCard = memo(({ news }) => {
       </div>
 
       {/* Content */}
-      <div className="py-5 px-3">
-        <h3 className="font-semibold text-secondary text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
+      <div className="py-5 px-3 flex flex-col justify-between">
+        <h3 className="font-semibold text-secondary sm:text-base text-sm mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
           {news.title}
         </h3>
-        <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+        <p className="sm:text-xs text-[10px] text-gray-600 line-clamp-2 leading-relaxed">
           {news.excerpt}
         </p>
       </div>

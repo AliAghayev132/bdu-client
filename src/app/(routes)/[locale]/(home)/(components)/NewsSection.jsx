@@ -72,18 +72,18 @@ export default async function NewsSection() {
 
   return (
     <section className="news-section sm:py-16 py-8 bg-white">
-      <div className="wrapper xl:bg-white bg-primary/5">
+      <div className="wrapper bg-white">
         <div className="grid xl:grid-cols-[1fr_320px] gap-4">
           {/* News Section - Left Side */}
-          <div className="xl:bg-primary/5 xl:border-2 border-primary/20 sm:py-8 sm:px-8 py-6 rounded-xl overflow-hidden">
+          <div className="bg-primary/5 xl:border-2 border-primary/20 sm:py-8 sm:px-8 px-4 py-6 rounded-xl overflow-hidden">
             {/* Section Header */}
             <div className="flex items-center justify-between mb-8">
-              <h2 className="sm:text-3xl text-2xl font-bold text-secondary">
+              <h2 className="md:text-3xl sm:text-2xl text-lg font-bold text-secondary">
                 {t("news.title", { default: "XƏBƏRLƏR" })}
               </h2>
               <Link
                 href="/news"
-                className="group flex items-center gap-2 px-5 py-2.5 bg-secondary/10 text-secondary rounded-lg hover:bg-secondary hover:text-white transition-all duration-300 text-sm font-medium"
+                className="group md:flex hidden items-center gap-2 px-5 py-2.5 bg-secondary/10 text-secondary rounded-lg hover:bg-secondary hover:text-white transition-all duration-300 text-sm font-medium"
               >
                 <span>{t("news.viewAll", { default: "BÜTÜN XƏBƏRLƏR" })}</span>
                 <svg
@@ -119,7 +119,7 @@ export default async function NewsSection() {
                   {news.slice(0, 6).map((item) => (
                     <div
                       key={item.id}
-                      className="min-w-[280px] w-[280px] flex-shrink-0"
+                      className="min-w-[240px] w-[240px] flex-shrink-0"
                     >
                       <NewsCard news={item} />
                     </div>
@@ -137,14 +137,14 @@ export default async function NewsSection() {
         </div>
 
         {/* Mobile Announcements - Horizontal Scroll */}
-        <div className="xl:hidden xl:bg-primary/5 sm:py-8 sm:px-8 py-6 px-4 rounded-xl sm:mt-12 overflow-hidden">
+        <div className="xl:hidden bg-primary/5 sm:py-8 sm:px-8 py-6 px-4 rounded-xl sm:mt-12 mt-6 overflow-hidden">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="sm:text-3xl text-2xl font-bold text-secondary">
+            <h2 className="md:text-3xl sm:text-2xl text-lg font-bold text-secondary">
               {t("announcements.title", { default: "ELANLAR" })}
             </h2>
             <Link
               href="/announcements"
-              className="group flex items-center gap-2 px-5 py-2.5 bg-[#B8956A]/5 text-[#B8956A] rounded-lg hover:bg-[#B8956A] hover:text-white transition-all duration-300 text-sm font-medium"
+              className="group md:flex hidden items-center gap-2 px-5 py-2.5 bg-[#B8956A]/5 text-[#B8956A] rounded-lg hover:bg-[#B8956A] hover:text-white transition-all duration-300 text-sm font-medium"
             >
               <span>
                 {t("announcements.viewAll", { default: "BÜTÜN ELANLAR" })}
@@ -166,7 +166,7 @@ export default async function NewsSection() {
           </div>
           <div className="-mx-8">
             <div
-              className="overflow-x-scroll scrollbar-hide sm:px-8 px-4"
+              className="overflow-x-scroll scrollbar-hide px-8 "
               style={{ WebkitOverflowScrolling: "touch" }}
             >
               <div className="flex gap-4 pb-2">
@@ -180,26 +180,3 @@ export default async function NewsSection() {
   );
 }
 
-// Separate mock data
-const mockAnnouncements = [
-  {
-    id: 1,
-    title: "Magistratura qəbulu başladı",
-    date: "2025-01-20",
-  },
-  {
-    id: 2,
-    title: "Elmi konfrans elanı",
-    date: "2025-01-18",
-  },
-  {
-    id: 3,
-    title: "Təqaüd müsabiqəsi",
-    date: "2025-01-15",
-  },
-  {
-    id: 4,
-    title: "Yay məktəbi qeydiyyatı",
-    date: "2025-01-12",
-  },
-];
