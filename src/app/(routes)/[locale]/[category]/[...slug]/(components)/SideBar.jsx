@@ -5,8 +5,8 @@ const SideBar = ({pageData, locale}) => {
     <>
     {pageData?.sidebar?.show && pageData.sidebar.items.length > 0 && (
         <aside className="lg:col-span-1">
-          <div className="bg-bg-light p-6 rounded-lg sticky top-44">
-            <h3 className="font-bold text-secondary mb-4 uppercase text-sm">
+          <div className="bg-bg-light p-6 rounded-lg lg:sticky lg:top-44">
+            <h3 className="font-bold text-secondary sm:mb-4 mb-2 uppercase sm:text-sm text-xs">
               {locale === "az" ? "Naviqasiya" : "Navigation"}
             </h3>
             <nav className="space-y-1">
@@ -26,7 +26,7 @@ const SideBar = ({pageData, locale}) => {
                     level === 1 ? "ml-2" : level === 2 ? "ml-4" : "ml-6";
 
                   return (
-                    <div className={`${marginClass} mt-1 space-y-1`}>
+                    <div className={`${marginClass} mt-1 sm:space-y-1 space-y-0.5`}>
                       {subitems.map((subitem, subIndex) => {
                         const subLabel =
                           typeof subitem.label === "object"
@@ -41,7 +41,7 @@ const SideBar = ({pageData, locale}) => {
                           <div key={subIndex}>
                             <a
                               href={subHref}
-                              className="block px-3 py-2 text-sm text-gray-600 hover:bg-white hover:text-primary rounded transition-colors"
+                              className="block px-3 sm:py-2 py-1.5 sm:text-sm text-xs text-gray-600 hover:bg-white hover:text-primary rounded transition-colors"
                             >
                               {subLabel}
                             </a>
@@ -59,7 +59,7 @@ const SideBar = ({pageData, locale}) => {
                   <div key={index}>
                     <a
                       href={itemHref}
-                      className="block px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-white hover:text-primary rounded transition-colors"
+                      className="block px-3 sm:py-2 py-1.5 sm:text-sm text-xs font-semibold text-gray-700 hover:bg-white hover:text-primary rounded transition-colors"
                     >
                       {itemLabel}
                     </a>

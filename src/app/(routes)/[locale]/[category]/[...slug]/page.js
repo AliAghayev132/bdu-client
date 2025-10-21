@@ -31,25 +31,25 @@ export default async function DynamicPage({ params }) {
   console.log("Page Data:", { fullPath, pageType, sidebar: pageData.sidebar });
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-hidden">
       {/* Breadcrumbs */}
       <Breadcrumbs breadcrumbs={breadcrumbs} />
 
       {/* Page Content */}
-      <div className="wrapper mx-auto px-4 py-12">
-        <div className="grid lg:grid-cols-4 gap-8">
+      <div className="wrapper mx-auto px-4 sm:py-12 pt-1 pb-6">
+        <div className="grid lg:grid-cols-4 sm:gap-8 gap-6">
           {/* Sidebar */}
 
           <SideBar pageData={pageData} locale={locale} />
           {/* Main Content */}
           <main className="lg:col-span-3">
             {/* Page Title */}
-            <h1 className="text-3xl font-bold text-secondary mb-6">
+            <h1 className="md:text-3xl sm:text-2xl text-xl font-bold text-secondary md:mb-6 sm:mb-4 mb-1">
               {pageData.content[locale]?.title || "Səhifə"}
             </h1>
 
             {pageData.content[locale]?.description && (
-              <p className="text-lg text-gray-600 mb-6">
+              <p className="md:text-lg sm:text-base text-sm text-gray-600 md:mb-6 mb-5 ">
                 {pageData.content[locale].description}
               </p>
             )}
