@@ -15,7 +15,7 @@ export default function HeaderTop({ onMenuToggle }) {
       <div className="max-w-[1600px] mx-auto px-4 py-2.5">
         {/* Mobile View */}
         <div className="flex lg:hidden py-2 items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center sm:gap-3 gap-1.5">
             <Image
               src="/bsu-logo.png"
               alt="BDU Logo"
@@ -24,10 +24,10 @@ export default function HeaderTop({ onMenuToggle }) {
               className="object-contain"
             />
             <div>
-            <p className="text-[8px] text-gray-600 uppercase tracking-wide">
+            <p className="sm:text-[8px] text-[6px] mb-[2px] text-gray-600 uppercase tracking-wide">
                 {t("subtitle")}
               </p>
-            <h1 className="text-sm font-bold text-secondary uppercase">
+            <h1 className="sm:text-sm text-xs font-bold text-secondary uppercase">
               {t("university")}
             </h1>
             </div>
