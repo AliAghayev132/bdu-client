@@ -7,9 +7,22 @@ const montserrat = Montserrat({
 });
 
 export const metadata = {
-  title: "Bakı Dövlət Universiteti",
+  metadataBase: new URL('https://bdu.info.az'),
+  title: {
+    default: "Bakı Dövlət Universiteti",
+    template: "%s | Bakı Dövlət Universiteti",
+  },
   description: "Azərbaycanın ən qədim və nüfuzlu ali təhsil müəssisəsi",
   applicationName: "Bakı Dövlət Universiteti",
+  openGraph: {
+    siteName: "Bakı Dövlət Universiteti",
+    type: "website",
+    locale: "az_AZ",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: [
       { url: "/favicon/favicon.ico" },

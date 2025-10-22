@@ -15,7 +15,7 @@ const Breadcrumbs = ({breadcrumbs}) => {
                   {/* First item (Home) is link, second item (Category) is text, last item is current page */}
                   {index === 1 ? (
                     <span
-                      className="md:text-base sm:text-sm text-xs text-gray-600 hover:text-primary"
+                      className="md:text-base  sm:text-sm text-xs text-gray-600 hover:text-primary"
                     >
                       {crumb.label}
                     </span>

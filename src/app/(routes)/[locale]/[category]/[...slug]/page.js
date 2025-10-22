@@ -64,7 +64,7 @@ export default async function DynamicPage({ params }) {
 
       {/* Page Content */}
       <div className="wrapper mx-auto px-4 sm:py-12 pt-1 pb-6">
-        <div className="grid lg:grid-cols-4 sm:gap-8 gap-6">
+        <div className="relative grid lg:grid-cols-4 sm:gap-8 gap-6">
           {/* Sidebar */}
 
           <SideBar pageData={pageData} locale={locale} />
@@ -147,7 +147,7 @@ export async function generateMetadata({ params }) {
   
   if (!pageData) {
     return {
-      title: 'Page Not Found',
+      title: locale === 'az' ? 'Səhifə tapılmadı' : 'Page Not Found',
       description: 'Bakı Dövlət Universiteti'
     };
   }
@@ -181,6 +181,7 @@ export async function generateMetadata({ params }) {
       siteName: 'Bakı Dövlət Universiteti',
       locale: locale === 'az' ? 'az_AZ' : 'en_US',
       type: 'website',
+      image: `${baseUrl}/favicon/favicon.ico`,
       images: pageData.detailItem?.image ? [
         {
           url: `${baseUrl}${pageData.detailItem.image}`,

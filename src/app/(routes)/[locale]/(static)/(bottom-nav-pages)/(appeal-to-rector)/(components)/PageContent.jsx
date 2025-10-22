@@ -6,22 +6,26 @@ import ContactForm from "./ContactForm";
 const CONTENT = {
   'rektora-muraciet': {
     az: {
-      title: 'Rektora müraciət',
-      description: 'Hörmətli Tələbələr, Əziz Rektora hər hansı bir sualınız, təklifiniz və ya şikayətiniz varsa, müraciətinizi təqdim edə bilərsiniz.'
+      title: 'REKTORA MÜRACİƏT',
+      description: 'Hörmətli Tələbələr, Əziz Rektora hər hansı bir sualınız, təklifiniz və ya şikayətiniz varsa, müraciətinizi təqdim edə bilərsiniz.',
+      breadcrumbs: "Rektora müraciət"
     },
     en: {
-      title: 'Appeal to Rector',
-      description: 'Dear Students, if you have any questions, suggestions or complaints for the Rector, you can submit your appeal.'
+      title: 'APPEAL TO RECTOR',
+      description: 'Dear Students, if you have any questions, suggestions or complaints for the Rector, you can submit your appeal.',
+      breadcrumbs: "Appeal to Rector"   
     }
   },
   'appeal-to-rector': {
     az: {
-      title: 'Rektora müraciət',
-      description: 'Hörmətli Tələbələr, Əziz Rektora hər hansı bir sualınız, təklifiniz və ya şikayətiniz varsa, müraciətinizi təqdim edə bilərsiniz.'
+      title: 'REKTORA MÜRACİƏT',
+      description: 'Hörmətli Tələbələr, Əziz Rektora hər hansı bir sualınız, təklifiniz və ya şikayətiniz varsa, müraciətinizi təqdim edə bilərsiniz.',
+      breadcrumbs: "Rektora müraciət"
     },
     en: {
-      title: 'Appeal to Rector',
-      description: 'Dear Students, if you have any questions, suggestions or complaints for the Rector, you can submit your appeal.'
+      title: 'APPEAL TO RECTOR',
+      description: 'Dear Students, if you have any questions, suggestions or complaints for the Rector, you can submit your appeal.',
+      breadcrumbs: "Appeal to Rector"   
     }
   }
 };
@@ -39,7 +43,7 @@ export default function PageContent({ locale, slug }) {
       href: '/' 
     },
     { 
-      label: content.title, 
+      label: content.breadcrumbs, 
       href: `/${slug}` 
     }
   ];
@@ -57,12 +61,12 @@ export default function PageContent({ locale, slug }) {
         <div className="max-w-4xl mx-auto">
           {/* Page Header */}
           <header className="mb-8">
-            <h1 className="md:text-4xl sm:text-3xl text-2xl font-bold text-secondary mb-4">
+            <h1 className="md:text-3xl sm:text-2xl text-xl font-bold text-primary tracking-wider uppercase mb-4">
               {content.title}
             </h1>
-            <p className="md:text-lg sm:text-base text-sm text-gray-600">
+            {/* <p className="md:text-lg sm:text-base text-sm text-gray-600">
               {content.description}
-            </p>
+            </p> */}
           </header>
           
           {/* Contact Form */}

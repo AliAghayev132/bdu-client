@@ -4,6 +4,7 @@ import NewsCard from "./NewsCard";
 import AnnouncementsList from "./AnnouncementsList";
 import AnnouncementsListMobile from "./AnnouncementsListMobile";
 import newsImage from "@/assets/images/baki-dovlet-universiteti.jpg";
+import { ChevronRight } from "lucide-react";
 
 // Fetch news data - Server Component
 async function getNews() {
@@ -86,19 +87,7 @@ export default async function NewsSection() {
                 className="group md:flex hidden items-center gap-2 px-5 py-2.5 bg-secondary/10 text-secondary rounded-lg hover:bg-secondary hover:text-white transition-all duration-300 text-sm font-medium"
               >
                 <span>{t("news.viewAll", { default: "BÜTÜN XƏBƏRLƏR" })}</span>
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+              <ChevronRight className="w-4 h-4"/>
               </Link>
             </div>
 
@@ -149,19 +138,7 @@ export default async function NewsSection() {
               <span>
                 {t("announcements.viewAll", { default: "BÜTÜN ELANLAR" })}
               </span>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              <ChevronRight className="w-4 h-4"/>
             </Link>
           </div>
           <div className="-mx-8">

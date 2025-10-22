@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { gsap } from "gsap";
@@ -7,7 +7,7 @@ import { getLabel } from "@/data/menuData";
 import { useGSAP } from "@gsap/react";
 
 // Rekursiv SubMenu Panel Component
-function SubMenuPanel({ items, parentLabel, locale, onClose, level = 0 }) {
+const SubMenuPanel = memo(function SubMenuPanel({ items, parentLabel, locale, onClose, level = 0 }) {
   const [hoveredSubItem, setHoveredSubItem] = useState(null);
   const hoverTimeoutRef = useRef(null);
 
@@ -105,7 +105,7 @@ function SubMenuPanel({ items, parentLabel, locale, onClose, level = 0 }) {
       )}
     </div>
   );
-}
+});
 
 export default function MegaMenu({
   activeMenu,
@@ -124,7 +124,7 @@ export default function MegaMenu({
   const leftSidebarRef = useRef(null);
   const previousActiveMenu = useRef(null);
 
-  const handleMenuEnter = () => {
+  const handleMenuEnter = useCallback(() => {
     // Clear any close timeouts
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -134,9 +134,9 @@ export default function MegaMenu({
     if (onMouseEnterFromNav) {
       onMouseEnterFromNav();
     }
-  };
+  }, [onMouseEnterFromNav]);
 
-  const handleMenuLeave = (e) => {
+  const handleMenuLeave = useCallback((e) => {
     // Clear any existing timeout
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -157,40 +157,68 @@ export default function MegaMenu({
     closeTimeoutRef.current = setTimeout(() => {
       onClose();
     }, 150);
-  };
+  }, [onClose]);
+
+  // Handle hover with delay
+  const handleItemEnter = useCallback((index) => {
+    // Clear any existing timeout
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    setHoveredItem(index.toString());
+  }, []);
+
+  const handleItemLeave = useCallback(() => {
+    // Set timeout to clear hover after 200ms
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredItem(null);
+    }, 200);
+  }, []);
+
+  const handlePanelEnter = useCallback(() => {
+    // Clear timeout when entering right panel
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+  }, []);
+
+  const handlePanelLeave = useCallback(() => {
+    // Clear hover when leaving right panel
+    setHoveredItem(null);
+  }, []);
 
   // Animate mega menu open/close
-useGSAP(() => {
-  if (!menuRef.current) return;
+  useGSAP(() => {
+    if (!menuRef.current) return;
 
-  const ctx = gsap.context(() => {
-    if (isOpen) {
-      gsap.set(menuRef.current, { display: "block" });
-      gsap.to(menuRef.current, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    } else {
-      gsap.to(menuRef.current, {
-        autoAlpha: 0,
-        y: -10,
-        duration: 0.2,
-        ease: "power2.in",
-        onComplete: () => {
-          gsap.set(menuRef.current, { display: "none" });
-        },
-      });
-    }
-  }, menuRef);
+    const ctx = gsap.context(() => {
+      if (isOpen) {
+        gsap.set(menuRef.current, { display: "block" });
+        gsap.to(menuRef.current, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(menuRef.current, {
+          autoAlpha: 0,
+          y: -10,
+          duration: 0.2,
+          ease: "power2.in",
+          onComplete: () => {
+            gsap.set(menuRef.current, { display: "none" });
+          },
+        });
+      }
+    }, menuRef);
 
-  return () => {
-    ctx.revert(); // ✅ təmiz animation
-    clearTimeout(hoverTimeoutRef.current);
-    clearTimeout(closeTimeoutRef.current);
-  };
-}, [isOpen]);
+    return () => {
+      ctx.revert(); // ✅ təmiz animation
+      clearTimeout(hoverTimeoutRef.current);
+      clearTimeout(closeTimeoutRef.current);
+    };
+  }, [isOpen]);
 
   if (!activeMenu || !menuData[activeMenu]) return null;
 
@@ -206,38 +234,10 @@ useGSAP(() => {
   // Flatten all items for indexing (keep for backward compatibility)
   const allItems = currentItem.columns.flatMap((column) => column.items);
 
-  // Handle hover with delay
-  const handleItemEnter = (index) => {
-    // Clear any existing timeout
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
-    setHoveredItem(index.toString());
-  };
-
-  const handleItemLeave = () => {
-    // Set timeout to clear hover after 200ms
-    hoverTimeoutRef.current = setTimeout(() => {
-      setHoveredItem(null);
-    }, 200);
-  };
-
-  const handlePanelEnter = () => {
-    // Clear timeout when entering right panel
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
-  };
-
-  const handlePanelLeave = () => {
-    // Clear hover when leaving right panel
-    setHoveredItem(null);
-  };
-
   return (
     <div
       ref={menuRef}
-      className="bdu-mega-menu fixed left-0 right-0 wrapper border-2 border-primary/50 rounded-xl bg-bg-light z-40"
+      className="bdu-mega-menu max-w-[1620px] mx-auto fixed left-0 right-0 z-40 px-8 lg:px-8 md:px-6 sm:px-4"
       style={{
         display: "none",
         opacity: 0,
@@ -256,11 +256,11 @@ useGSAP(() => {
       {/* Decorative top border */}
       {/* <div className="h-1 bg-gradient-to-r from-primary via-secondary to-primary"></div> */}
 
-      <div className="w-full">
-        <div className="max-w-[1540px] mx-auto flex">
-          {/* Left Sidebar - Sections with Titles (2 columns) */}
-          <div ref={leftSidebarRef} className="w-[600px] bg-bg-light border-r border-gray-200 py-6">
-            <div className="grid grid-cols-2 gap-x-4 gap-y-6 px-2">
+      <div className="max-w-[1600px] mx-auto border-2 border-primary/50 rounded-xl bg-bg-light overflow-x-auto custom-scrollbar">
+        <div className="max-w-[1540px] mx-auto flex min-w-max">
+          {/* Left Sidebar - Sections with Titles */}
+          <div ref={leftSidebarRef} className="w-80 flex-shrink-0 bg-bg-light border-r border-gray-200 py-6 max-h-[600px] overflow-y-auto custom-scrollbar">
+            <div className="space-y-3">
               {sections.map((section, sectionIndex) => {
                 // Calculate global index for each item
                 const startIndex = sections
@@ -268,9 +268,9 @@ useGSAP(() => {
                   .reduce((acc, s) => acc + s.items.length, 0);
 
                 return (
-                  <div key={sectionIndex}>
+                  <div key={sectionIndex} className="px-2">
                     {/* Section Title */}
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-4">
+                    <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-2 px-6">
                       {typeof section.title === 'object' ? section.title[locale] : section.title}
                     </h3>
                     
@@ -292,7 +292,7 @@ useGSAP(() => {
                                     ? navItem.href[locale]
                                     : navItem.href
                                 }
-                                className={`group flex items-center rounded-lg overflow-hidden justify-between px-4 py-2 transition-all duration-150 ${
+                                className={`group flex items-center rounded-lg overflow-hidden justify-between px-6 py-2 transition-all duration-150 ${
                                   hoveredItem === globalIndex.toString()
                                     ? "bg-white text-primary"
                                     : "text-gray-700 hover:bg-white/50"
@@ -337,7 +337,7 @@ useGSAP(() => {
 
           {/* Right Panel - Submenu Content (Rekursiv) */}
           <div
-            className="flex-1 py-6 min-h-[400px] flex"
+            className="flex-1 py-6 min-h-[400px] flex min-w-0"
             onMouseEnter={handlePanelEnter}
             onMouseLeave={handlePanelLeave}
           >
