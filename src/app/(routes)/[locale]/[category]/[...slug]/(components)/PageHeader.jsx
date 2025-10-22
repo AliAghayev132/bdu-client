@@ -3,7 +3,7 @@ import React from "react";
 const PageHeader = ({ title, description }) => {
   return (
     <header>
-      <h1 className="md:text-3xl sm:text-2xl text-lg font-bold text-secondary md:mb-6 sm:mb-4 mb-1">
+      <h1 className="md:text-3xl sm:text-2xl text-lg font-bold text-secondary md:mb-4 sm:mb-3 mb-1">
         {title || "Səhifə"}
       </h1>
       {description ? (

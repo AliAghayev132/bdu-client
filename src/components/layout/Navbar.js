@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import MegaMenu from './MegaMenu';
 import { menuData, bottomNavItems, getLabel } from '@/data/menuData';
 import { translateUrl } from "@/utils/urlTranslator";
@@ -17,15 +17,15 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleLanguageChange = (newLocale) => {
+  const handleLanguageChange = useCallback((newLocale) => {
     // Translate URL to target locale
     const translatedPath = translateUrl(pathname, newLocale);
     router.replace(translatedPath, { locale: newLocale });
-  };
+  }, [pathname, router]);
 
   const topMenuKeys = ['university', 'education', 'science', 'social', 'cooperation'];
 
-  const handleNavbarLeave = (e) => {
+  const handleNavbarLeave = useCallback((e) => {
     // Clear any existing timeout first
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -41,18 +41,27 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
     closeTimeoutRef.current = setTimeout(() => {
       setActiveMenu(null);
     }, 150);
-  };
+  }, []);
 
-  const handleNavbarEnter = () => {
+  const handleNavbarEnter = useCallback(() => {
     // Navbar-a qayıdanda timeout-u ləğv et
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
     }
-  };
+  }, []);
 
-  const handleCloseMenu = () => {
+  const handleCloseMenu = useCallback(() => {
     setActiveMenu(null);
-  };
+  }, []);
+
+  const handleMenuItemEnter = useCallback((menuKey) => {
+    // Clear any pending close timeout
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    // Immediately switch to new menu
+    setActiveMenu(menuKey);
+  }, []);
 
   useGSAP(() => {
     return () => {
@@ -109,14 +118,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                 <div
                   key={menuKey}
                   className="relative"
-                  onMouseEnter={() => {
-                    // Clear any pending close timeout
-                    if (closeTimeoutRef.current) {
-                      clearTimeout(closeTimeoutRef.current);
-                    }
-                    // Immediately switch to new menu
-                    setActiveMenu(menuKey);
-                  }}
+                  onMouseEnter={() => handleMenuItemEnter(menuKey)}
                 >
                   <button
                     className="px-4 py-4 text-sm font-medium hover:text-primary transition-colors uppercase"

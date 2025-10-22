@@ -85,6 +85,12 @@ export default async function DynamicPage({ params }) {
               </div>
             )}
 
+            {
+              pageType === "blog" && pageData.items && pageData.items.length > 0 && (
+                <BlogContent html={pageData.content[locale]?.body || ""} />
+              )
+            }
+
             {/* Sub-pages links */}
             {pageData.subPages && pageData.subPages.length > 0 && (
               <SubPagesGrid subPages={pageData.subPages} locale={locale} />

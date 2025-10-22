@@ -197,7 +197,13 @@ useGSAP(() => {
   const currentItem = menuData[activeMenu];
   if (!currentItem || !currentItem.columns) return null;
 
-  // Flatten all items from all columns into a single list
+  // Create sections with column titles
+  const sections = currentItem.columns.map((column) => ({
+    title: column.title,
+    items: column.items,
+  }));
+
+  // Flatten all items for indexing (keep for backward compatibility)
   const allItems = currentItem.columns.flatMap((column) => column.items);
 
   // Handle hover with delay
@@ -252,59 +258,81 @@ useGSAP(() => {
 
       <div className="w-full">
         <div className="max-w-[1540px] mx-auto flex">
-          {/* Left Sidebar - All Items */}
-          <div ref={leftSidebarRef} className="w-80 bg-bg-light border-r border-gray-200 py-6">
-            <ul className="space-y-0.5">
-              {allItems.map((navItem, itemIndex) => (
-                <li
-                  key={itemIndex}
-                  className="relative px-2"
-                  onMouseEnter={() => handleItemEnter(itemIndex)}
-                  onMouseLeave={handleItemLeave}
-                >
-                  <div onClick={onClose}>
-                    <Link
-                      href={
-                        typeof navItem.href === "object"
-                          ? navItem.href[locale]
-                          : navItem.href
-                      }
-                      className={`group flex items-center rounded-lg overflow-hidden justify-between px-6 py-2 transition-all duration-150 ${
-                        hoveredItem === itemIndex.toString()
-                          ? "bg-white text-primary"
-                          : "text-gray-700 hover:bg-white/50"
-                      }`}
-                    >
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">
-                        {getLabel(navItem, locale)}
-                      </div>
-                      {navItem.description && (
-                        <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-                          {getLabel(navItem.description, locale)}
-                        </div>
-                      )}
-                    </div>
-                    {navItem.subitems && (
-                      <svg
-                        className="w-4 h-4 text-gray-400 group-hover:text-primary transition-all"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    )}
-                  </Link>
+          {/* Left Sidebar - Sections with Titles (2 columns) */}
+          <div ref={leftSidebarRef} className="w-[600px] bg-bg-light border-r border-gray-200 py-6">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-6 px-2">
+              {sections.map((section, sectionIndex) => {
+                // Calculate global index for each item
+                const startIndex = sections
+                  .slice(0, sectionIndex)
+                  .reduce((acc, s) => acc + s.items.length, 0);
+
+                return (
+                  <div key={sectionIndex}>
+                    {/* Section Title */}
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-4">
+                      {typeof section.title === 'object' ? section.title[locale] : section.title}
+                    </h3>
+                    
+                    {/* Section Items */}
+                    <ul className="space-y-0.5">
+                      {section.items.map((navItem, itemIndex) => {
+                        const globalIndex = startIndex + itemIndex;
+                        return (
+                          <li
+                            key={itemIndex}
+                            className="relative"
+                            onMouseEnter={() => handleItemEnter(globalIndex)}
+                            onMouseLeave={handleItemLeave}
+                          >
+                            <div onClick={onClose}>
+                              <Link
+                                href={
+                                  typeof navItem.href === "object"
+                                    ? navItem.href[locale]
+                                    : navItem.href
+                                }
+                                className={`group flex items-center rounded-lg overflow-hidden justify-between px-4 py-2 transition-all duration-150 ${
+                                  hoveredItem === globalIndex.toString()
+                                    ? "bg-white text-primary"
+                                    : "text-gray-700 hover:bg-white/50"
+                                }`}
+                              >
+                                <div className="flex-1">
+                                  <div className="text-sm font-medium">
+                                    {getLabel(navItem, locale)}
+                                  </div>
+                                  {navItem.description && (
+                                    <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">
+                                      {getLabel(navItem.description, locale)}
+                                    </div>
+                                  )}
+                                </div>
+                                {navItem.subitems && (
+                                  <svg
+                                    className="w-4 h-4 text-gray-400 group-hover:text-primary transition-all"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M9 5l7 7-7 7"
+                                    />
+                                  </svg>
+                                )}
+                              </Link>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </div>
-                </li>
-              ))}
-            </ul>
+                );
+              })}
+            </div>
           </div>
 
           {/* Right Panel - Submenu Content (Rekursiv) */}

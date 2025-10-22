@@ -393,7 +393,7 @@ function MobileMenu({ isOpen, onClose }) {
       {/* Mobile Menu - Full Screen with Slides */}
       <div
         ref={menuRef}
-        className="bdu-mobile-menu fixed inset-0 bg-white z-[70] lg:hidden"
+        className="bdu-mobile-menu fixed inset-0 bg-white z-[70] lg:hidden overflow-x-auto" 
         style={{ transform: "translateX(100%)" }}
       >
         <div className="relative h-full overflow-hidden">

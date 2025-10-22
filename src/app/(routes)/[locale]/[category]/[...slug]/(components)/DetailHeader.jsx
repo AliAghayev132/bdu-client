@@ -5,9 +5,9 @@ const DetailHeader = ({ detailItem, locale }) => {
   if (!detailItem) return null;
 
   return (
-    <div className="flex flex-row items-start gap-3 sm:gap-4 md:gap-6 sm:mb-8 mb-4 bg-white border-2 border-primary/20 rounded-xl p-2 sm:p-4 md:p-5">
+    <div className="flex flex-row items-start gap-3 sm:gap-4 md:gap-6 sm:mb-8 mb-4 bg-white border-2 border-primary/20 rounded-xl p-2 ">
       {detailItem.image && (
-        <div className="flex-shrink-0 relative w-24 md:w-28 aspect-[3/4] overflow-hidden rounded-lg">
+        <div className="flex-shrink-0 relative w-24 md:w-36 aspect-[3/4] overflow-hidden rounded-lg">
           <Image
             src={detailItem.image}
             alt={detailItem.name?.[locale] || ""}
@@ -17,7 +17,7 @@ const DetailHeader = ({ detailItem, locale }) => {
           />
         </div>
       )}
-      <div className="flex-1 sm:p-0 p-1">
+      <div className="flex-1 sm:p-0 md:p-2">
         <h2 className="font-semibold text-primary sm:text-base text-sm md:text-xl lg:text-2xl mb-1">
           {detailItem.name?.[locale]}
         </h2>

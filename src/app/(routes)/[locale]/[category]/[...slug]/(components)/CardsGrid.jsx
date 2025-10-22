@@ -17,12 +17,12 @@ const CardsGrid = ({ items, locale, fullPath }) => {
           <CardWrapper
             key={person.id}
             {...cardProps}
-            className={`flex flex-row items-start gap-2 sm:gap-3 md:gap-4 bg-white border-2 border-primary/20 rounded-xl p-1.5 sm:p-3 md:p-4 hover:shadow-md hover:border-gray-300 transition-all ${
+            className={`flex flex-row items-start gap-2 sm:gap-3 md:gap-4 bg-white border-2 border-primary/20 rounded-xl p-1.5 sm:p-2 hover:shadow-md hover:border-gray-300 transition-all ${
               hasDetailPage ? "cursor-pointer" : ""
             }`}
           >
             {person.image && (
-              <div className="flex-shrink-0 relative w-20 md:w-24 aspect-[3/4] overflow-hidden rounded-lg">
+              <div className="flex-shrink-0 relative w-24 md:w-32 aspect-[3/4] overflow-hidden rounded-lg">
                 <Image
                   src={person.image}
                   alt={person.name?.[locale] || ""}
@@ -32,7 +32,7 @@ const CardsGrid = ({ items, locale, fullPath }) => {
                 />
               </div>
             )}
-            <div className="flex-1 sm:p-0 p-1">
+            <div className="flex-1 p-2">
               <h3 className="font-medium sm:text-base text-sm md:text-lg text-primary mb-1">
                 {person.name?.[locale]}
               </h3>
