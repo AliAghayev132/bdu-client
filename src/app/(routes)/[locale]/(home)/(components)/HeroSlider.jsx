@@ -149,9 +149,9 @@ const HeroSlider = () => {
   
 
   return (
-    <section className="relative wrapper h-[65vh] lg:max-h-[700px] max-h-[260px] sm:max-h-[400px] pt-4 overflow-hidden">
+    <section className="relative wrapper h-[65vh] laptop:max-h-[700px] max-h-[260px] sm:max-h-[500px] pt-4 overflow-hidden">
       {/* Slides */}
-      <div className="relative h-full rounded-2xl overflow-hidden">
+      <div className="relative h-full rounded-3xl overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={slide.id}

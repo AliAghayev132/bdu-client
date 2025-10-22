@@ -13,10 +13,9 @@ module.exports = {
         container: '#49637B',
         'bg-light': '#EFF0F1',
       },
-      maxWidth: {
-        'container': '1500px',
-        'min-w-[1600px]': '1600px',
-      },
+          screens: {
+      'min-1600': '1600px',
+    },
       animation: {
         'background-shine': 'background-shine 2s linear infinite',
       },

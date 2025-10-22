@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Header from './Header';
+import Footer from './Footer';
 import MobileMenu from './MobileMenu';
 
 export default function UserLayout({ children }) {
@@ -52,7 +53,8 @@ export default function UserLayout({ children }) {
         isOpen={isMobileMenuOpen} 
         onClose={handleMenuClose} 
       />}
-      <main>{children}</main>
+      <main className="min-h-screen bg-white overflow-hidden">{children}</main>
+      <Footer />
     </>
   );
 }

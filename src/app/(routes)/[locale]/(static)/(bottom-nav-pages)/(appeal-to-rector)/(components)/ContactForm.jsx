@@ -154,7 +154,7 @@ const ContactForm = ({ locale, type = 'rector' }) => {
     <div className="bg-white">
       {/* Intro Text */}
       <div className="bg-bg-light p-4 sm:p-6 rounded-xl border-2 border-primary/20 mb-6 sm:mb-8">
-        <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+        <p className="text-gray-700 text-sm laptop:text-base leading-relaxed">
           {t.intro}
         </p>
       </div>
@@ -176,12 +176,12 @@ const ContactForm = ({ locale, type = 'rector' }) => {
       )}
       
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 laptop:space-y-6">
         {/* Name Row */}
         <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
           {/* First Name */}
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="firstName" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
               {t.firstName} <span className="text-red-500">*</span>
             </label>
             <input
@@ -202,7 +202,7 @@ const ContactForm = ({ locale, type = 'rector' }) => {
           
           {/* Last Name */}
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="lastName" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
               {t.lastName} <span className="text-red-500">*</span>
             </label>
             <input
@@ -224,7 +224,7 @@ const ContactForm = ({ locale, type = 'rector' }) => {
         
         {/* Faculty */}
         <div>
-          <label htmlFor="faculty" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="faculty" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
             {t.faculty}
           </label>
           <input
@@ -242,7 +242,7 @@ const ContactForm = ({ locale, type = 'rector' }) => {
         <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
               {t.email} <span className="text-red-500">*</span>
             </label>
             <input
@@ -263,7 +263,7 @@ const ContactForm = ({ locale, type = 'rector' }) => {
           
           {/* Phone */}
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="phone" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
               {t.phone}
             </label>
             <input
@@ -285,7 +285,7 @@ const ContactForm = ({ locale, type = 'rector' }) => {
         
         {/* Subject */}
         <div>
-          <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="subject" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
             {t.subject} <span className="text-red-500">*</span>
           </label>
           <input
@@ -306,7 +306,7 @@ const ContactForm = ({ locale, type = 'rector' }) => {
         
         {/* Message */}
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="message" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
             {t.message} <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -330,7 +330,7 @@ const ContactForm = ({ locale, type = 'rector' }) => {
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-3.5 bg-primary text-white font-medium text-sm sm:text-base hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-3.5 bg-primary text-white font-medium text-sm laptop:text-base hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
             {status === 'loading' ? (
               <>

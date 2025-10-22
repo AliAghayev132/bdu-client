@@ -80,7 +80,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
       <div className=" mx-auto">
         {/* Main Navigation - Top Nav */}
         <div 
-          className="bdu-nav-top wrapper flex items-center justify-between py-2"
+          className="bdu-nav-top wrapper flex items-center justify-between min-1600:py-2 py-1"
           style={{
             paddingLeft: "16px"
           }}
@@ -111,7 +111,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
           </Link> */}
 
           {/* Desktop Mega Menu */}
-          <div className="flex items-center space-x-1">
+          <div className="nav-top-links flex items-center space-x-1">
             {topMenuKeys.map((menuKey) => {
               const menuItem = menuData[menuKey];
               return (
@@ -121,7 +121,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                   onMouseEnter={() => handleMenuItemEnter(menuKey)}
                 >
                   <button
-                    className="px-4 py-4 text-sm font-medium hover:text-primary transition-colors uppercase"
+                    className="px-4 laptop:py-4 py-3 laptop:text-sm text-xs font-medium hover:text-primary transition-colors uppercase"
                   >
                     {getLabel(menuItem, locale)}
                   </button>
@@ -163,7 +163,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
             <div className="flex gap-2">
               <button
                 onClick={() => handleLanguageChange("az")}
-                className={`px-3 py-1 text-sm font-medium transition-colors ${
+                className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
                   locale === "az"
                     ? "bg-primary text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -173,7 +173,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
               </button>
               <button
                 onClick={() => handleLanguageChange("en")}
-                className={`px-3 py-1 text-sm font-medium transition-colors ${
+                className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
                   locale === "en"
                     ? "bg-primary text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -188,7 +188,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
             <Link
             key={item.id}
             href={typeof item.href === 'object' ? item.href[locale] : item.href}
-            className="text-[14px] hover:text-primary transition-colors"
+            className="laptop:text-[15px] text-[14px] hover:text-primary transition-colors"
             >
               {getLabel(item, locale)}
             </Link>

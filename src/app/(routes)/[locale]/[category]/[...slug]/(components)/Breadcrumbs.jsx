@@ -15,18 +15,18 @@ const Breadcrumbs = ({breadcrumbs}) => {
                   {/* First item (Home) is link, second item (Category) is text, last item is current page */}
                   {index === 1 ? (
                     <span
-                      className="md:text-base  sm:text-sm text-xs text-gray-600 hover:text-primary"
+                      className="laptop:text-base  sm:text-sm text-xs text-gray-600 hover:text-primary"
                     >
                       {crumb.label}
                     </span>
                   ) : index === breadcrumbs.length - 1 ? (
-                    <span className="md:text-base sm:text-sm text-xs text-gray-900 font-medium">
+                    <span className="laptop:text-base sm:text-sm text-xs text-gray-900 font-medium">
                       {crumb.label}
                     </span>
                   ) : (
                     <Link
                       href={crumb.href}
-                      className="md:text-base sm:text-sm text-xs text-gray-600 hover:text-primary"
+                      className="laptop:text-base sm:text-sm text-xs text-gray-600 hover:text-primary"
                     >
                       {crumb.label}
                     </Link>

@@ -29,6 +29,19 @@
       "subtitle": "Current announcements and notifications",
       "viewAll": "View all"
     },
+    "education": {
+      "title": "EDUCATION",
+      "viewAll": "View all",
+      "items": {
+        "faculties": "FACULTIES",
+        "bachelor": "BACHELOR",
+        "lyceum": "LYCEUM",
+        "master": "MASTER",
+        "college": "COLLEGE",
+        "phd": "PHD",
+        "branch": "BRANCH"
+      }
+    },
     "quickLinks": {
       "title": "Quick Links",
       "applicants": "For Applicants",

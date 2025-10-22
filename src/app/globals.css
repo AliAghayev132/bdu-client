@@ -8,6 +8,10 @@
   --container: #49637B;
   --bg-light: #EFF0F1;
 }
+@theme{
+    --breakpoint-lg: 1024px;
+  --breakpoint-laptop: 1620px;
+}
 
 @theme inline {
   --color-background: var(--background);

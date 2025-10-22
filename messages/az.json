@@ -29,6 +29,19 @@
       "subtitle": "Aktual elanlar və bildirişlər",
       "viewAll": "Hamısına bax"
     },
+    "education": {
+      "title": "TƏHSİL",
+      "viewAll": "Hamısı",
+      "items": {
+        "faculties": "FAKÜLTƏLƏR",
+        "bachelor": "BAKALAVRİAT",
+        "lyceum": "LİSEY",
+        "master": "MAGİSTRATURA",
+        "college": "KOLLEC",
+        "phd": "DOKTORANTURA",
+        "branch": "FİLİAL"
+      }
+    },
     "quickLinks": {
       "title": "Faydalı Linklər",
       "applicants": "Abituriyentlər üçün",

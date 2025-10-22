@@ -1,6 +1,7 @@
 import BlogSection from './(components)/BlogSection/BlogSection';
 import HeroSlider from './(components)/HeroSlider';
 import NewsSection from './(components)/NewsSection';
+import EducationSection from './(components)/EducationSection';
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -29,6 +30,7 @@ export default function HomePage() {
     <div className='home overflow-hidden'>
       <HeroSlider />
       <NewsSection />
+      <EducationSection />
       <BlogSection/>
     </div>
   );

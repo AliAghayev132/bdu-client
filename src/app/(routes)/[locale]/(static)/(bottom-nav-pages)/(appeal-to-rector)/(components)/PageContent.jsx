@@ -61,7 +61,7 @@ export default function PageContent({ locale, slug }) {
         <div className="max-w-4xl mx-auto">
           {/* Page Header */}
           <header className="mb-8">
-            <h1 className="md:text-3xl sm:text-2xl text-xl font-bold text-primary tracking-wider uppercase mb-4">
+            <h1 className="laptop:text-3xl md:text-2xl text-xl font-bold text-primary tracking-wider uppercase mb-4">
               {content.title}
             </h1>
             {/* <p className="md:text-lg sm:text-base text-sm text-gray-600">

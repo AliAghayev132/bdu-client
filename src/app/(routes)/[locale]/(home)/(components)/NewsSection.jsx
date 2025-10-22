@@ -72,27 +72,27 @@ export default async function NewsSection() {
   const news = await getNews();
 
   return (
-    <section className="news-section sm:py-16 py-8 bg-white">
+    <section className="news-section lg:py-10 md:py-8 sm:py-6 py-4 bg-white">
       <div className="wrapper bg-white">
         <div className="grid xl:grid-cols-[1fr_320px] gap-4">
           {/* News Section - Left Side */}
-          <div className="bg-primary/5 xl:border-2 border-primary/20 sm:py-8 sm:px-8 px-4 py-6 rounded-xl overflow-hidden">
+          <div className="bg-primary/5 xl:border-2 border-primary/20 sm:py-8 sm:px-8 px-4 py-6 rounded-3xl overflow-hidden">
             {/* Section Header */}
             <div className="flex items-center justify-between mb-8">
-              <h2 className="md:text-3xl sm:text-2xl text-lg font-bold text-secondary">
+              <h2 className="md:text-2xl sm:text-xl text-lg font-bold text-secondary">
                 {t("news.title", { default: "XƏBƏRLƏR" })}
               </h2>
-              <Link
+              {/* <Link
                 href="/news"
                 className="group md:flex hidden items-center gap-2 px-5 py-2.5 bg-secondary/10 text-secondary rounded-lg hover:bg-secondary hover:text-white transition-all duration-300 text-sm font-medium"
               >
                 <span>{t("news.viewAll", { default: "BÜTÜN XƏBƏRLƏR" })}</span>
               <ChevronRight className="w-4 h-4"/>
-              </Link>
+              </Link> */}
             </div>
 
             {/* News Grid - Desktop: 3 columns, Mobile: Horizontal Scroll */}
-            <div className="hidden lg:grid lg:grid-cols-2 2xl:grid-cols-3 gap-3">
+            <div className="hidden lg:grid lg:grid-cols-3 gap-3">
               {news.slice(0, 6).map((item) => (
                 <NewsCard key={item.id} news={item} />
               ))}
@@ -126,7 +126,7 @@ export default async function NewsSection() {
         </div>
 
         {/* Mobile Announcements - Horizontal Scroll */}
-        <div className="xl:hidden bg-primary/5 sm:py-8 sm:px-8 py-6 px-4 rounded-xl sm:mt-12 mt-6 overflow-hidden">
+        <div className="xl:hidden bg-primary/5 sm:py-8 sm:px-8 py-6 px-4 rounded-3xl sm:mt-12 mt-6 overflow-hidden">
           <div className="flex items-center justify-between mb-6">
             <h2 className="md:text-3xl sm:text-2xl text-lg font-bold text-secondary">
               {t("announcements.title", { default: "ELANLAR" })}

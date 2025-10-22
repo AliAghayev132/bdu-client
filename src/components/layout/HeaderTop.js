@@ -12,7 +12,7 @@ export default function HeaderTop({ onMenuToggle }) {
 
   return (
     <div className=" bg-white border-b border-secondary/10">
-      <div className="max-w-[1600px] mx-auto px-4 py-2.5">
+      <div className="max-w-[1600px] mx-auto px-4 min-w-1600:py-2.5 py-2">
         {/* Mobile View */}
         <div className="flex lg:hidden py-2 items-center justify-between">
           <div className="flex items-center sm:gap-3 gap-1.5">
@@ -57,20 +57,22 @@ export default function HeaderTop({ onMenuToggle }) {
         <div className="hidden lg:flex items-center justify-between relative">
           {/* Left - University Logo and Name */}
           <div className="flex items-center gap-4">
+            <div className="laptop:w-20 w-18 overflow-hidden">
             <Link href="/">
               <Image
                 src="/bsu-logo.png"
                 alt="BDU Logo"
                 width={80}
                 height={80}
-                className="object-contain"
-              />
+                className="object-contain w-full h-full"
+                />
             </Link>
+                </div>
             <div>
-              <p className="text-xs text-gray-600 uppercase tracking-wide">
+              <p className="laptop:text-xs text-[10px] text-gray-600 uppercase tracking-wide">
                 {t("subtitle")}
               </p>
-              <h1 className="text-xl font-bold text-secondary">
+              <h1 className="laptop:text-xl text-lg font-bold text-secondary">
                 {t("university")}
               </h1>
             </div>
@@ -91,17 +93,19 @@ export default function HeaderTop({ onMenuToggle }) {
 
           {/* Right - Rector Info and Language Switcher */}
           <div className="flex items-center gap-6">
-            <p className="text-xs max-w-[270px] font-medium text-right text-primary ">
+            <p className="laptop:text-xs text-[10px] max-w-[270px] font-medium text-right text-primary ">
               Bakı Dövlət Universiteti Azərbaycan xalqının Azərbaycan Respublikasının milli sərvətidir, milli iftixarıdır.
 
             </p>
+            <div className="laptop:w-20 w-18 overflow-hidden">
          <Image
          src={aliyev}
          alt="Heydar Aliyev"
          width={80}
          height={80}
-         className="object-contain"
+         className="object-contain w-full h-full"
          />
+         </div>
 
      
           </div>
