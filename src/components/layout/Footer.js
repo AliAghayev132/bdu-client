@@ -1,32 +1,51 @@
-export default function Footer() {
- 
+ import Image from "next/image";
+ import { Link } from "@/i18n/routing";
+
+ export default function Footer() {
+  
   return (
-    <footer className="mx-auto wrapper mb-6 mt-6">
-      <div  className="py-12 wrapper rounded-4xl bg-secondary border-t border-secondary/10 text-white">
-        <div className="grid md:grid-cols-4 gap-8 items-start">
+    <footer className="mx-auto wrapper sm:mb-6 mb-3 mt-6">
+      <div  className="sm:py-12 py-6 wrapper rounded-4xl bg-secondary border-t border-secondary/10 text-white">
+        {/* Branding Row */}
+        <div className="flex items-center justify-between relative sm:px-2 sm:mb-10 mb-6">
+          <div className="flex items-center sm:gap-4 gap-2">
+            <div className="w-16 h-16 overflow-hidden">
+              <Link href="/">
+                <Image src="/bsu-logo.png" alt="BDU Logo" width={64} height={64} className="object-contain w-full h-full" />
+              </Link>
+            </div>
+            <div>
+              <p className="sm:text-xs text-[10px] text-white/80 uppercase tracking-wide">Baku State University</p>
+              <h2 className="sm:text-xl text-base font-bold text-white">Bakı Dövlət Universiteti</h2>
+            </div>
+          </div>
+       
+        </div>
+
+        <div className="grid md:grid-cols-4 gap-8 items-start px-2">
           <div className="md:col-span-2">
-            <h3 className="text-white font-semibold mb-2">Ünvan</h3>
-            <p className="text-white text-sm">
+            <h3 className="text-white font-semibold mb-2 sm:text-base text-sm">Ünvan</h3>
+            <p className="text-white sm:text-sm text-xs">
               Bakı şəhəri, akademik Zahid Xəlilov küçəsi 33, AZ 1148
             </p>
-            <p className="text-white text-sm mt-4">
+            <p className="text-white sm:text-sm text-xs mt-4">
               Bütün hüquqlar qorunur. Hər hansı bir lisenziyalı materialdan istifadə etmək üçün əlaqə saxlayın.
             </p>
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-white font-semibold mb-2">Əlaqə</h3>
-            <p className="text-white text-sm">
+            <h3 className="text-white font-semibold mb-2 sm:text-base text-sm">Əlaqə</h3>
+            <p className="text-white sm:text-sm text-xs">
               Tel.: <a className="hover:text-primary" href="tel:+994124303245">(+994 12) 430-32-45</a>
             </p>
-            <p className="text-white text-sm">
+            <p className="text-white sm:text-sm text-xs">
               <a className="hover:text-primary" href="mailto:info@bsu.edu.az">info@bsu.edu.az</a>
             </p>
           </div>
 
           <div>
-            <h3 className="text-white font-semibold mb-2">Faydalı keçidlər</h3>
-            <ul className="space-y-2 text-sm">
+            <h3 className="text-white font-semibold mb-2 sm:text-base text-sm">Faydalı keçidlər</h3>
+            <ul className="space-y-2 sm:text-sm text-xs">
               <li><a href="#" className="text-white/90 hover:text-white transition-colors">Ana səhifə</a></li>
               <li><a href="#" className="text-white/90 hover:text-white transition-colors">Xəbərlər</a></li>
               <li><a href="#" className="text-white/90 hover:text-white transition-colors">Elanlar</a></li>
@@ -35,7 +54,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-white font-semibold mb-2">Sosial şəbəkələr</h3>
+            <h3 className="text-white font-semibold mb-2 sm:text-base text-sm">Sosial şəbəkələr</h3>
             <div className="flex items-center gap-3">
               <a href="#" aria-label="Facebook" className="group inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white/90 group-hover:text-white"><path d="M22 12a10 10 0 1 0-11.6 9.87v-6.99H7.9V12h2.5V9.8c0-2.46 1.47-3.82 3.72-3.82 1.08 0 2.21.19 2.21.19v2.43h-1.25c-1.23 0-1.62.77-1.62 1.56V12h2.76l-.44 2.88h-2.32v6.99A10 10 0 0 0 22 12Z"/></svg>
@@ -53,7 +72,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-secondary/10 mt-8 pt-6 text-white text-sm">
+        <div className="border-t border-secondary/10 mt-8 pt-6 text-white sm:text-sm text-xs">
           <p>© BDU, Bakı - 2025</p>
         </div>
       </div>

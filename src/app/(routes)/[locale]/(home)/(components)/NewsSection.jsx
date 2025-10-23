@@ -128,10 +128,10 @@ export default async function NewsSection() {
         {/* Mobile Announcements - Horizontal Scroll */}
         <div className="xl:hidden bg-primary/5 sm:py-8 sm:px-8 py-6 px-4 rounded-3xl sm:mt-12 mt-6 overflow-hidden">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="md:text-3xl sm:text-2xl text-lg font-bold text-secondary">
+            <h2 className="md:text-2xl sm:text-xl text-lg font-bold text-secondary">
               {t("announcements.title", { default: "ELANLAR" })}
             </h2>
-            <Link
+            {/* <Link
               href="/announcements"
               className="group md:flex hidden items-center gap-2 px-5 py-2.5 bg-[#B8956A]/5 text-[#B8956A] rounded-lg hover:bg-[#B8956A] hover:text-white transition-all duration-300 text-sm font-medium"
             >
@@ -139,7 +139,7 @@ export default async function NewsSection() {
                 {t("announcements.viewAll", { default: "BÜTÜN ELANLAR" })}
               </span>
               <ChevronRight className="w-4 h-4"/>
-            </Link>
+            </Link> */}
           </div>
           <div className="-mx-8">
             <div

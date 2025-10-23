@@ -5,6 +5,7 @@ import { Link } from "@/i18n/routing";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import bdu1 from '@/assets/images/baki-dovlet-universiteti.jpg';
+import bdu2 from '@/assets/images/hero1.jpg';
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 
@@ -37,7 +38,7 @@ const HeroSlider = () => {
     {
       id: 2,
       type: 'image',
-      image: bdu1,
+      image: bdu2,
       alt: "BDU Campus",
       year: "2025",
       title: {
