@@ -88,7 +88,7 @@ export default function Header({ onMenuToggle }) {
       </div>
 
       {/* Spacer - HeaderTop üçün yer saxlayır */}
-      <div className="h-[82px] lg:h-[94px] laptop:h-[103px]" />
+      <div className="h-[72px] lg:h-[94px] laptop:h-[103px]" />
 
       {/* Navbar - Sticky */}
       <div 

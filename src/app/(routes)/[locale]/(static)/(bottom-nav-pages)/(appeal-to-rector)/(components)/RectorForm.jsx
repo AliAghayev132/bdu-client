@@ -151,10 +151,10 @@ const RectorForm = ({ locale, type = 'rector' }) => {
   };
   
   return (
-    <div className="bg-white">
+    <div className="bg-white max-w-4xl mx-auto">
       {/* Intro Text */}
       <div className="bg-bg-light p-4 sm:p-6 rounded-xl border-2 border-primary/20 mb-6 sm:mb-8">
-        <p className="text-gray-700 text-xs sm:text-sm laptop:text-base leading-relaxed">
+        <p className="text-gray-700 text-[10px] sm:text-xs laptop:text-sm leading-relaxed">
           {t.intro}
         </p>
       </div>
@@ -176,12 +176,12 @@ const RectorForm = ({ locale, type = 'rector' }) => {
       )}
       
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4 laptop:space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-3 laptop:space-y-4">
         {/* Name Row */}
-        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
           {/* First Name */}
           <div>
-            <label htmlFor="firstName" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
+            <label htmlFor="firstName" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-1">
               {t.firstName} <span className="text-red-500">*</span>
             </label>
             <input
@@ -202,7 +202,7 @@ const RectorForm = ({ locale, type = 'rector' }) => {
           
           {/* Last Name */}
           <div>
-            <label htmlFor="lastName" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
+            <label htmlFor="lastName" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-1">
               {t.lastName} <span className="text-red-500">*</span>
             </label>
             <input
@@ -224,7 +224,7 @@ const RectorForm = ({ locale, type = 'rector' }) => {
         
         {/* Faculty */}
         <div>
-          <label htmlFor="faculty" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
+          <label htmlFor="faculty" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-1">
             {t.faculty}
           </label>
           <input
@@ -239,10 +239,10 @@ const RectorForm = ({ locale, type = 'rector' }) => {
         </div>
         
         {/* Contact Row */}
-        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-1">
               {t.email} <span className="text-red-500">*</span>
             </label>
             <input
@@ -263,7 +263,7 @@ const RectorForm = ({ locale, type = 'rector' }) => {
           
           {/* Phone */}
           <div>
-            <label htmlFor="phone" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
+            <label htmlFor="phone" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-1">
               {t.phone}
             </label>
             <input
@@ -285,7 +285,7 @@ const RectorForm = ({ locale, type = 'rector' }) => {
         
         {/* Subject */}
         <div>
-          <label htmlFor="subject" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
+          <label htmlFor="subject" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-1">
             {t.subject} <span className="text-red-500">*</span>
           </label>
           <input
@@ -306,7 +306,7 @@ const RectorForm = ({ locale, type = 'rector' }) => {
         
         {/* Message */}
         <div>
-          <label htmlFor="message" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
+          <label htmlFor="message" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-1">
             {t.message} <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -330,7 +330,7 @@ const RectorForm = ({ locale, type = 'rector' }) => {
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-3.5 bg-primary text-white font-medium text-sm laptop:text-base hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+            className="w-full rounded-lg sm:w-auto px-6 sm:px-12 py-3 sm:py-3.5 bg-primary text-white font-medium text-sm laptop:text-base hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
             {status === 'loading' ? (
               <>

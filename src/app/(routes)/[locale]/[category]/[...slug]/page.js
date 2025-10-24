@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { buildBreadcrumbs, getPageDataFromMenu } from "@/data/menuData";
 import Breadcrumbs from "./(components)/Breadcrumbs";
 import NotFound from "./(components)/NotFound";

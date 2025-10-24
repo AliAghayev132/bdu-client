@@ -237,7 +237,7 @@ export default function MegaMenu({
   return (
     <div
       ref={menuRef}
-      className="bdu-mega-menu max-w-[1620px] mx-auto fixed left-0 right-0 z-40  laptop:px-8 md:px-6 sm:px-4"
+      className="bdu-mega-menu max-w-[1620px] mx-auto fixed left-0 right-0 z-60  laptop:px-8 md:px-6 sm:px-4"
       style={{
         display: "none",
         opacity: 0,
@@ -308,6 +308,7 @@ export default function MegaMenu({
                                     </div>
                                   )}
                                 </div>
+
                                 {navItem.subitems && (
                                   <svg
                                     className="w-4 h-4 text-gray-400 group-hover:text-primary transition-all"
@@ -323,6 +324,7 @@ export default function MegaMenu({
                                     />
                                   </svg>
                                 )}
+                                
                               </Link>
                             </div>
                           </li>

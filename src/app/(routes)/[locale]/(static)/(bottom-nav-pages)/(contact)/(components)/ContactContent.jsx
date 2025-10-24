@@ -27,7 +27,7 @@ const CONTENT = {
   },
 };
 
-export default function ContactContent({ locale, slug }) {
+export default function ContactContent({ locale }) {
   const content = CONTENT[locale];
 
   if (!content) return null;
@@ -59,7 +59,7 @@ export default function ContactContent({ locale, slug }) {
         </header>
 
         {/* Top section: Map + Form */}
-        <div className="grid lg:grid-cols-2 grid-cols-1  gap-6 items-start h-full">
+        <main className="grid lg:grid-cols-2 grid-cols-1  gap-6 items-start h-full">
           {/* Map */}
           <div className="lg:order-0 order-1">
             <div className="w-full h-[260px] sm:h-[320px] md:h-[380px] rounded-md overflow-hidden border border-gray-200">
@@ -124,7 +124,7 @@ export default function ContactContent({ locale, slug }) {
             </h2>
             <ContactForm locale={locale} type="contact" />
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

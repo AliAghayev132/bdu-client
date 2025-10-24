@@ -4,7 +4,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import MegaMenu from './MegaMenu';
-import { menuData, bottomNavItems, getLabel } from '@/data/menuData';
+import { menuData, bottomNavItems, getLabel, resolveLocalizedPath } from '@/data/menuData';
 import { translateUrl } from "@/utils/urlTranslator";
 import { useGSAP } from '@gsap/react';
 
@@ -13,14 +13,17 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   const locale = useLocale();
   const [activeMenu, setActiveMenu] = useState(null);
   const closeTimeoutRef = useRef(null);
+  const topNavRef = useRef(null);
+  const [topNavBottom, setTopNavBottom] = useState(null);
 
   const router = useRouter();
   const pathname = usePathname();
 
   const handleLanguageChange = useCallback((newLocale) => {
-    // Translate URL to target locale
-    const translatedPath = translateUrl(pathname, newLocale);
-    router.replace(translatedPath, { locale: newLocale });
+    // Prefer explicit mapping from menuData/bottomNavItems
+    const resolved = resolveLocalizedPath(pathname, newLocale);
+    const targetPath = resolved || translateUrl(pathname, newLocale);
+    router.replace(targetPath, { locale: newLocale });
   }, [pathname, router]);
 
   const topMenuKeys = ['university', 'education', 'science', 'social', 'cooperation'];
@@ -71,6 +74,22 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
     };
   }, []);
 
+  useEffect(() => {
+    const handleMeasure = () => {
+      if (topNavRef.current) {
+        const rect = topNavRef.current.getBoundingClientRect();
+        setTopNavBottom(rect.bottom);
+      }
+    };
+    handleMeasure();
+    window.addEventListener('scroll', handleMeasure);
+    window.addEventListener('resize', handleMeasure);
+    return () => {
+      window.removeEventListener('scroll', handleMeasure);
+      window.removeEventListener('resize', handleMeasure);
+    };
+  }, []);
+
   return (
     <nav 
       className="bdu-nav text-secondary hidden lg:block relative z-50"
@@ -80,6 +99,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
       <div className=" mx-auto">
         {/* Main Navigation - Top Nav */}
         <div 
+          ref={topNavRef}
           className="bdu-nav-top wrapper flex items-center justify-between min-1600:py-2 py-1"
           style={{
             paddingLeft: "16px"
@@ -99,7 +119,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
             }
             closeTimeoutRef.current = setTimeout(() => {
               setActiveMenu(null);
-            }, 500);
+            }, 150);
           }}
         >
           {/* e-BDU Button */}
@@ -149,7 +169,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
           isOpen={activeMenu !== null}
           onClose={handleCloseMenu}
           onMouseEnterFromNav={handleNavbarEnter}
-          navbarTop={navbarTop}
+          navbarTop={topNavBottom ?? navbarTop}
         />
 
         {/* Bottom Navigation */}

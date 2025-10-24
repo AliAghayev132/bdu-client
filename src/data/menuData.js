@@ -549,7 +549,7 @@ export const bottomNavItems = [
   {
     id: "students",
     label: { az: "Tələbələr üçün", en: "For Students" },
-    href: { az: "/telebeler", en: "/students" },
+    href: { az: "/telebeler-ucun", en: "/for-students" },
   },
   {
     id: "employees",
@@ -617,6 +617,53 @@ const findMenuItem = (items, href, locale) => {
       if (found) return found;
     }
   }
+  return null;
+};
+
+/**
+ * Resolve counterpart localized path using menuData and bottomNavItems
+ * Example: '/telebeler-ucun' + 'en' => '/en/for-students'
+ * Falls back to null if not found.
+ */
+export const resolveLocalizedPath = (currentPath, targetLocale) => {
+  const pairs = [];
+
+  const pushPair = (hrefObj) => {
+    if (!hrefObj || typeof hrefObj !== "object") return;
+    const az = hrefObj.az;
+    const en = hrefObj.en;
+    if (az || en) pairs.push({ az, en });
+  };
+
+  const walkItems = (items) => {
+    if (!Array.isArray(items)) return;
+    for (const item of items) {
+      if (item?.href) pushPair(item.href);
+      if (item?.subitems) walkItems(item.subitems);
+      if (item?.items) walkItems(item.items);
+    }
+  };
+
+  for (const key in menuData) {
+    const category = menuData[key];
+    if (!category?.columns) continue;
+    for (const col of category.columns) {
+      if (col?.items) walkItems(col.items);
+    }
+  }
+
+  for (const bn of bottomNavItems) {
+    if (bn?.href) pushPair(bn.href);
+  }
+
+  // Try to find a pair that matches currentPath exactly
+  for (const p of pairs) {
+    if (p.az === currentPath || p.en === currentPath) {
+      return targetLocale === "az" ? p.az : p.en;
+    }
+  }
+
+  // No exact match
   return null;
 };
 
