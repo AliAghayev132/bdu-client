@@ -1,45 +1,69 @@
-'use client';
+"use client";
 
-import { useTranslations, useLocale } from 'next-intl';
-import { Link, usePathname, useRouter } from '@/i18n/routing';
-import { useState, useEffect, useRef, useCallback } from 'react';
-import MegaMenu from './MegaMenu';
-import { menuData, bottomNavItems, getLabel, resolveLocalizedPath } from '@/data/menuData';
+import { useTranslations, useLocale } from "next-intl";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
+import MegaMenu from "./MegaMenu";
+import {
+  menuData,
+  bottomNavItems,
+  getLabel,
+  resolveLocalizedPath,
+} from "@/data/menuData";
 import { translateUrl } from "@/utils/urlTranslator";
-import { useGSAP } from '@gsap/react';
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
-  const t = useTranslations('nav');
+  const t = useTranslations("nav");
   const locale = useLocale();
   const [activeMenu, setActiveMenu] = useState(null);
   const closeTimeoutRef = useRef(null);
+  const navRef = useRef(null);
   const topNavRef = useRef(null);
+  const bottomNavRef = useRef(null);
+  const stickyLogoRef = useRef(null);
   const [topNavBottom, setTopNavBottom] = useState(null);
+  const [showStickyLogo, setShowStickyLogo] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleLanguageChange = useCallback((newLocale) => {
-    // Prefer explicit mapping from menuData/bottomNavItems
-    const resolved = resolveLocalizedPath(pathname, newLocale);
-    const targetPath = resolved || translateUrl(pathname, newLocale);
-    router.replace(targetPath, { locale: newLocale });
-  }, [pathname, router]);
+  const handleLanguageChange = useCallback(
+    (newLocale) => {
+      // Prefer explicit mapping from menuData/bottomNavItems
+      const resolved = resolveLocalizedPath(pathname, newLocale);
+      const targetPath = resolved || translateUrl(pathname, newLocale);
+      router.replace(targetPath, { locale: newLocale });
+    },
+    [pathname, router]
+  );
 
-  const topMenuKeys = ['university', 'education', 'science', 'social', 'cooperation'];
+  const topMenuKeys = [
+    "university",
+    "education",
+    "science",
+    "social",
+    "cooperation",
+  ];
 
   const handleNavbarLeave = useCallback((e) => {
     // Clear any existing timeout first
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
     }
-    
+
     // Əgər mega menu-ya gedirsə, bağlama
     const relatedTarget = e.relatedTarget;
-    if (relatedTarget && relatedTarget instanceof Element && relatedTarget.closest('.bdu-mega-menu')) {
+    if (
+      relatedTarget &&
+      relatedTarget instanceof Element &&
+      relatedTarget.closest(".bdu-mega-menu")
+    ) {
       return;
     }
-    
+
     // Navbar-dan tamamilə çıxanda mega menu-nu bağla
     closeTimeoutRef.current = setTimeout(() => {
       setActiveMenu(null);
@@ -80,40 +104,67 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
         const rect = topNavRef.current.getBoundingClientRect();
         setTopNavBottom(rect.bottom);
       }
+      if (navRef.current) {
+        const atTop = navRef.current.getBoundingClientRect().top <= 0;
+        const isDesktop =
+          typeof window !== "undefined" &&
+          window.matchMedia &&
+          window.matchMedia("(min-width: 1024px)").matches;
+        setShowStickyLogo(atTop && isDesktop);
+      }
     };
     handleMeasure();
-    window.addEventListener('scroll', handleMeasure);
-    window.addEventListener('resize', handleMeasure);
+    window.addEventListener("scroll", handleMeasure);
+    window.addEventListener("resize", handleMeasure);
     return () => {
-      window.removeEventListener('scroll', handleMeasure);
-      window.removeEventListener('resize', handleMeasure);
+      window.removeEventListener("scroll", handleMeasure);
+      window.removeEventListener("resize", handleMeasure);
     };
   }, []);
 
+  useEffect(() => {
+    if (!stickyLogoRef.current) return;
+    if (showStickyLogo) {
+      gsap.to(stickyLogoRef.current, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        delay: 0.2,
+        ease: "power3.out",
+        pointerEvents: "none",
+      });
+    } else {
+      gsap.to(stickyLogoRef.current, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.2,
+        ease: "power2.in",
+      });
+    }
+  }, [showStickyLogo]);
+
   return (
-    <nav 
+    <nav
+      ref={navRef}
       className="bdu-nav text-secondary hidden lg:block relative z-50"
       onMouseEnter={handleNavbarEnter}
       onMouseLeave={handleNavbarLeave}
     >
-      <div className=" mx-auto">
+      <div className="relative mx-auto">
         {/* Main Navigation - Top Nav */}
-        <div 
+        <div
           ref={topNavRef}
-          className="bdu-nav-top wrapper flex items-center justify-between min-1600:py-2 py-1"
+          className="bdu-nav-top wrapper relative flex items-center justify-between min-1600:py-2 py-1 transition-all duration-400"
           style={{
-            paddingLeft: "16px"
+            paddingLeft: showStickyLogo ? "130px" : "16px",
           }}
           onMouseLeave={(e) => {
-            // Top nav-dan çıxanda mega menu-nu bağla
             const relatedTarget = e.relatedTarget;
             if (relatedTarget && relatedTarget instanceof Element) {
-              // Əgər mega menu-ya gedirsə, bağlama
-              if (relatedTarget.closest('.bdu-mega-menu')) {
+              if (relatedTarget.closest(".bdu-mega-menu")) {
                 return;
               }
             }
-            // Digər hallarda bağla
             if (closeTimeoutRef.current) {
               clearTimeout(closeTimeoutRef.current);
             }
@@ -122,6 +173,21 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
             }, 150);
           }}
         >
+          <div
+            ref={stickyLogoRef}
+            className="absolute left-10 top-full -translate-y-1/2 opacity-0 scale-90"
+            style={{ pointerEvents: "none" }}
+          >
+            <Link href="/">
+              <Image
+                src="/bsu-logo.png"
+                alt="BDU Logo"
+                width={80}
+                height={80}
+                className="object-contain"
+              />
+            </Link>
+          </div>
           {/* e-BDU Button */}
           {/* <Link
             href="/e-bdu"
@@ -131,23 +197,46 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
           </Link> */}
 
           {/* Desktop Mega Menu */}
-          <div className="nav-top-links flex items-center space-x-1">
-            {topMenuKeys.map((menuKey) => {
-              const menuItem = menuData[menuKey];
-              return (
-                <div
-                  key={menuKey}
-                  className="relative"
-                  onMouseEnter={() => handleMenuItemEnter(menuKey)}
-                >
-                  <button
-                    className="px-4 laptop:py-4 py-3 laptop:text-sm text-xs font-medium hover:text-primary transition-colors uppercase"
+          <div className="nav-top-links w-full flex items-center justify-between space-x-1">
+            <div className="flex items-center gap-1">
+              {topMenuKeys.map((menuKey) => {
+                const menuItem = menuData[menuKey];
+                return (
+                  <div
+                    key={menuKey}
+                    className="relative"
+                    onMouseEnter={() => handleMenuItemEnter(menuKey)}
                   >
-                    {getLabel(menuItem, locale)}
-                  </button>
-                </div>
-              );
-            })}
+                    <button className="px-4 laptop:py-4 py-3 laptop:text-sm text-xs font-medium hover:text-primary transition-colors uppercase">
+                      {getLabel(menuItem, locale)}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            {/* Language Switcher */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleLanguageChange("az")}
+                className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
+                  locale === "az"
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                AZ
+              </button>
+              <button
+                onClick={() => handleLanguageChange("en")}
+                className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
+                  locale === "en"
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                EN
+              </button>
+            </div>
           </div>
 
           {/* Search */}
@@ -173,46 +262,30 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
         />
 
         {/* Bottom Navigation */}
-        <div className='w-full border-t border-secondary/10'></div>
-        <div 
-          className="bdu-nav-bottom px-4 wrapper flex items-center justify-between space-x-6 py-4 "
+        <div className="w-full border-t border-secondary/10"></div>
+        <div
+          ref={bottomNavRef}
+              style={{
+            paddingLeft: showStickyLogo ? "146px" : "32px",
+          }}
+          className="bdu-nav-bottom  wrapper flex items-center justify-between space-x-6 py-4 transition-all duration-400"
         >
-                {/* Right - Rector Info and Language Switcher */}
-          <div className="flex items-center gap-6">
-            {/* Language Switcher */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleLanguageChange("az")}
-                className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
-                  locale === "az"
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-                >
-                AZ
-              </button>
-              <button
-                onClick={() => handleLanguageChange("en")}
-                className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
-                  locale === "en"
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-                >
-                EN
-              </button>
-            </div>
-          </div>
-                <div className='flex items-center gap-6'>
-          {bottomNavItems.map((item) => (
-            <Link
-            key={item.id}
-            href={typeof item.href === 'object' ? item.href[locale] : item.href}
-            className="laptop:text-[15px] text-[14px] hover:text-primary transition-colors"
-            >
-              {getLabel(item, locale)}
-            </Link>
-          ))}
+          <button className="px-4 py-2 bg-white rounded border border-secondary hover:bg-secondary/80 hover:text-white text-sm font-medium transition-colors">
+            e-BDU
+          </button>
+          {/* Right - Rector Info and Language Switcher */}
+          <div className="flex items-center  gap-6">
+            {bottomNavItems.map((item) => (
+              <Link
+                key={item.id}
+                href={
+                  typeof item.href === "object" ? item.href[locale] : item.href
+                }
+                className="laptop:text-[15px] text-[14px] hover:text-primary transition-colors"
+              >
+                {getLabel(item, locale)}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

@@ -82,13 +82,13 @@ export default function Header({ onMenuToggle }) {
       {/* Header Top - Fixed position */}
       <div 
         ref={headerTopRef}
-        className="bdu-header fixed top-0 left-0 right-0 z-40"
+        className="bdu-header lg:static fixed top-0 left-0 right-0 z-40"
       >
         <HeaderTop onMenuToggle={onMenuToggle} />
       </div>
 
       {/* Spacer - HeaderTop üçün yer saxlayır */}
-      <div className="h-[72px] lg:h-[94px] laptop:h-[103px]" />
+      {/* <div className="h-[72px] lg:h-[94px] laptop:h-[103px]" /> */}
 
       {/* Navbar - Sticky */}
       <div 

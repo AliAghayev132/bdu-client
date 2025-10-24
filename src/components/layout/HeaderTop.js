@@ -18,8 +18,8 @@ export default function HeaderTop({ onMenuToggle }) {
             <Image
               src="/bsu-logo.png"
               alt="BDU Logo"
-              width={40}
-              height={40}
+              width={44}
+              height={44}
               className="object-contain"
               />
               </Link>
