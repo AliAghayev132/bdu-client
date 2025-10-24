@@ -154,7 +154,7 @@ const RectorForm = ({ locale, type = 'rector' }) => {
     <div className="bg-white max-w-4xl mx-auto">
       {/* Intro Text */}
       <div className="bg-bg-light p-4 sm:p-6 rounded-xl border-2 border-primary/20 mb-6 sm:mb-8">
-        <p className="text-gray-700 text-[10px] sm:text-xs laptop:text-sm leading-relaxed">
+        <p className="text-gray-700 text-xs laptop:text-sm leading-relaxed">
           {t.intro}
         </p>
       </div>

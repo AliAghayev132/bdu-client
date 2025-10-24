@@ -8,8 +8,6 @@ import aliyev from '@/assets/images/heydar-aliyev.png'
 export default function HeaderTop({ onMenuToggle }) {
   const t = useTranslations("header");
 
-
-
   return (
     <div className=" bg-white border-b border-secondary/10">
       <div className="max-w-[1600px] mx-auto px-4 min-w-1600:py-2.5 py-2">

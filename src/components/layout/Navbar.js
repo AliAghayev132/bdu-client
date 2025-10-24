@@ -1,15 +1,20 @@
-'use client';
+"use client";
 
-import { useTranslations, useLocale } from 'next-intl';
-import { Link, usePathname, useRouter } from '@/i18n/routing';
-import { useState, useEffect, useRef, useCallback } from 'react';
-import MegaMenu from './MegaMenu';
-import { menuData, bottomNavItems, getLabel, resolveLocalizedPath } from '@/data/menuData';
+import { useTranslations, useLocale } from "next-intl";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { useState, useEffect, useRef, useCallback } from "react";
+import MegaMenu from "./MegaMenu";
+import {
+  menuData,
+  bottomNavItems,
+  getLabel,
+  resolveLocalizedPath,
+} from "@/data/menuData";
 import { translateUrl } from "@/utils/urlTranslator";
-import { useGSAP } from '@gsap/react';
+import { useGSAP } from "@gsap/react";
 
 export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
-  const t = useTranslations('nav');
+  const t = useTranslations("nav");
   const locale = useLocale();
   const [activeMenu, setActiveMenu] = useState(null);
   const closeTimeoutRef = useRef(null);
@@ -19,27 +24,40 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleLanguageChange = useCallback((newLocale) => {
-    // Prefer explicit mapping from menuData/bottomNavItems
-    const resolved = resolveLocalizedPath(pathname, newLocale);
-    const targetPath = resolved || translateUrl(pathname, newLocale);
-    router.replace(targetPath, { locale: newLocale });
-  }, [pathname, router]);
+  const handleLanguageChange = useCallback(
+    (newLocale) => {
+      // Prefer explicit mapping from menuData/bottomNavItems
+      const resolved = resolveLocalizedPath(pathname, newLocale);
+      const targetPath = resolved || translateUrl(pathname, newLocale);
+      router.replace(targetPath, { locale: newLocale });
+    },
+    [pathname, router]
+  );
 
-  const topMenuKeys = ['university', 'education', 'science', 'social', 'cooperation'];
+  const topMenuKeys = [
+    "university",
+    "education",
+    "science",
+    "social",
+    "cooperation",
+  ];
 
   const handleNavbarLeave = useCallback((e) => {
     // Clear any existing timeout first
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
     }
-    
+
     // Əgər mega menu-ya gedirsə, bağlama
     const relatedTarget = e.relatedTarget;
-    if (relatedTarget && relatedTarget instanceof Element && relatedTarget.closest('.bdu-mega-menu')) {
+    if (
+      relatedTarget &&
+      relatedTarget instanceof Element &&
+      relatedTarget.closest(".bdu-mega-menu")
+    ) {
       return;
     }
-    
+
     // Navbar-dan tamamilə çıxanda mega menu-nu bağla
     closeTimeoutRef.current = setTimeout(() => {
       setActiveMenu(null);
@@ -82,45 +100,26 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
       }
     };
     handleMeasure();
-    window.addEventListener('scroll', handleMeasure);
-    window.addEventListener('resize', handleMeasure);
+    window.addEventListener("scroll", handleMeasure);
+    window.addEventListener("resize", handleMeasure);
     return () => {
-      window.removeEventListener('scroll', handleMeasure);
-      window.removeEventListener('resize', handleMeasure);
+      window.removeEventListener("scroll", handleMeasure);
+      window.removeEventListener("resize", handleMeasure);
     };
   }, []);
 
   return (
-    <nav 
-      className="bdu-nav text-secondary hidden lg:block relative z-50"
-      onMouseEnter={handleNavbarEnter}
-      onMouseLeave={handleNavbarLeave}
-    >
+    <nav className="bdu-nav text-secondary hidden lg:block relative z-50">
       <div className=" mx-auto">
         {/* Main Navigation - Top Nav */}
-        <div 
+        <div
           ref={topNavRef}
           className="bdu-nav-top wrapper flex items-center justify-between min-1600:py-2 py-1"
           style={{
-            paddingLeft: "16px"
+            paddingLeft: "16px",
           }}
-          onMouseLeave={(e) => {
-            // Top nav-dan çıxanda mega menu-nu bağla
-            const relatedTarget = e.relatedTarget;
-            if (relatedTarget && relatedTarget instanceof Element) {
-              // Əgər mega menu-ya gedirsə, bağlama
-              if (relatedTarget.closest('.bdu-mega-menu')) {
-                return;
-              }
-            }
-            // Digər hallarda bağla
-            if (closeTimeoutRef.current) {
-              clearTimeout(closeTimeoutRef.current);
-            }
-            closeTimeoutRef.current = setTimeout(() => {
-              setActiveMenu(null);
-            }, 150);
-          }}
+          onMouseEnter={handleNavbarEnter}
+          onMouseLeave={handleNavbarLeave}
         >
           {/* e-BDU Button */}
           {/* <Link
@@ -140,9 +139,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                   className="relative"
                   onMouseEnter={() => handleMenuItemEnter(menuKey)}
                 >
-                  <button
-                    className="px-4 laptop:py-4 py-3 laptop:text-sm text-xs font-medium hover:text-primary transition-colors uppercase"
-                  >
+                  <button className="px-4 laptop:py-4 py-3 laptop:text-sm text-xs font-medium hover:text-primary transition-colors uppercase">
                     {getLabel(menuItem, locale)}
                   </button>
                 </div>
@@ -173,11 +170,9 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
         />
 
         {/* Bottom Navigation */}
-        <div className='w-full border-t border-secondary/10'></div>
-        <div 
-          className="bdu-nav-bottom px-4 wrapper flex items-center justify-between space-x-6 py-4 "
-        >
-                {/* Right - Rector Info and Language Switcher */}
+        <div className="w-full border-t border-secondary/10"></div>
+        <div className="bdu-nav-bottom px-4 wrapper flex items-center justify-between space-x-6 py-4 ">
+          {/* Right - Rector Info and Language Switcher */}
           <div className="flex items-center gap-6">
             {/* Language Switcher */}
             <div className="flex gap-2">
@@ -188,7 +183,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                     ? "bg-primary text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
-                >
+              >
                 AZ
               </button>
               <button
@@ -198,21 +193,23 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                     ? "bg-primary text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
-                >
+              >
                 EN
               </button>
             </div>
           </div>
-                <div className='flex items-center gap-6'>
-          {bottomNavItems.map((item) => (
-            <Link
-            key={item.id}
-            href={typeof item.href === 'object' ? item.href[locale] : item.href}
-            className="laptop:text-[15px] text-[14px] hover:text-primary transition-colors"
-            >
-              {getLabel(item, locale)}
-            </Link>
-          ))}
+          <div className="flex items-center gap-6">
+            {bottomNavItems.map((item) => (
+              <Link
+                key={item.id}
+                href={
+                  typeof item.href === "object" ? item.href[locale] : item.href
+                }
+                className="laptop:text-[15px] text-[14px] hover:text-primary transition-colors"
+              >
+                {getLabel(item, locale)}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
