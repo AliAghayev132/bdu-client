@@ -5,9 +5,17 @@ import { Link } from "@/i18n/routing";
 import { gsap } from "gsap";
 import { getLabel } from "@/data/menuData";
 import { useGSAP } from "@gsap/react";
+import bakuPanorama from "@/assets/images/baku-panorama-blue.png";
+import Image from "next/image";
 
 // Rekursiv SubMenu Panel Component
-const SubMenuPanel = memo(function SubMenuPanel({ items, parentLabel, locale, onClose, level = 0 }) {
+const SubMenuPanel = memo(function SubMenuPanel({
+  items,
+  parentLabel,
+  locale,
+  onClose,
+  level = 0,
+}) {
   const [hoveredSubItem, setHoveredSubItem] = useState(null);
   const hoverTimeoutRef = useRef(null);
 
@@ -31,10 +39,10 @@ const SubMenuPanel = memo(function SubMenuPanel({ items, parentLabel, locale, on
   };
 
   useEffect(() => {
-  return () => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-  };
-}, []);
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
 
   return (
     <div className="flex flex-1">
@@ -64,23 +72,23 @@ const SubMenuPanel = memo(function SubMenuPanel({ items, parentLabel, locale, on
                       : "text-gray-700 hover:bg-white/50"
                   }`}
                 >
-                <span>{getLabel(subitem, locale)}</span>
-                {subitem.subitems && (
-                  <svg
-                    className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary transition-all"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                )}
-              </Link>
+                  <span>{getLabel(subitem, locale)}</span>
+                  {subitem.subitems && (
+                    <svg
+                      className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary transition-all"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  )}
+                </Link>
               </div>
             </li>
           ))}
@@ -122,6 +130,7 @@ export default function MegaMenu({
   const hoverTimeoutRef = useRef(null);
   const closeTimeoutRef = useRef(null);
   const leftSidebarRef = useRef(null);
+  const imageRef = useRef(null);
   const previousActiveMenu = useRef(null);
 
   const handleMenuEnter = useCallback(() => {
@@ -136,28 +145,31 @@ export default function MegaMenu({
     }
   }, [onMouseEnterFromNav]);
 
-  const handleMenuLeave = useCallback((e) => {
-    // Clear any existing timeout
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-    }
+  const handleMenuLeave = useCallback(
+    (e) => {
+      // Clear any existing timeout
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
 
-    // Əgər navbar-a qayıdırsa, bağlama (çünki başqa menu açılacaq)
-    const relatedTarget = e.relatedTarget;
-    if (
-      relatedTarget &&
-      relatedTarget instanceof Element &&
-      (relatedTarget.closest(".bdu-nav") ||
-        relatedTarget.closest(".bdu-navbar"))
-    ) {
-      return;
-    }
+      // Əgər navbar-a qayıdırsa, bağlama (çünki başqa menu açılacaq)
+      const relatedTarget = e.relatedTarget;
+      if (
+        relatedTarget &&
+        relatedTarget instanceof Element &&
+        (relatedTarget.closest(".bdu-nav") ||
+          relatedTarget.closest(".bdu-navbar"))
+      ) {
+        return;
+      }
 
-    // Tamamilə kənara çıxanda bağla
-    closeTimeoutRef.current = setTimeout(() => {
-      onClose();
-    }, 150);
-  }, [onClose]);
+      // Tamamilə kənara çıxanda bağla
+      closeTimeoutRef.current = setTimeout(() => {
+        onClose();
+      }, 150);
+    },
+    [onClose]
+  );
 
   // Handle hover with delay
   const handleItemEnter = useCallback((index) => {
@@ -200,6 +212,14 @@ export default function MegaMenu({
           duration: 0.3,
           ease: "power2.out",
         });
+
+          if (imageRef.current) {
+        gsap.fromTo(
+          imageRef.current,
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: 0.2 }
+        );
+      }
       } else {
         gsap.to(menuRef.current, {
           autoAlpha: 0,
@@ -256,10 +276,23 @@ export default function MegaMenu({
       {/* Decorative top border */}
       {/* <div className="h-1 bg-gradient-to-r from-primary via-secondary to-primary"></div> */}
 
-      <div className="max-w-[1600px] mx-auto border-2 border-primary/50 rounded-xl bg-bg-light overflow-x-auto custom-scrollbar">
+      <div className="relative max-w-[1600px] mx-auto border-2 border-primary/50 rounded-xl bg-bg-light overflow-x-auto custom-scrollbar">
+        <div className="w-xl overflow-hidden absolute bottom-0 right-5 z-10">
+          <Image
+            ref={imageRef}
+            src={bakuPanorama}
+            alt="BDU"
+            width={720}
+            height={125}
+            className="w-full h-full object-contain"
+          />
+        </div>
         <div className="max-w-[1540px] mx-auto flex min-w-max">
           {/* Left Sidebar - Sections with Titles */}
-          <div ref={leftSidebarRef} className="w-72 flex-shrink-0 bg-bg-light border-r border-gray-200 py-6 max-h-[600px] overflow-y-auto custom-scrollbar">
+          <div
+            ref={leftSidebarRef}
+            className="w-72 flex-shrink-0 bg-bg-light border-r border-gray-200 py-6 max-h-[600px] overflow-y-auto custom-scrollbar"
+          >
             <div className="space-y-3">
               {sections.map((section, sectionIndex) => {
                 // Calculate global index for each item
@@ -271,9 +304,11 @@ export default function MegaMenu({
                   <div key={sectionIndex} className="px-2">
                     {/* Section Title */}
                     <h3 className="laptop:text-sm text-xs font-semibold text-primary uppercase tracking-wider mb-2 px-4">
-                      {typeof section.title === 'object' ? section.title[locale] : section.title}
+                      {typeof section.title === "object"
+                        ? section.title[locale]
+                        : section.title}
                     </h3>
-                    
+
                     {/* Section Items */}
                     <ul className="space-y-0.5">
                       {section.items.map((navItem, itemIndex) => {
@@ -324,7 +359,6 @@ export default function MegaMenu({
                                     />
                                   </svg>
                                 )}
-                                
                               </Link>
                             </div>
                           </li>
@@ -347,18 +381,21 @@ export default function MegaMenu({
               allItems[parseInt(hoveredItem)]?.subitems && (
                 <SubMenuPanel
                   items={allItems[parseInt(hoveredItem)].subitems}
-                  parentLabel={getLabel(allItems[parseInt(hoveredItem)], locale)}
+                  parentLabel={getLabel(
+                    allItems[parseInt(hoveredItem)],
+                    locale
+                  )}
                   locale={locale}
                   onClose={onClose}
                 />
               )}
 
             {/* Empty state when no item is hovered */}
-            {hoveredItem === null && (
+            {/* {hoveredItem === null && (
               <div className="flex items-center justify-center h-full text-gray-400 w-full">
                 <p className="text-sm">Kateqoriyaya hover edin</p>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
