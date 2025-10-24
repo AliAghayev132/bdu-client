@@ -48,7 +48,7 @@ const SubMenuPanel = memo(function SubMenuPanel({
     <div className="flex flex-1">
       {/* Current Level - Subitems */}
       <div className="w-72 border-r border-gray-200 laptop:px-6 px-4">
-        <h3 className="laptop:text-sm text-xs font-semibold text-secondary mb-4 pb-2 border-b border-gray-200">
+        <h3 className="laptop:text-sm text-xs font-semibold text-secondary mb-2 pb-2 border-b border-gray-200">
           {parentLabel}
         </h3>
         <ul className="space-y-0.5">
