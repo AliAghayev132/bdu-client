@@ -216,8 +216,8 @@ function MobileMenu({ isOpen, onClose }) {
             onClick={() => handleLanguageChange("az")}
             className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${
               locale === "az"
-                ? "bg-white text-secondary shadow-sm"
-                : "bg-secondary/50 text-white hover:bg-secondary/70"
+                ? "bg-white text-secondary shadow-sm border-2 border-white/30"
+                : "bg-secondary/50 text-white hover:bg-secondary/70 border-2 border-white/30"
             }`}
           >
             AZ
@@ -226,8 +226,8 @@ function MobileMenu({ isOpen, onClose }) {
             onClick={() => handleLanguageChange("en")}
             className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${
               locale === "en"
-                ? "bg-white text-secondary shadow-sm"
-                : "bg-secondary/50 text-white hover:bg-secondary/70"
+                ? "bg-white text-secondary shadow-sm border-2 border-white/30"
+                : "bg-secondary/50 text-white hover:bg-secondary/70 border-2 border-white/30"
             }`}
           >
             EN
@@ -285,7 +285,7 @@ function MobileMenu({ isOpen, onClose }) {
         ))}
 
         {/* Bottom Navigation */}
-        <div className="border-t border-primary/20 mt-2">
+        <div className="border-t border-primary/20">
           {bottomNavItems.map((item) => {
             const itemHref =
               typeof item.href === "object" ? item.href[locale] : item.href;

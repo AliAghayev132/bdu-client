@@ -16,13 +16,15 @@ export default function HeaderTop({ onMenuToggle }) {
         {/* Mobile View */}
         <div className="flex lg:hidden py-2 items-center justify-between">
           <div className="flex items-center sm:gap-3 gap-1.5">
+            <Link href="/" className="block">
             <Image
               src="/bsu-logo.png"
               alt="BDU Logo"
               width={40}
               height={40}
               className="object-contain"
-            />
+              />
+              </Link>
             <div>
             <p className="sm:text-[8px] text-[6px] mb-[2px] text-gray-600 uppercase tracking-wide">
                 {t("subtitle")}
@@ -58,7 +60,7 @@ export default function HeaderTop({ onMenuToggle }) {
           {/* Left - University Logo and Name */}
           <div className="flex items-center gap-4">
             <div className="laptop:w-20 w-18 overflow-hidden">
-            <Link href="/">
+            <Link href="/" className="block">
               <Image
                 src="/bsu-logo.png"
                 alt="BDU Logo"
@@ -80,7 +82,7 @@ export default function HeaderTop({ onMenuToggle }) {
 
           {/* Center - BDU Logo - Absolute positioning for perfect centering */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <Link href="/">
+            <Link href="/" className="block">
               <Image
                 src="/bsu-icon.svg"
                 alt="BDU Logo"

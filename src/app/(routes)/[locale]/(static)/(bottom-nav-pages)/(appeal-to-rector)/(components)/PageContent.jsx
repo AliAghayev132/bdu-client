@@ -58,10 +58,10 @@ export default function PageContent({ locale, slug }) {
       <Breadcrumbs breadcrumbs={breadcrumbs} />
       
       {/* Page Content */}
-      <div className="wrapper mx-auto px-4 sm:py-6 py-3">
-        <header className="w-full mx-auto mb-6">
-          <h1 className="laptop:text-2xl md:text-xl text-lg font-bold text-primary tracking-wider uppercase">
-            {content?.title}
+      <div className="wrapper mx-auto px-4 sm:py-8 py-3">
+      <header className="w-full mx-auto laptop:mb-6 mb-3">
+          <h1 className="laptop:text-3xl md:text-2xl text-xl font-bold text-primary tracking-wider uppercase">
+            {content.title}
           </h1>
         </header>
           {/* Contact Form */}

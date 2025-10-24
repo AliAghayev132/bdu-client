@@ -4,8 +4,8 @@
  export default function Footer() {
   
   return (
-    <footer className="mx-auto wrapper sm:mb-6 mb-3 mt-6">
-      <div  className="sm:py-12 py-6 wrapper rounded-4xl bg-secondary border-t border-secondary/10 text-white">
+    <footer className="mx-auto w-full wrapper sm:mb-6 mb-3 mt-6">
+      <div  className="sm:py-12 py-4 wrapper rounded-4xl bg-secondary border-t border-secondary/10 text-white">
         {/* Branding Row */}
         <div className="flex items-center justify-between relative sm:px-2 sm:mb-10 mb-6">
           <div className="flex items-center sm:gap-4 gap-2">

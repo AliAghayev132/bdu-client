@@ -1,59 +1,14 @@
-import React from 'react'
+"use client";
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import StructuredData from "@/components/seo/StructuredData";
 import Breadcrumbs from '@/app/(routes)/[locale]/[category]/[...slug]/(components)/Breadcrumbs';
+import Image from 'next/image';
+import useEmblaCarousel from 'embla-carousel-react';
+import Lightbox from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
 
-// Simpler, locale-based content
-const CONTENT = {
-  az: {
-    title: "TƏLƏBƏLƏR ÜÇÜN",
-    breadcrumbs: "Tələbələr üçün",
-    content: {
-        body: `<p class="text-container tracking-wider leading-[1.8]"> &nbsp; &nbsp;Universitetdə oxumaq - tələbənin vaxtının və diqqətinin çox hissəsini aparan çox maraqlı bir prosesdir. Bundan əlavə, təhsil almaq sonrakı həyat yolunu, peşə fəaliyyətini formalaşdırır və perspektivdə həyatın özünün keyfiyyətinə təsir göstərir. BDU-da gözəl müəllimlər var - onların peşəkarlığına yəqinliklə şübhə etməmək olar. Bilik səviyyəsini də qeyd etmək lazımdır, o, kifayət qədər yüksəkdir, bu da əmək bazarında məzunumuza tələbatı təmin edir.<br/>  
-Universitetdə tədris prosesi orta məktəbdəki tədris prosesinin təşkilindən əhəmiyyətli dərəcədə fərqlənir. Universitet qarşısında duran ən mühüm vəzifələrdən biri tələbələrə gələcək həyatı boyu müstəqil şəkildə öyrənməyi, inkişaf etməyi öyrətməkdir. Universitetdəki təhsil zamanı seçilmiş istiqamət üzrə biliklərin yalnız əsası qoyulur. Universitetdəki təhsil müddətində əsas məsələ – müstəqil zehni iş üsullarına yiyələnmək, yaradıcılıq qabiliyyətlərini şüurlu şəkildə inkişaf etdirmək və yaradıcı iş bacarıqlarına yiyələnməkdir. Bunun üçün təlim və davranış intizamına ciddi riayət etmək lazımdır.</br>
-Siz yeni dövrün tələbəsisiniz–artıq təhsil məkanının sərhədləri yoxdur, Azərbaycan təhsil sistemi Avropa təhsil sisteminə inteqrasiya olunaraq, pilləli təhsil sisteminə keçmişdir. Avropa Kredit Köçürməsi Sistemi (European Credit Transfer System, ECTS) - təhsil proqramının və ya kursun mənimsəməsində tələbələrin tədris işlərini qeyd etmək üçün ümumavropa sistemidir. ECTS-də tədris ili, bir qayda olaraq, 60 kreditdən ibarətdir. ECTS balları A-dan E-yə kimi qiymətlər üzrə verilir, və F – qeyri-məqbul sayılır. Kreditlər proqramın bütün nəzəri və praktiki komponentlərinə (fənlər, modullar, təcrübələr, kurs və diiplom işləri və s.) ayrılır.</br>
-Hər bir tələbənin şəxsi seçiminə əsaslanan fərdi təhsil planı olacaq və onu hazırlamağa tütorunuz kömək edəcək.</br>
-Tələbə həyatı üçün vacib olacaq əsas anlayışları bilməlisiniz. 
-Auditoriya dərslərində - mühazirələrdə, praktiki (seminar) məşğələlərdə, laboratoriya işlərində tələbələr öyrənilən fənlər üzrə əsas məlumatları alır, bilik və bacarıqları möhkəmləndirirlər. Universitetdə auditoriya dərslərinin aparıcı növü mühazirədir. Mühazirədə müəllimlər fənnin əsas materialını tələbəyə çatdırırlar. Mühazirələrin diqqətlə dinlənilməsi və qeydlərin edilməsi tələbədən intensiv zehni fəaliyyət tələb edir. Mühazirənin konspekti üzərində işləyərkən yalnız dərslikdən deyil, həm də müəllimin tövsiyə etdiyi əlavə ədəbiyyatdan istifadə etmək lazımdır.</br>
-Mühazirələrdə və müstəqil iş prosesində əldə edilmiş nəzəri bilikləri möhkəmləndirmək və dərinləşdirmək məqsədilə qrupda seminar məşğələləri keçirilir. Seminarlarda tədris materialının fənlər üzrə tələbələr tərəfindən başa düşülməsi və mənimsənilmə dərəcəsi yoxlanılır, ən mürəkkəb nəzəri məsələlər hərtərəfli təhlil edilir.</br>
-Laboratoriya məşğələləri nəzəriyyə ilə təcrübəni birləşdirən praktiki məşğələ  növlərindən biridir. Laboratoriya məşğələləri nəzəri kursun əsas müddəalarına əsaslanır və müvafiq avadanlıqla təchiz olunmuş laboratoriyalarda aparılır.</br>
-Müstəqil iş - mühazirə materialının öyrənilməsi, məşğələlərə hazırlıq, referatların, məruzələrin hazırlanması, kollokvium və imtahanlara hazırlıq, kurs işlərinin (layihələrinin) yazılması, elmi-tədqiqat işində iştirakı nəzərdə tutur.</br>
-</br>
-Tədris prosesi biliklərin mənimsənilməsinə nəzarətin aşağıdakı üsullarını əhatə edir: yoxlama işi, yazılı test, kollokvium, imtahan (yazılı və ya şifahi).  Kollokvium tələbələrin biliyini yoxlamaq və qiymətləndirmək məqsədi ilə keçirilən cari attestasiya forması, semestr ərzində keçirilən mini imtahandır. Kollokviumda toplanan ballar yekun qiymətə təsir göstərir. İmtahan semestr başa çatdıqdan sonra tələbələrin biliyinin attestasiyasının və yoxlanılmasının əsas formasıdır. Sessiyaya ciddi hazırlaşmaq və bütün imtahanlardan uğurla keçmək hər bir tələbənin vəzifəsidir.</br>
-</br>
-Universitetdə təhsil aldığı müddətdə tələbə müxtəlif növ təcrübələr keçməlidir. Təcrübə - müasir mütəxəssis hazırlığının tərkib hissəsidir. Onun vəzifəsi tələbələrin Universitetdə təhsil aldıqları müddətdə əldə etdikləri nəzəri bilikləri möhkəmləndirmək və ixtisas üzrə praktiki iş üçün lazımi bacarıqları aşılamaqdan ibarətdir. Yuxarı kurslarda tələbələr təcrübəni seçdikləri ixtisasa uyğun olan müəssisə, idarə və ya təşkilatlarda keçirlər.<br/>
-</br>
-Universitetdə təhsil prosesində Sizə elmi işlə məşğul olmaq imkanı verilir. Elmi tədqiqatların apararkən Siz nəzəri materialı daha dərindən mənimsəyir, yaradıcı axtarış vərdişlərinə yiyələnir, nəzəri və praktiki tədqiqatlarda təcrübə qazanır, və bir qayda olaraq, sessiya zamanı daha yüksək nəticə göstərirsiniz.</br>
-Universitet divarları arasında tələbə həyatını necə maraqlı və faydalı etmək olar? 
-Universitetdə həmişə tələbələr üçün hansısa tədbirlər keçirilir (idman yarışları, tələbə elmi konfransları, elmi ictimaiyyətin görkəmli nümayəndələri ilə görüşlər, yaradıcılıq müsabiqələri, fleşmoblar, kvestlər, dərnəklər işləyir). Beləliklə, bu tədbirlərin kiçik bir qismində fəal iştirak etsəniz, darıxmağa vaxtınız qalmayacaq.</p>`
-    }
-  },
-  en: {
-    title: "FOR STUDENTS",
-    breadcrumbs: "For students",
-    content: {
-        body:  `<p class="text-container tracking-wider leading-[1.8]"> &nbsp; &nbsp;Universitetdə oxumaq - tələbənin vaxtının və diqqətinin çox hissəsini aparan çox maraqlı bir prosesdir. Bundan əlavə, təhsil almaq sonrakı həyat yolunu, peşə fəaliyyətini formalaşdırır və perspektivdə həyatın özünün keyfiyyətinə təsir göstərir. BDU-da gözəl müəllimlər var - onların peşəkarlığına yəqinliklə şübhə etməmək olar. Bilik səviyyəsini də qeyd etmək lazımdır, o, kifayət qədər yüksəkdir, bu da əmək bazarında məzunumuza tələbatı təmin edir.<br/>  
-Universitetdə tədris prosesi orta məktəbdəki tədris prosesinin təşkilindən əhəmiyyətli dərəcədə fərqlənir. Universitet qarşısında duran ən mühüm vəzifələrdən biri tələbələrə gələcək həyatı boyu müstəqil şəkildə öyrənməyi, inkişaf etməyi öyrətməkdir. Universitetdəki təhsil zamanı seçilmiş istiqamət üzrə biliklərin yalnız əsası qoyulur. Universitetdəki təhsil müddətində əsas məsələ – müstəqil zehni iş üsullarına yiyələnmək, yaradıcılıq qabiliyyətlərini şüurlu şəkildə inkişaf etdirmək və yaradıcı iş bacarıqlarına yiyələnməkdir. Bunun üçün təlim və davranış intizamına ciddi riayət etmək lazımdır.</br>
-Siz yeni dövrün tələbəsisiniz–artıq təhsil məkanının sərhədləri yoxdur, Azərbaycan təhsil sistemi Avropa təhsil sisteminə inteqrasiya olunaraq, pilləli təhsil sisteminə keçmişdir. Avropa Kredit Köçürməsi Sistemi (European Credit Transfer System, ECTS) - təhsil proqramının və ya kursun mənimsəməsində tələbələrin tədris işlərini qeyd etmək üçün ümumavropa sistemidir. ECTS-də tədris ili, bir qayda olaraq, 60 kreditdən ibarətdir. ECTS balları A-dan E-yə kimi qiymətlər üzrə verilir, və F – qeyri-məqbul sayılır. Kreditlər proqramın bütün nəzəri və praktiki komponentlərinə (fənlər, modullar, təcrübələr, kurs və diiplom işləri və s.) ayrılır.</br>
-Hər bir tələbənin şəxsi seçiminə əsaslanan fərdi təhsil planı olacaq və onu hazırlamağa tütorunuz kömək edəcək.</br>
-Tələbə həyatı üçün vacib olacaq əsas anlayışları bilməlisiniz. 
-Auditoriya dərslərində - mühazirələrdə, praktiki (seminar) məşğələlərdə, laboratoriya işlərində tələbələr öyrənilən fənlər üzrə əsas məlumatları alır, bilik və bacarıqları möhkəmləndirirlər. Universitetdə auditoriya dərslərinin aparıcı növü mühazirədir. Mühazirədə müəllimlər fənnin əsas materialını tələbəyə çatdırırlar. Mühazirələrin diqqətlə dinlənilməsi və qeydlərin edilməsi tələbədən intensiv zehni fəaliyyət tələb edir. Mühazirənin konspekti üzərində işləyərkən yalnız dərslikdən deyil, həm də müəllimin tövsiyə etdiyi əlavə ədəbiyyatdan istifadə etmək lazımdır.</br>
-Mühazirələrdə və müstəqil iş prosesində əldə edilmiş nəzəri bilikləri möhkəmləndirmək və dərinləşdirmək məqsədilə qrupda seminar məşğələləri keçirilir. Seminarlarda tədris materialının fənlər üzrə tələbələr tərəfindən başa düşülməsi və mənimsənilmə dərəcəsi yoxlanılır, ən mürəkkəb nəzəri məsələlər hərtərəfli təhlil edilir.</br>
-Laboratoriya məşğələləri nəzəriyyə ilə təcrübəni birləşdirən praktiki məşğələ  növlərindən biridir. Laboratoriya məşğələləri nəzəri kursun əsas müddəalarına əsaslanır və müvafiq avadanlıqla təchiz olunmuş laboratoriyalarda aparılır.</br>
-Müstəqil iş - mühazirə materialının öyrənilməsi, məşğələlərə hazırlıq, referatların, məruzələrin hazırlanması, kollokvium və imtahanlara hazırlıq, kurs işlərinin (layihələrinin) yazılması, elmi-tədqiqat işində iştirakı nəzərdə tutur.</br>
-</br>
-Tədris prosesi biliklərin mənimsənilməsinə nəzarətin aşağıdakı üsullarını əhatə edir: yoxlama işi, yazılı test, kollokvium, imtahan (yazılı və ya şifahi).  Kollokvium tələbələrin biliyini yoxlamaq və qiymətləndirmək məqsədi ilə keçirilən cari attestasiya forması, semestr ərzində keçirilən mini imtahandır. Kollokviumda toplanan ballar yekun qiymətə təsir göstərir. İmtahan semestr başa çatdıqdan sonra tələbələrin biliyinin attestasiyasının və yoxlanılmasının əsas formasıdır. Sessiyaya ciddi hazırlaşmaq və bütün imtahanlardan uğurla keçmək hər bir tələbənin vəzifəsidir.</br>
-</br>
-Universitetdə təhsil aldığı müddətdə tələbə müxtəlif növ təcrübələr keçməlidir. Təcrübə - müasir mütəxəssis hazırlığının tərkib hissəsidir. Onun vəzifəsi tələbələrin Universitetdə təhsil aldıqları müddətdə əldə etdikləri nəzəri bilikləri möhkəmləndirmək və ixtisas üzrə praktiki iş üçün lazımi bacarıqları aşılamaqdan ibarətdir. Yuxarı kurslarda tələbələr təcrübəni seçdikləri ixtisasa uyğun olan müəssisə, idarə və ya təşkilatlarda keçirlər.<br/>
-</br>
-Universitetdə təhsil prosesində Sizə elmi işlə məşğul olmaq imkanı verilir. Elmi tədqiqatların apararkən Siz nəzəri materialı daha dərindən mənimsəyir, yaradıcı axtarış vərdişlərinə yiyələnir, nəzəri və praktiki tədqiqatlarda təcrübə qazanır, və bir qayda olaraq, sessiya zamanı daha yüksək nəticə göstərirsiniz.</br>
-Universitet divarları arasında tələbə həyatını necə maraqlı və faydalı etmək olar? 
-Universitetdə həmişə tələbələr üçün hansısa tədbirlər keçirilir (idman yarışları, tələbə elmi konfransları, elmi ictimaiyyətin görkəmli nümayəndələri ilə görüşlər, yaradıcılıq müsabiqələri, fleşmoblar, kvestlər, dərnəklər işləyir). Beləliklə, bu tədbirlərin kiçik bir qismində fəal iştirak etsəniz, darıxmağa vaxtınız qalmayacaq.</p>`
-    }
-  },
-};
 
-const BlogPageContent = ({ locale }) => {
-  const content = CONTENT[locale];
+const BlogPageContent = ({ locale, content }) => {
 
   if (!content) return null;
 
@@ -63,8 +18,53 @@ const BlogPageContent = ({ locale }) => {
     { label: content.breadcrumbs, href: path },
   ];
 
+  const imageList = content?.sliderImages || content?.content?.sliderImages || [];
+  const hasSlider = Array.isArray(imageList) && imageList.length > 0;
+  const slides = useMemo(() => {
+    if (!hasSlider) return [];
+    return imageList.map((img, idx) => {
+      const src = typeof img === 'string' ? img : (img?.src || '');
+      const width = typeof img === 'object' && img?.width ? img.width : 1600;
+      const height = typeof img === 'object' && img?.height ? img.height : 900;
+      return { src, width, height, idx };
+    }).filter(s => s.src);
+  }, [imageList, hasSlider]);
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start', containScroll: 'trimSnaps' });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState([]);
+  const [slidesPerView, setSlidesPerView] = useState(1);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const update = () => {
+      setScrollSnaps(emblaApi.scrollSnapList());
+      const inView = emblaApi.slidesInView(true)?.length || 1;
+      setSlidesPerView(Math.max(1, inView));
+      onSelect();
+    };
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', update);
+    update();
+  }, [emblaApi, onSelect]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const id = setInterval(() => {
+      if (!emblaApi) return;
+      emblaApi.scrollNext();
+    }, 3000);
+    return () => clearInterval(id);
+  }, [emblaApi]);
+
   return (
-     <div className="min-h-screen bg-white">
+     <>
       {/* Structured Data */}
       <StructuredData
         type="breadcrumb"
@@ -77,14 +77,69 @@ const BlogPageContent = ({ locale }) => {
 
       {/* Page Content */}
       <div className="wrapper mx-auto px-4 sm:py-8 py-3">
-        <header className="w-full mx-auto mb-6">
+        <header className="w-full mx-auto laptop:mb-6 mb-3">
           <h1 className="laptop:text-3xl md:text-2xl text-xl font-bold text-primary tracking-wider uppercase">
             {content.title}
           </h1>
         </header>
         <div className='py-2 sm:text-base text-sm' dangerouslySetInnerHTML={{ __html: content.content.body }} />
+
+        {hasSlider && slides.length > 0 && (
+          <div className="mt-8">
+            <div className="relative overflow-hidden" ref={emblaRef}>
+              <div className="flex touch-pan-y -ml-3">
+                {slides.map((s, i) => (
+                  <div
+                    key={i}
+                    className="shrink-0 basis-full sm:basis-1/2 md:basis-1/3 laptop:basis-1/4 pl-3"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => { setSelectedIndex(i); setLightboxOpen(true); }}
+                      className="block w-full"
+                    >
+                      <div className="relative w-full aspect-[16/9] overflow-hidden rounded-3xl">
+                        <Image
+                          src={s.src}
+                          alt={content.title || 'slide'}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+                          className="object-cover"
+                          priority={i === 0}
+                        />
+                      </div>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* {slides.length > slidesPerView && (
+              <div className="mt-3 flex items-center justify-center gap-2">
+                {Array.from({ length: Math.max(1, slides.length - slidesPerView + 1) }).map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => emblaApi && emblaApi.scrollTo(i)}
+                    className={`h-2 w-2 rounded-full transition-colors ${selectedIndex === i ? 'bg-primary' : 'bg-gray-300'}`}
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )} */}
+          </div>
+        )}
+
+        {hasSlider && (
+          <Lightbox
+            open={lightboxOpen}
+            close={() => setLightboxOpen(false)}
+            index={selectedIndex}
+            slides={slides.map(s => ({ src: s.src }))}
+          />
+        )}
       </div>
-    </div>
+    </>
   )
 }
 

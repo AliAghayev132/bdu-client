@@ -39,7 +39,7 @@ const SubMenuPanel = memo(function SubMenuPanel({ items, parentLabel, locale, on
   return (
     <div className="flex flex-1">
       {/* Current Level - Subitems */}
-      <div className="w-80 border-r border-gray-200 px-6">
+      <div className="w-72 border-r border-gray-200 px-6">
         <h3 className="laptop:text-base text-sm font-semibold text-secondary mb-4 pb-2 border-b border-gray-200">
           {parentLabel}
         </h3>
@@ -237,7 +237,7 @@ export default function MegaMenu({
   return (
     <div
       ref={menuRef}
-      className="bdu-mega-menu max-w-[1620px] mx-auto fixed left-0 right-0 z-60  laptop:px-8 md:px-6 sm:px-4"
+      className="bdu-mega-menu max-w-[1600px] mx-auto fixed left-0 right-0 z-60  w-[96%]"
       style={{
         display: "none",
         opacity: 0,
@@ -259,7 +259,7 @@ export default function MegaMenu({
       <div className="max-w-[1600px] mx-auto border-2 border-primary/50 rounded-xl bg-bg-light overflow-x-auto custom-scrollbar">
         <div className="max-w-[1540px] mx-auto flex min-w-max">
           {/* Left Sidebar - Sections with Titles */}
-          <div ref={leftSidebarRef} className="w-80 flex-shrink-0 bg-bg-light border-r border-gray-200 py-6 max-h-[600px] overflow-y-auto custom-scrollbar">
+          <div ref={leftSidebarRef} className="w-72 flex-shrink-0 bg-bg-light border-r border-gray-200 py-6 max-h-[600px] overflow-y-auto custom-scrollbar">
             <div className="space-y-3">
               {sections.map((section, sectionIndex) => {
                 // Calculate global index for each item
@@ -270,7 +270,7 @@ export default function MegaMenu({
                 return (
                   <div key={sectionIndex} className="px-2">
                     {/* Section Title */}
-                    <h3 className="laptop:text-sm text-xs font-semibold text-primary uppercase tracking-wider mb-2 px-6">
+                    <h3 className="laptop:text-sm text-xs font-semibold text-primary uppercase tracking-wider mb-2 px-4">
                       {typeof section.title === 'object' ? section.title[locale] : section.title}
                     </h3>
                     
@@ -292,7 +292,7 @@ export default function MegaMenu({
                                     ? navItem.href[locale]
                                     : navItem.href
                                 }
-                                className={`group flex items-center rounded-lg overflow-hidden justify-between px-6 py-2 transition-all duration-150 ${
+                                className={`group flex items-center rounded-lg overflow-hidden justify-between px-4 py-2 transition-all duration-150 ${
                                   hoveredItem === globalIndex.toString()
                                     ? "bg-white text-primary"
                                     : "text-gray-700 hover:bg-white/50"

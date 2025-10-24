@@ -544,7 +544,7 @@ export const bottomNavItems = [
   {
     id: "applicants",
     label: { az: "Abituriyentlər üçün", en: "For Applicants" },
-    href: { az: "/abituriyentler", en: "/applicants" },
+    href: { az: "/abituriyentler-ucun", en: "/for-applicants" },
   },
   {
     id: "students",
@@ -554,12 +554,12 @@ export const bottomNavItems = [
   {
     id: "employees",
     label: { az: "Əməkdaşlar üçün", en: "For Employees" },
-    href: { az: "/emekdaslar", en: "/employees" },
+    href: { az: "/emekdaslar-ucun", en: "/for-employees" },
   },
   {
     id: "graduates",
     label: { az: "Məzunlar üçün", en: "For Graduates" },
-    href: { az: "/mezunlar", en: "/graduates" },
+    href: { az: "/mezunlar-ucun", en: "/for-graduates" },
   },
   {
     id: "news",
