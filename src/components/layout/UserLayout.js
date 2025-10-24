@@ -43,8 +43,7 @@ export default function UserLayout({ children }) {
   }, []);
 
   return (
-    <div className='flex flex-col justify-between min-h-screen min-w-[320px]'>
-      <div>
+    <>
       <Header 
         isScrolled={isScrolled} 
         onMenuToggle={handleMenuToggle} 
@@ -54,9 +53,8 @@ export default function UserLayout({ children }) {
         isOpen={isMobileMenuOpen} 
         onClose={handleMenuClose} 
         />}
-        </div>
       <main className="bg-white overflow-hidden">{children}</main>
       <Footer />
-    </div>
+    </>
   );
 }
