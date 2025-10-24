@@ -270,7 +270,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
           }}
           className="bdu-nav-bottom  wrapper flex items-center justify-between space-x-6 py-4 transition-all duration-400"
         >
-          <button className="px-4 py-2 bg-white rounded border border-secondary hover:bg-secondary/80 hover:text-white text-sm font-medium transition-colors">
+          <button className="px-4 py-2 bg-bg-light  border border-white/30 hover:bg-secondary/80 hover:text-white text-sm font-medium transition-colors">
             e-BDU
           </button>
           {/* Right - Rector Info and Language Switcher */}
