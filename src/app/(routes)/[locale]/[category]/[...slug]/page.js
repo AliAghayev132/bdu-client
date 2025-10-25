@@ -33,7 +33,7 @@ export default async function DynamicPage({ params }) {
   // Get page type
   const pageType = pageData.type?.[locale] || "blog";
 
-  console.log("Page Data:", { fullPath, pageType, sidebar: pageData.sidebar });
+  // console.log("Page Data:", { fullPath, pageType, sidebar: pageData.sidebar });
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
@@ -62,7 +62,7 @@ export default async function DynamicPage({ params }) {
       <Breadcrumbs breadcrumbs={breadcrumbs} />
 
       {/* Page Content */}
-      <div className="wrapper mx-auto px-4 sm:py-12 pt-1 pb-6">
+      <div className="wrapper mx-auto px-4 sm:py-8 py-3 pt-1 pb-6">
         <div className="relative grid lg:grid-cols-4 sm:gap-8 gap-6">
           {/* Sidebar */}
 

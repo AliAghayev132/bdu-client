@@ -27,7 +27,7 @@ const CardsGrid = ({ items, locale, fullPath }) => {
                   src={person.image}
                   alt={person.name?.[locale] || ""}
                   fill
-                  sizes="(max-width: 768px) 80px, 96px"
+                  // sizes="(max-width: 768px) 80px, 96px"
                   className="object-cover"
                 />
               </div>

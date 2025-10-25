@@ -12,7 +12,7 @@ const DetailHeader = ({ detailItem, locale }) => {
             src={detailItem.image}
             alt={detailItem.name?.[locale] || ""}
             fill
-            sizes="(max-width: 768px) 96px, 112px"
+            // sizes="(max-width: 768px) 96px, 112px"
             className="object-cover"
           />
         </div>

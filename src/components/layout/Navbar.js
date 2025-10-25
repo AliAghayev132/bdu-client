@@ -268,9 +268,9 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
               style={{
             paddingLeft: showStickyLogo ? "146px" : "32px",
           }}
-          className="bdu-nav-bottom  wrapper flex items-center justify-between space-x-6 py-4 transition-all duration-400"
+          className="bdu-nav-bottom  wrapper flex items-center justify-between space-x-6 laptop:py-4 py-2 transition-all duration-400"
         >
-          <button className="px-4 py-2 bg-bg-light  border border-white/30 hover:bg-secondary/80 hover:text-white text-sm font-medium transition-colors">
+          <button className="laptop:px-4 px-3 laptop:py-2 py-1.5 bg-bg-light  border border-white/30 hover:bg-secondary/80 hover:text-white laptop:text-sm text-xs font-medium transition-colors">
             e-BDU
           </button>
           {/* Right - Rector Info and Language Switcher */}
@@ -281,7 +281,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                 href={
                   typeof item.href === "object" ? item.href[locale] : item.href
                 }
-                className="laptop:text-[15px] text-[14px] hover:text-primary transition-colors"
+                className="laptop:text-[15px] text-[13px] hover:text-primary transition-colors"
               >
                 {getLabel(item, locale)}
               </Link>

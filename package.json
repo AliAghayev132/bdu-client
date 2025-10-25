@@ -17,6 +17,7 @@
     "next-intl": "^4.3.12",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-hot-toast": "^2.6.0",
     "yet-another-react-lightbox": "^3.25.0"
   },
   "devDependencies": {

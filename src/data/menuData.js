@@ -61,11 +61,11 @@ export const menuData = {
             pageType: "card",
             content: {
               az: {
-                title: "Rəhbərlik",
+                title: "RƏHBƏRLİK",
                 description: "Bakı Dövlət Universitetinin rəhbərliyi",
               },
               en: {
-                title: "Leadership",
+                title: "LEADERSHIP",
                 description: "Leadership of Baku State University",
               },
             },
@@ -85,7 +85,7 @@ export const menuData = {
               {
                 id: "farda-imanov",
                 name: {
-                  az: "Fərdə Əli oğlu İmanov",
+                  az: "Fərda Əli oğlu İmanov",
                   en: "Farda Ali oglu Imanov",
                 },
                 position: {
@@ -94,11 +94,11 @@ export const menuData = {
                 },
                 phone: "(+994 12) 539-15-87",
                 email: "farda.imanov@bsu.edu.az",
-                image: "/images/people/elcin.jpg",
+                image: "/images/people/farda.jpg",
                 hasDetail: true, // Detail page var
                 // Detail page content (Quill.js HTML)
                 bio: {
-                  az: `<p>İmanov Fərdə Əli oğlu - coğrafiya üzrə elmlər doktoru, professor</p>
+                  az: `<p>İmanov Fərda Əli oğlu - coğrafiya üzrə elmlər doktoru, professor</p>
                        <p>Tədrisin təşkili və təlim texnologiyaları üzrə prorektor</p>
                        <p>13 mart 1957-ci il tarixində anadan olub.</p>
                        <p>1974-1979-cu illərdə Leninqrad Hidrometeorologiya İnstitutunun (LHMİ) Hidrologiya fakültəsində təhsil alıb.</p>`,
@@ -106,48 +106,6 @@ export const menuData = {
                        <p>Vice-Rector for Teaching Organization and Educational Technologies</p>
                        <p>Born on March 13, 1957.</p>`,
                 },
-              },
-              {
-                id: "vice-rector-2",
-                name: {
-                  az: "Hüseyn Mikayıl oğlu Məmmədov",
-                  en: "Huseyn Mikayil oglu Mammadov",
-                },
-                position: {
-                  az: "Elm və innovasiyalar üzrə prorektor",
-                  en: "Vice-Rector for Science and Innovation",
-                },
-                phone: "(+994 12) 538-15-54",
-                email: "mammad.huseyn.m@bsu.edu.az",
-                image: "/images/people/elcin.jpg",
-              },
-              {
-                id: "vice-rector-3",
-                name: {
-                  az: "Əliş Çoban oğlu Ağamirzəyev",
-                  en: "Alish Choban oglu Aghamirzayev",
-                },
-                position: {
-                  az: "Sosial məsələlər, tələbələrlə və ictimaiyyətlə əlaqələr üzrə prorektor",
-                  en: "Vice-Rector for Social Affairs, Student and Public Relations",
-                },
-                phone: "(+994 12) 539-03-43",
-                email: "alish.aghamirzayev@bsu.edu.az",
-                image: "/images/people/elcin.jpg",
-              },
-              {
-                id: "vice-rector-4",
-                name: {
-                  az: "Şahin Məhəmməd oğlu Pənahov",
-                  en: "Shahin Mahammad oglu Panahov",
-                },
-                position: {
-                  az: "Beynəlxalq əlaqələr üzrə prorektor",
-                  en: "Vice-Rector for International Relations",
-                },
-                phone: "(+994 12) 538-53-57",
-                email: "shahin.panahov@bsu.edu.az",
-                image: "/images/people/elcin.jpg",
               },
             ],
 
@@ -579,6 +537,7 @@ export const getLabel = (item, locale) => {
  * Helper function to build breadcrumbs from path
  */
 export const buildBreadcrumbs = (path, locale) => {
+  
   const segments = path.split("/").filter(Boolean);
   const breadcrumbs = [
     {

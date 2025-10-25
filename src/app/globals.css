@@ -47,6 +47,18 @@ button{
   padding-right: 30px;
 }
 
+
+.admin-wrapper{
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  max-width: 1600px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Custom Animations */
 @keyframes fade-in {
   from {
@@ -148,6 +160,12 @@ button{
   .wrapper {
     padding-left: 24px;
     padding-right: 24px;
+  }
+
+
+    .admin-wrapper {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 
