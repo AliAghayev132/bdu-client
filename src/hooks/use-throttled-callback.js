@@ -15,7 +15,6 @@ const defaultOptions = {
  * @param dependencies The dependencies to watch for changes
  * @param options The throttle options
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useThrottledCallback(fn, wait = 250, dependencies = [], options = defaultOptions) {
   const handler = React.useMemo(
     () => throttle(fn, wait, options),
