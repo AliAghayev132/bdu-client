@@ -25,7 +25,7 @@ export default function AdminLayout({ children }) {
     <div className="min-h-screen flex bg-gray-50">
       <Toaster position="top-center" toastOptions={toastOptions} />
       <Sidebar />
-      <main className="flex-1 overflow-hidden">{children}</main>
+      <main className="flex-1 overflow-auto">{children}</main>
     </div>
   );
 }

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import '../styles/_variables.scss';
+@import '../styles/_keyframe-animations.scss';
 
 :root {
   --background: #ffffff; 
@@ -177,4 +179,22 @@ button{
   }
 }
 
+/* Tiptap / ProseMirror base styles */
+.ProseMirror {
+  outline: none;
+}
 
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ProseMirror ::selection,
+.ProseMirror *::selection {
+  background: rgba(57, 102, 176, 0.25);
+}
+
+.tiptap-editor {
+  min-height: 400px;
+}

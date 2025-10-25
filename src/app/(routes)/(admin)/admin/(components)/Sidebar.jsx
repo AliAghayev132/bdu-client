@@ -6,13 +6,14 @@ import { Menu, Newspaper } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/bsu-icon.svg"
+import { X } from "lucide-react";
 // import { useAdminLogoutMutation } from "@/store/admin/auth/adminAuthApi";
 // import { Loader2 } from "lucide-react";
 // import { useDispatch } from "react-redux";
 // import { clearCredentials } from "@/store/admin/auth/adminAuthSlice";
 
 const navItems = [
-  {label: "Xəbərlər", href: "/admin", icon: Newspaper},
+  {label: "Xəbərlər", href: "/admin/dashboard", icon: Newspaper},
 
 ];
 
@@ -48,7 +49,7 @@ const Sidebar = () => {
               href={href}
               onClick={() => setMobileOpen(false)}
               className={`group  font-medium flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-all ${
-                active ? "bg-[#3966b0] text-white" : "bg-black/5 text-gray-700 hover:text-primary group-hover:bg-[#3966b0]/10"
+                active ? "bg-primary text-white" : "bg-black/5 text-gray-700 hover:text-primary group-hover:bg-[#3966b0]/10"
               }`}
             >
               <Icon 
