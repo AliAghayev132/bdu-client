@@ -44,9 +44,12 @@ export function canSetTextAlign(editor, align) {
   if (!editor || !editor.isEditable) return false
   if (
     !isExtensionAvailable(editor, "textAlign") ||
-    isNodeTypeSelected(editor, ["image", "horizontalRule"])
+    isNodeTypeSelected(editor, ["horizontalRule"]) // allow images
   )
     return false
+
+  // When image is selected, allow alignment via updateAttributes fallback
+  if (editor.isActive('image')) return true
 
   return editor.can().setTextAlign(align);
 }
@@ -60,6 +63,10 @@ export function hasSetTextAlign(commands) {
  */
 export function isTextAlignActive(editor, align) {
   if (!editor || !editor.isEditable) return false
+  if (editor.isActive('image')) {
+    const attrs = editor.getAttributes('image') || {}
+    return attrs.textAlign === align || attrs.align === align
+  }
   return editor.isActive({ textAlign: align });
 }
 
@@ -73,6 +80,11 @@ export function setTextAlign(editor, align) {
   const chain = editor.chain().focus()
   if (hasSetTextAlign(chain)) {
     return chain.setTextAlign(align).run();
+  }
+
+  // Fallback for images if needed
+  if (editor.isActive('image')) {
+    return editor.chain().focus().updateAttributes('image', { textAlign: align }).run()
   }
 
   return false

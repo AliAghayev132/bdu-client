@@ -93,7 +93,7 @@ export default async function EducationSection() {
                       alt={item.title}
                       fill
                       sizes="(max-width: 1024px) 100vw, 50vw"
-                      className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover w-full h-full transition duration-500 ease-in-out will-change-transform group-hover:scale-105"
                       priority
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />

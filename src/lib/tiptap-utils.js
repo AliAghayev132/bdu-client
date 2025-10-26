@@ -268,17 +268,26 @@ export const handleImageUpload = async (file, onProgress, abortSignal) => {
     throw new Error(`File size exceeds maximum allowed (${MAX_FILE_SIZE / (1024 * 1024)}MB)`)
   }
 
-  // For demo/testing: Simulate upload progress. In production, replace the following code
-  // with your own upload implementation.
-  for (let progress = 0; progress <= 100; progress += 10) {
+  // Local preview mode: convert to Data URL so it renders without a backend.
+  // Still emits progress events.
+  const readAsDataURL = () => new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+
+  // Simulate progress while reading
+  for (let progress = 0; progress <= 100; progress += 20) {
     if (abortSignal?.aborted) {
       throw new Error("Upload cancelled")
     }
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    await new Promise((r) => setTimeout(r, 100))
     onProgress?.({ progress })
   }
 
-  return "/images/tiptap-ui-placeholder-image.jpg"
+  const dataUrl = await readAsDataURL()
+  return dataUrl
 }
 
 const ATTR_WHITESPACE =
@@ -299,6 +308,9 @@ export function isAllowedUri(
     "sms",
     "cid",
     "xmpp",
+    // Allow local previews
+    "data",
+    "blob",
   ]
 
   if (protocols) {

@@ -10,6 +10,7 @@
   --container: #49637B;
   --bg-light: #EFF0F1;
 }
+
 @theme{
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;

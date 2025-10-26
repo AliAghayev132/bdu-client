@@ -1,0 +1,58 @@
+.tt-resize-image {
+  position: relative;
+  display: inline-block; /* image-sized wrapper */
+  line-height: 0;
+}
+
+.tt-resize-image-el {
+  display: inline-block; /* allow centering via parent text-align and inline flow */
+  max-width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.tt-resize-image.is-selected .tt-resize-image-el,
+.tt-resize-image:hover .tt-resize-image-el {
+  outline: 2px solid rgba(57, 102, 176, 0.35);
+  outline-offset: 2px;
+}
+
+.tt-resize-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #3966b0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #fff;
+  cursor: ew-resize;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tt-resize-handle.right {
+  right: -6px;
+}
+
+/* Remove floats from inner image to avoid conflicts */
+.tiptap.ProseMirror .tt-resize-image-el { float: none; }
+
+/* Outer NodeView container controls alignment (attribute-driven) */
+.tiptap.ProseMirror .react-renderer.node-image {
+  display: flex;
+  margin: 1rem;
+}
+
+.tiptap.ProseMirror .react-renderer.node-image[data-text-align="center"],
+.tiptap.ProseMirror .react-renderer.node-image[data-align="center"] {
+  justify-content: center;
+}
+
+.tiptap.ProseMirror .react-renderer.node-image[data-text-align="left"],
+.tiptap.ProseMirror .react-renderer.node-image[data-align="left"] {
+  justify-content: flex-start;
+}
+
+.tiptap.ProseMirror .react-renderer.node-image[data-text-align="right"],
+.tiptap.ProseMirror .react-renderer.node-image[data-align="right"] {
+  justify-content: flex-end;
+}
