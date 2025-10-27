@@ -25,11 +25,12 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function HomePage() {
+export default async function HomePage({params}) {
+  const { locale } = await params;
   return (
     <div className='home overflow-hidden'>
       <HeroSlider />
-      <NewsSection />
+      <NewsSection locale={locale} />
       <EducationSection />
       <BlogSection/>
     </div>

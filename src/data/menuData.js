@@ -494,37 +494,44 @@ export const menuData = {
 
 // Bottom navigation items
 export const bottomNavItems = [
+    {
+    id: "news",
+    label: { az: "XƏBƏRLƏR", en: "NEWS" },
+    href: { az: "/xeberler", en: "/news" },
+  },
   {
     id: "rector-office",
-    label: { az: "Rektora müraciət", en: "Appeal to Rector" },
+    label: { az: "REKTORA MÜRACİƏT", en: "APPEAL TO RECTOR" },
     href: { az: "/rektora-muraciet", en: "/appeal-to-rector" },
   },
   {
     id: "applicants",
-    label: { az: "Abituriyentlər üçün", en: "For Applicants" },
+    label: { az: "ABİTURİYENTLƏR ÜÇÜN", en: "FOR APPLICANTS" },
     href: { az: "/abituriyentler-ucun", en: "/for-applicants" },
   },
   {
     id: "students",
-    label: { az: "Tələbələr üçün", en: "For Students" },
+    label: { az: "TƏLƏBƏLƏR ÜÇÜN", en: "FOR STUDENTS" },
     href: { az: "/telebeler-ucun", en: "/for-students" },
   },
   {
     id: "employees",
-    label: { az: "Əməkdaşlar üçün", en: "For Employees" },
+    label: { az: "ƏMƏKDAŞLAR ÜÇÜN", en: "FOR EMPLOYEES" },
     href: { az: "/emekdaslar-ucun", en: "/for-employees" },
   },
   {
     id: "graduates",
-    label: { az: "Məzunlar üçün", en: "For Graduates" },
+    label: { az: "MƏZUNLAR ÜÇÜN", en: "FOR GRADUATES" },
     href: { az: "/mezunlar-ucun", en: "/for-graduates" },
   },
   {
-    id: "news",
-    label: { az: "Əlaqə", en: "Contact" },
+    id: "contact",
+    label: { az: "ƏLAQƏ", en: "CONTACT" },
     href: { az: "/elaqe", en: "/contact" },
   },
+
 ];
+
 
 /**
  * Helper function to get localized label

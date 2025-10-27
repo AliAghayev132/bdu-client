@@ -209,7 +209,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                     className="relative"
                     onMouseEnter={() => handleMenuItemEnter(menuKey)}
                   >
-                    <button className="px-4 laptop:py-4 py-3 laptop:text-sm text-xs font-medium hover:text-primary transition-colors uppercase">
+                    <button className="px-4 laptop:py-4 py-3 laptop:text-[14px] text-xs font-semibold hover:text-primary transition-colors uppercase">
                       {getLabel(menuItem, locale)}
                     </button>
                   </div>
@@ -222,7 +222,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                 onClick={() => handleLanguageChange("az")}
                 className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
                   locale === "az"
-                    ? "bg-primary text-white"
+                    ? "bg-secondary text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -232,7 +232,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                 onClick={() => handleLanguageChange("en")}
                 className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
                   locale === "en"
-                    ? "bg-primary text-white"
+                    ? "bg-secondary text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -282,14 +282,14 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
               width="8rem"
             />
           {/* Right - Rector Info and Language Switcher */}
-          <div className="flex items-center  gap-6">
+          <div className="flex items-center  laptop:gap-x-8 gap-x-6">
             {bottomNavItems.map((item) => (
               <Link
                 key={item.id}
                 href={
                   typeof item.href === "object" ? item.href[locale] : item.href
                 }
-                className="laptop:text-[15px] text-[13px] hover:text-primary transition-colors"
+                className="laptop:text-[14px] text-[12px] font-medium hover:text-primary transition-colors text-center"
               >
                 {getLabel(item, locale)}
               </Link>

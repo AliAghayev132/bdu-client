@@ -52,5 +52,16 @@
     "contact": {
       "title": "Contact Us"
     }
+  },
+  "news":{
+    "filter":{
+      "all-news": "ALL NEWS",
+      "education": "EDUCATION",
+      "science": "SCIENCE",
+      "innovation": "INNOVATION",
+      "social": "SOCIAL",
+      "cooperation": "COOPERATION",
+      "internationalization": "INTERNATIONALIZATION"
+    }
   }
 }

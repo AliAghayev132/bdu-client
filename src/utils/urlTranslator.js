@@ -33,6 +33,10 @@ const urlMap = {
   'graduates': { az: 'mezunlar', en: 'graduates' },
   'elaqe': { az: 'elaqe', en: 'contact' },
   'contact': { az: 'elaqe', en: 'contact' },
+  'xeberler': { az: 'xeberler', en: 'news' },
+  'news': { az: 'xeberler', en: 'news' },
+  'elanlar': { az: 'elanlar', en: 'announcements' },
+  'announcements': { az: 'elanlar', en: 'announcements' },
 };
 
 /**

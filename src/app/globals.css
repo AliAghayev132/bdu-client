@@ -18,7 +18,7 @@
   --breakpoint-lg: 1024px;
   --breakpoint-laptop: 1620px;
   --breakpoint-screen: 1920px;
-  --breakpoint-mobile: 400px;
+  --breakpoint-mobile: 440px;
 }
 
 @theme inline {

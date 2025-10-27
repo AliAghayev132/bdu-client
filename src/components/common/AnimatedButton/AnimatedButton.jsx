@@ -8,6 +8,7 @@ import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
 
 import {ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
@@ -15,9 +16,11 @@ const AnimatedButton = ({
   width = "13rem",
   label,
   route,
+  href = null,
   animate = false,
   animateOnScroll = false,
   delay = 0,
+  isMobile = false,
 }) => {
   const buttonRef = useRef(null);
   const circleRef = useRef(null);
@@ -139,7 +142,7 @@ const AnimatedButton = ({
     <>
       <span className="circle flex justify-center items-center text-center laptop:w-[2.6rem] laptop:h-[2.6rem] w-[2.2rem] h-[2.2rem]" ref={circleRef} aria-hidden="true"></span>
       <div className="icon flex items-center justify-center" ref={iconRef}>
-        <ArrowRight  className="laptop:w-[28px] laptop:h-[28px] w-[24px] h-[24px] mx-auto text-center laptop:mt-[0.1rem] pb-1 pr-2"  strokeWidth={'1.8'}/>
+        <ArrowRight  className="laptop:w-[28px] laptop:h-[28px] w-[24px] h-[24px] mx-auto text-center laptop:mt-[0.05rem] pb-1 pr-2"  strokeWidth={'1.8'}/>
       </div>
       <span className="button-text" ref={textRef}>
         {label}
@@ -147,23 +150,21 @@ const AnimatedButton = ({
     </>
   );
 
-  if (route) {
+  if (href) {
     return (
-      <a
-        href={route}
-        className="btn"
+      <Link
+        href={href}
         ref={buttonRef}
-        onClick={(e) => {
-          e.preventDefault();
-        }}
+        className={`btn laptop:text-[0.95rem] text-[0.8rem] ${isMobile ? "sm:block hidden" : ""}`}
+        style={{ width }}
       >
         {buttonContent}
-      </a>
+      </Link>
     );
   }
 
   return (
-    <button style={{ width: width }} className="btn laptop:text-[0.95rem] text-[0.8rem]" ref={buttonRef}>
+    <button style={{ width: width }} className={`btn laptop:text-[0.95rem] text-[0.8rem] ${isMobile ? "sm:inline-block hidden" : ""}`} ref={buttonRef}>
       {buttonContent}
     </button>
   );

@@ -22,7 +22,14 @@
     "news": {
       "title": "XƏBƏRLƏR",
       "subtitle": "Universitetdə baş verən son hadisələr",
-      "viewAll": "Hamısına bax"
+      "viewAll": "Hamısına bax",
+      "all-news": "BÜTÜN XƏBƏRLƏR",
+      "education": "TƏHSİL",
+      "science": "ELM",
+      "innovation": "İNNOVASİYA",
+      "social": "SOSİAL",
+      "cooperation": "ƏMƏKDAŞLIQ",
+      "internationalization": "BEYNƏLMİLƏLLƏŞMƏ"
     },
     "announcements": {
       "title": "ELANLAR",
@@ -51,6 +58,17 @@
     },
     "contact": {
       "title": "Bizimlə Əlaqə"
+    }
+  },
+  "news":{
+    "filter":{
+      "all-news": "BÜTÜN XƏBƏRLƏR",
+      "education": "TƏHSİL",
+      "science": "ELM",
+      "innovation": "İNNOVASİYA",
+      "social": "SOSİAL",
+      "cooperation": "ƏMƏKDAŞLIQ",
+      "internationalization": "BEYNƏLMİLƏLLƏŞMƏ"
     }
   }
 }

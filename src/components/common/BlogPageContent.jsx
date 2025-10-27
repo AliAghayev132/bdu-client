@@ -45,7 +45,7 @@ const BlogPageContent = ({ locale, content }) => {
       <Breadcrumbs breadcrumbs={breadcrumbs} />
 
       {/* Page Content */}
-      <div className="wrapper mx-auto px-4 sm:py-8 py-3">
+      <div className="wrapper mx-auto px-4 py-3">
         <header className="w-full mx-auto laptop:mb-6 mb-3">
           <PageTitle title={content.title} />
         </header>

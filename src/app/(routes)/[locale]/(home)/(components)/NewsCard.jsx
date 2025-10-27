@@ -33,7 +33,7 @@ const NewsCard = memo(({ news }) => {
       className="group block rounded-2xl overflow-hidden transition-all duration-300 h-full bg-white"
     >
       {/* Image Container */}
-      <div className="relative aspect-[16/9] overflow-hidden  rounded-2xl  ">
+      <div className="relative aspect-[16/9] overflow-hidden  rounded-2xl">
         {news.image ? (
           <Image
             src={news.image}
@@ -55,7 +55,7 @@ const NewsCard = memo(({ news }) => {
         )}
         
         {/* Date Badge - Top Left Corner */}
-        <div className="absolute top-0 rounded-br-2xl left-0 bg-white shadow-md">
+        <div className="absolute top-0 rounded-br-2xl left-0 bg-white shadow-md border-l-2 border-t-2 rounded-tl-2xl border-primary/30">
           <div className="flex flex-col items-center justify-center lg:w-14 lg:h-14 md:w-12 md:h-12 w-10 h-10 p-2">
             <time className="lg:text-2xl md:text-xl sm:text-lg font-bold text-primary leading-none" suppressHydrationWarning>
               {new Date(news.date).getDate()}
@@ -68,11 +68,11 @@ const NewsCard = memo(({ news }) => {
       </div>
 
       {/* Content */}
-      <div className="laptop:py-5 py-3  px-3 flex flex-col justify-between">
-        <h3 className="font-semibold text-secondary sm:text-base text-sm mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
+      <div className="laptop:py-5 mobile:py-3 py-2 mobile:px-3 px-1.5 flex flex-col justify-between">
+        <h3 className="font-semibold text-secondary sm:text-base mobile:text-sm text-xs mobile:mb-2 mb-1 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
           {news.title}
         </h3>
-        <p className="sm:text-xs text-[11px] text-gray-600 line-clamp-2 leading-relaxed">
+        <p className="sm:text-sm mobile:text-xs text-[10px] text-gray-600 line-clamp-2 leading-relaxed font-medium">
           {news.excerpt}
         </p>
       </div>

@@ -5,6 +5,11 @@ import AnnouncementsList from "./AnnouncementsList";
 import AnnouncementsListMobile from "./AnnouncementsListMobile";
 import newsImage from "@/assets/images/baki-dovlet-universiteti.jpg";
 import { ChevronRight } from "lucide-react";
+import { translateUrl } from "@/utils/urlTranslator";
+import { links } from "@/data/staticPages";
+import AnimatedButton from "@/components/common/AnimatedButton/AnimatedButton";
+import { ArrowBigRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 // Fetch news data - Server Component
 async function getNews() {
@@ -67,7 +72,7 @@ async function getNews() {
   ];
 }
 
-export default async function NewsSection() {
+export default async function NewsSection({ locale }) {
   const t = await getTranslations("home");
   const news = await getNews();
 
@@ -83,12 +88,25 @@ export default async function NewsSection() {
                 {t("news.title", { default: "XƏBƏRLƏR" })}
               </h2>
               {/* <Link
-                href="/news"
+                href={translateUrl(links.news[locale], locale)}
                 className="group md:flex hidden items-center gap-2 px-5 py-2.5 bg-secondary/10 text-secondary rounded-lg hover:bg-secondary hover:text-white transition-all duration-300 text-sm font-medium"
               >
                 <span>{t("news.viewAll", { default: "BÜTÜN XƏBƏRLƏR" })}</span>
               <ChevronRight className="w-4 h-4"/>
               </Link> */}
+              <AnimatedButton
+                href={translateUrl(links.news[locale], locale)}
+                label={t("news.viewAll", { default: "BÜTÜN XƏBƏRLƏR" })}
+                animateOnScroll={false}
+                width="12rem"
+                isMobile={true}
+              />
+              <Link
+                href={translateUrl(links.news[locale], locale)}
+                className="sm:hidden block p-2 bg-secondary/10 text-secondary rounded-xl hover:bg-secondary hover:text-white transition-all duration-300 text-sm font-medium"
+              >
+                <ArrowRight className="w-[18px] h-[18px]"/>
+              </Link>
             </div>
 
             {/* News Grid - Desktop: 3 columns, Mobile: Horizontal Scroll */}
@@ -131,15 +149,19 @@ export default async function NewsSection() {
             <h2 className="md:text-2xl sm:text-xl text-lg font-bold text-secondary">
               {t("announcements.title", { default: "ELANLAR" })}
             </h2>
-            {/* <Link
-              href="/announcements"
-              className="group md:flex hidden items-center gap-2 px-5 py-2.5 bg-[#B8956A]/5 text-[#B8956A] rounded-lg hover:bg-[#B8956A] hover:text-white transition-all duration-300 text-sm font-medium"
-            >
-              <span>
-                {t("announcements.viewAll", { default: "BÜTÜN ELANLAR" })}
-              </span>
-              <ChevronRight className="w-4 h-4"/>
-            </Link> */}
+           <AnimatedButton
+                href={translateUrl(links.announcements[locale], locale)}
+                label={t("announcements.viewAll", { default: "BÜTÜN ELANLAR" })}
+                animateOnScroll={false}
+                width="12rem"
+                isMobile={true}
+              />
+              <Link
+                href={translateUrl(links.announcements[locale], locale)}
+                className="sm:hidden block p-2 bg-secondary/10 text-secondary rounded-xl hover:bg-secondary hover:text-white transition-all duration-300 text-sm font-medium"
+              >
+                <ArrowRight className="w-[18px] h-[18px]"/>
+              </Link>
           </div>
           <div className="-mx-8">
             <div
@@ -156,4 +178,3 @@ export default async function NewsSection() {
     </section>
   );
 }
-

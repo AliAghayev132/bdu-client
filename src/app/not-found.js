@@ -42,11 +42,11 @@ export default function NotFound() {
 
           {/* 404 Text */}
           <div className="mb-6">
-            <h1 className="text-8xl font-bold text-gray-400 mb-2">404</h1>
-            <h2 className="text-3xl font-bold text-gray-800 mb-3">
+            <h1 className="lg:text-8xl md:text-6xl text-4xl font-bold text-gray-400 mb-2">404</h1>
+            <h2 className="lg:text-3xl md:text-2xl text-xl font-bold text-gray-800 mb-3">
               {t.title}
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="lg:text-lg md:text-base text-sm text-gray-600">
               {t.description}
             </p>
           </div>
@@ -55,7 +55,7 @@ export default function NotFound() {
           <div>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 px-8 py-3 bg-white text-primary border border-primary hover:bg-primary hover:text-white transition-colors font-medium"
+              className="flex items-center justify-center gap-2 px-8 py-3 bg-white text-primary border border-primary hover:bg-primary hover:text-white transition-colors font-medium"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

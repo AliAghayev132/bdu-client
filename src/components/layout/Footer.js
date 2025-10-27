@@ -5,11 +5,11 @@ import bakuPanorama from "@/assets/images/baku-panorama.png";
 export default function Footer() {
   return (
     <footer className="mx-auto w-full wrapper sm:mb-6 mb-3 mt-6">
-      <div className="relative sm:py-12 py-4 wrapper rounded-4xl bg-secondary border-t border-secondary/10 text-white">
-        <div className="absolute bottom-0 transform -translate-x-1/2 left-1/2 w-1/2">
+      <div className="relative md:pt-12 md:pb-12 pt-5 pb-20 wrapper rounded-4xl bg-secondary border-t border-secondary/10 text-white">
+        <div className="absolute bottom-0 transform -translate-x-1/2 left-1/2 md:w-1/2 w-[85%]">
           <Image
             src={bakuPanorama}
-            alt="bdu footer image"
+            alt="bdu footer-image"
             width={720}
             height={125}
             className="object-contain w-full h-full"
