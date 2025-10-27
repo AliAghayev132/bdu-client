@@ -68,13 +68,13 @@ const NewsCard = memo(({ news }) => {
       </div>
 
       {/* Content */}
-      <div className="laptop:py-5 mobile:py-3 py-2 mobile:px-3 px-1.5 flex flex-col justify-between">
-        <h3 className="font-semibold text-secondary sm:text-base mobile:text-sm text-xs mobile:mb-2 mb-1 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
+      <div className="py-4 px-3 flex flex-col justify-between">
+        <h3 className="font-semibold text-secondary sm:text-base text-[14px]  mobile:mb-2 mb-1 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
           {news.title}
         </h3>
-        <p className="sm:text-sm mobile:text-xs text-[10px] text-gray-600 line-clamp-2 leading-relaxed font-medium">
+        <article className="sm:text-sm text-xs text-gray-600 line-clamp-2  leading-relaxed font-medium">
           {news.excerpt}
-        </p>
+        </article>
       </div>
     </Link>
   );

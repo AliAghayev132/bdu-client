@@ -126,7 +126,7 @@ export default async function NewsSection({ locale }) {
                   {news.slice(0, 6).map((item) => (
                     <div
                       key={item.id}
-                      className="min-w-[240px] w-[240px] flex-shrink-0"
+                      className="min-w-[260px] w-[260px] flex-shrink-0"
                     >
                       <NewsCard news={item} />
                     </div>
