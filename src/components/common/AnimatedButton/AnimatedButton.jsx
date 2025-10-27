@@ -163,7 +163,7 @@ const AnimatedButton = ({
   }
 
   return (
-    <button style={{ width: width }} className="btn" ref={buttonRef}>
+    <button style={{ width: width }} className="btn laptop:text-[0.95rem] text-[0.8rem]" ref={buttonRef}>
       {buttonContent}
     </button>
   );
