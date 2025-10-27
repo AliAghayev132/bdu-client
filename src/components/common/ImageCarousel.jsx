@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
+import "yet-another-react-lightbox/styles.css";
 import Lightbox from "yet-another-react-lightbox";
 
 const defaultEmblaOptions = { loop: true, align: "start", containScroll: "trimSnaps" };
