@@ -110,7 +110,7 @@ Backend-dən dinamik məlumat çəkmək üçün hazır struktur:
 `.env.local` faylı yaradın:
 
 ```env
-NEXT_PUBLIC_SITE_URL=https://bdu.edu.az
+NEXT_PUBLIC_SITE_URL=https://bdu.info.az
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 REVALIDATE_TIME=600
 ```
@@ -118,8 +118,8 @@ REVALIDATE_TIME=600
 Production üçün `.env.production`:
 
 ```env
-NEXT_PUBLIC_SITE_URL=https://bdu.edu.az
-NEXT_PUBLIC_API_URL=https://api.bdu.edu.az/api
+NEXT_PUBLIC_SITE_URL=https://bdu.info.az
+NEXT_PUBLIC_API_URL=https://api.bdu.info.az/api
 REVALIDATE_TIME=600
 ```
 
@@ -156,12 +156,12 @@ pm2 start npm --name "bdu-frontend" -- start
 
 ### 1. Site Əlavə Et
 1. [Google Search Console](https://search.google.com/search-console)-a daxil ol
-2. Property əlavə et: `https://bdu.edu.az`
+2. Property əlavə et: `https://bdu.info.az`
 3. Domain verification (DNS TXT record)
 
 ### 2. Sitemap Göndər
 1. Sitemaps → Add new sitemap
-2. URL: `https://bdu.edu.az/sitemap.xml`
+2. URL: `https://bdu.info.az/sitemap.xml`
 3. Submit
 
 ### 3. Hreflang Yoxla

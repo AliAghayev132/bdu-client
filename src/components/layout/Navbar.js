@@ -154,9 +154,10 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
         {/* Main Navigation - Top Nav */}
         <div
           ref={topNavRef}
-          className="bdu-nav-top wrapper relative flex items-center justify-between min-1600:py-2 py-1 transition-all duration-400"
+          className="bdu-nav-top wrapper relative flex items-center justify-between min-1600:py-2 py-1"
           style={{
             paddingLeft: showStickyLogo ? "130px" : "16px",
+            transition: "all 0.3s ease",
           }}
           onMouseLeave={(e) => {
             const relatedTarget = e.relatedTarget;
@@ -267,6 +268,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
           ref={bottomNavRef}
               style={{
             paddingLeft: showStickyLogo ? "146px" : "32px",
+            transition: "all 0.3s ease",
           }}
           className="bdu-nav-bottom  wrapper flex items-center justify-between space-x-6 laptop:py-4 py-2 transition-all duration-400"
         >

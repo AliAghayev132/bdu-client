@@ -40,7 +40,7 @@ Backend API yaratmalısan:
 
 `.env.local` yarat:
 ```env
-NEXT_PUBLIC_SITE_URL=https://bdu.edu.az
+NEXT_PUBLIC_SITE_URL=https://bdu.info.az
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
 
@@ -61,7 +61,7 @@ npm run start
 ## Google Search Console
 
 1. Site əlavə et: https://search.google.com/search-console
-2. Sitemap göndər: `https://bdu.edu.az/sitemap.xml`
+2. Sitemap göndər: `https://bdu.info.az/sitemap.xml`
 3. 2-3 həftə gözlə (indexləmə)
 
 ## Nəticə
