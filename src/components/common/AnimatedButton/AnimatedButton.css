@@ -17,8 +17,8 @@
   position: relative;
   display: block;
   margin: 0;
-  width: 2.6rem;
-  height: 2.6rem;
+  /* width: 2.6rem;
+  height: 2.6rem; */
   background: var(--secondary);
   border-radius: 0.7rem;
   transform: scale(0);

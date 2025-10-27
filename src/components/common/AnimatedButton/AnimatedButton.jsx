@@ -137,9 +137,9 @@ const AnimatedButton = ({
 
   const buttonContent = (
     <>
-      <span className="circle flex justify-center items-center text-center" ref={circleRef} aria-hidden="true"></span>
-      <div className="icon" ref={iconRef}>
-        <ArrowRight size={23} className="w-full mx-auto text-center mt-[0.1rem]"  strokeWidth={'1.8'}/>
+      <span className="circle flex justify-center items-center text-center laptop:w-[2.6rem] laptop:h-[2.6rem] w-[2.2rem] h-[2.2rem]" ref={circleRef} aria-hidden="true"></span>
+      <div className="icon flex items-center justify-center" ref={iconRef}>
+        <ArrowRight  className="laptop:w-[23px] w-[26px] mx-auto text-center laptop:mt-[0.1rem] pb-1 pr-2"  strokeWidth={'1.8'}/>
       </div>
       <span className="button-text" ref={textRef}>
         {label}
