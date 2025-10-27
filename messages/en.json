@@ -22,7 +22,7 @@
     "news": {
       "title": "NEWS",
       "subtitle": "Latest events at the university",
-      "viewAll": "View all"
+      "viewAll": "VIEW ALL"
     },
     "announcements": {
       "title": "ANNOUNCEMENTS",
@@ -31,7 +31,7 @@
     },
     "education": {
       "title": "EDUCATION",
-      "viewAll": "View all",
+      "viewAll": "VIEW ALL",
       "items": {
         "faculties": "FACULTIES",
         "bachelor": "BACHELOR",

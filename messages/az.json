@@ -22,7 +22,7 @@
     "news": {
       "title": "XƏBƏRLƏR",
       "subtitle": "Universitetdə baş verən son hadisələr",
-      "viewAll": "Hamısına bax",
+      "viewAll": "HAMISINA BAX",
       "all-news": "BÜTÜN XƏBƏRLƏR",
       "education": "TƏHSİL",
       "science": "ELM",
@@ -34,11 +34,11 @@
     "announcements": {
       "title": "ELANLAR",
       "subtitle": "Aktual elanlar və bildirişlər",
-      "viewAll": "Hamısına bax"
+      "viewAll": "HAMISINA BAX"
     },
     "education": {
       "title": "TƏHSİL",
-      "viewAll": "Hamısı",
+      "viewAll": "HAMISI",
       "items": {
         "faculties": "FAKÜLTƏLƏR",
         "bachelor": "BAKALAVRİAT",

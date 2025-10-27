@@ -155,7 +155,7 @@ const AnimatedButton = ({
       <Link
         href={href}
         ref={buttonRef}
-        className={`btn laptop:text-[0.95rem] text-[0.8rem] ${isMobile ? "sm:block hidden" : ""}`}
+        className={`btn laptop:text-[0.9rem] text-[0.8rem] font-semibold ${isMobile ? "sm:block hidden" : ""}`}
         style={{ width }}
       >
         {buttonContent}
@@ -164,7 +164,7 @@ const AnimatedButton = ({
   }
 
   return (
-    <button style={{ width: width }} className={`btn laptop:text-[0.95rem] text-[0.8rem] ${isMobile ? "sm:inline-block hidden" : ""}`} ref={buttonRef}>
+    <button style={{ width: width }} className={`btn laptop:text-[0.95rem] text-[0.8rem] font-semibold ${isMobile ? "sm:inline-block hidden" : ""}`} ref={buttonRef}>
       {buttonContent}
     </button>
   );
