@@ -1,0 +1,73 @@
+.btn {
+  position: relative;
+  display: inline-block;
+  /* width: 13rem; */
+  height: auto;
+  padding: 0.3rem;
+  outline: none;
+  border: none;
+  font-size: 0.95rem;
+  background: var(--bg-light);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  cursor: pointer;
+  transform: scale(0);
+}
+
+.btn .circle {
+  position: relative;
+  display: block;
+  margin: 0;
+  width: 2.6rem;
+  height: 2.6rem;
+  background: var(--secondary);
+  border-radius: 0.7rem;
+  transform: scale(0);
+  overflow: hidden;
+  transition: width 0.5s cubic-bezier(0.65, 0, 0.076, 1);
+}
+
+.btn .icon {
+  position: absolute;
+  top: 0.775rem;
+  left: 0.95rem;
+  color: var(--white);
+  /* font-size: 1.2rem; */
+  transform: translateX(0);
+  transition: all 0.5s cubic-bezier(0.65, 0, 0.076, 1);
+  will-change: transform;
+}
+
+.btn .button-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0 0 0 1.25rem;
+  text-align: center;
+  color: var(--secondary);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition: all 0.5s cubic-bezier(0.65, 0, 0.076, 1);
+}
+
+.btn .line {
+  position: relative;
+  transform: translateY(100%);
+  will-change: transform;
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+}
+
+.btn:hover .circle {
+  width: 100%;
+}
+
+.btn:hover .icon {
+  transform: translate(0.75rem);
+}
+
+.btn:hover .button-text {
+  color: var(--white);
+}

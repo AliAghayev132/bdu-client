@@ -4,7 +4,7 @@ import React from 'react'
 
 const Breadcrumbs = ({breadcrumbs}) => {
   return (
-   <div className="py-3">
+   <div className="laptop:py-3 laptop:pt-0 sm:pt-5 pt-4">
           <div className="wrapper mx-auto px-4">
             <nav className="flex items-center flex-wrap sm:space-x-2 space-x-1 md:text-base sm:text-sm text-xs">
               {breadcrumbs.map((crumb, index) => (
@@ -15,18 +15,18 @@ const Breadcrumbs = ({breadcrumbs}) => {
                   {/* First item (Home) is link, second item (Category) is text, last item is current page */}
                   {index === 1 ? (
                     <span
-                      className="laptop:text-sm sm:text-xs text-[10px] text-gray-600 hover:text-primary"
+                      className="laptop:text-sm mobile:text-xs text-[11px] text-gray-600 hover:text-primary"
                     >
                       {crumb.label}
                     </span>
                   ) : index === breadcrumbs.length - 1 ? (
-                    <span className="laptop:text-sm sm:text-xs text-[10px] text-gray-900 font-medium">
+                    <span className="laptop:text-sm mobile:text-xs text-[11px] text-gray-900 font-medium">
                       {crumb.label}
                     </span>
                   ) : (
                     <Link
                       href={crumb.href}
-                      className="laptop:text-sm sm:text-xs text-[10px] text-gray-600 hover:text-primary"
+                      className="laptop:text-sm mobile:text-xs text-[11px] text-gray-600 hover:text-primary"
                     >
                       {crumb.label}
                     </Link>

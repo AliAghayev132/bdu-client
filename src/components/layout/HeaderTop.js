@@ -14,13 +14,13 @@ export default function HeaderTop({ onMenuToggle }) {
         {/* Mobile View */}
         <div className="flex lg:hidden py-2 items-center justify-between">
           <div className="flex items-center sm:gap-3 gap-1.5">
-            <Link href="/" className="block">
+            <Link href="/" className="block w-11 h-11 overflow-hidden">
             <Image
               src="/bsu-logo.png"
               alt="BDU Logo"
               width={44}
               height={44}
-              className="object-contain"
+              className="object-contain w-full h-full"
               />
               </Link>
             <div>

@@ -151,6 +151,5 @@ Localization safety:
 
 ## Future improvements
 
-- Add TypeScript types for `menuData` to validate content at build time.
 - Add tests for `getPageDataFromMenu`, `resolveLocalizedPath`, and `buildBreadcrumbs`.
 - Consider a CMS-backed generator that outputs this JSON structure for production.

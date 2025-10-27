@@ -14,6 +14,7 @@ import {
 import { translateUrl } from "@/utils/urlTranslator";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import AnimatedButton from "../common/AnimatedButton/AnimatedButton";
 
 export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   const t = useTranslations("nav");
@@ -272,9 +273,14 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
           }}
           className="bdu-nav-bottom  wrapper flex items-center justify-between space-x-6 laptop:py-4 py-2 transition-all duration-400"
         >
-          <button className="laptop:px-4 px-3 laptop:py-2 py-1.5 bg-bg-light  border border-white/30 hover:bg-secondary/80 hover:text-white laptop:text-sm text-xs font-medium transition-colors">
+          {/* <button className="laptop:px-4 px-3 laptop:py-2 py-1.5 bg-bg-light  border border-white/30 hover:bg-secondary/80 hover:text-white laptop:text-sm text-xs font-medium transition-colors">
             e-BDU
-          </button>
+          </button> */}
+             <AnimatedButton
+              label="e-BDU"
+              animateOnScroll={false}
+              width="8rem"
+            />
           {/* Right - Rector Info and Language Switcher */}
           <div className="flex items-center  gap-6">
             {bottomNavItems.map((item) => (

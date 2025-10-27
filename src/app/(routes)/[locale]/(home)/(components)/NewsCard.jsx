@@ -5,6 +5,15 @@ import { Link } from '@/i18n/routing';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 
+// news schema {
+//     id: number;
+//     slug: string;
+//     title: string;
+//     excerpt: string;
+//     date: string;
+//     image: string;
+// }
+
 const NewsCard = memo(({ news }) => {
   const locale = useLocale();
 
@@ -29,9 +38,12 @@ const NewsCard = memo(({ news }) => {
           <Image
             src={news.image}
             alt={news.title}
-            fill
-            style={{willChange: 'transform'}}
-            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+            width={1000}
+            height={1000}
+            style={{willChange: 'transform',
+              transition: 'all 0.3s ease',
+            }}
+            className="object-cover w-full h-full group-hover:scale-105 "
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
