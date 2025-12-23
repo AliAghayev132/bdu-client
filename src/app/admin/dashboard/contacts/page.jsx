@@ -8,6 +8,7 @@ import Table from '@components/admin/ui/Table';
 import Modal from '@components/admin/ui/Modal';
 import Input from '@components/admin/ui/Input';
 import Textarea from '@components/admin/ui/Textarea';
+import AdminPageHeader from '@components/admin/AdminPageHeader';
 import { Search, Mail, MailOpen, CheckCircle, Archive, RotateCcw, Trash, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -81,10 +82,10 @@ export default function ContactsPage() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'new': return <Mail size={16} className="text-blue-600" />;
-      case 'read': return <MailOpen size={16} className="text-yellow-600" />;
+      case 'new': return <Mail size={16} className="text-secondary" />;
+      case 'read': return <MailOpen size={16} className="text-primary" />;
       case 'replied': return <CheckCircle size={16} className="text-green-600" />;
-      case 'archived': return <Archive size={16} className="text-gray-600" />;
+      case 'archived': return <Archive size={16} className="text-gray-400" />;
       default: return null;
     }
   };
@@ -105,7 +106,7 @@ export default function ContactsPage() {
       label: 'Ad Soyad',
       render: (row) => (
         <div>
-          <p className="font-medium">{`${row.firstName} ${row.lastName}`}</p>
+          <p className="font-medium text-secondary">{`${row.firstName} ${row.lastName}`}</p>
           <p className="text-xs text-gray-500">{row.email}</p>
         </div>
       ),
@@ -115,7 +116,7 @@ export default function ContactsPage() {
       label: 'Əlaqə',
       render: (row) => (
         <div>
-          <p className="text-sm">{row.phoneNumber}</p>
+          <p className="text-sm text-gray-600">{row.phoneNumber}</p>
         </div>
       ),
     },
@@ -123,7 +124,7 @@ export default function ContactsPage() {
       key: 'subject',
       label: 'Mövzu',
       render: (row) => (
-        <p className="text-sm truncate max-w-xs">{row.subject}</p>
+        <p className="text-sm truncate max-w-xs text-secondary font-medium">{row.subject}</p>
       ),
     },
     {
@@ -132,11 +133,11 @@ export default function ContactsPage() {
       render: (row) => (
         <div className="flex items-center gap-2">
           {getStatusIcon(row.status)}
-          <span className={`px-2 py-1 rounded text-xs ${
-            row.status === 'new' ? 'bg-blue-100 text-blue-700' :
-            row.status === 'read' ? 'bg-yellow-100 text-yellow-700' :
-            row.status === 'replied' ? 'bg-green-100 text-green-700' :
-            'bg-gray-100 text-gray-700'
+          <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${
+            row.status === 'new' ? 'bg-secondary/10 text-secondary border border-secondary/20' :
+            row.status === 'read' ? 'bg-primary/10 text-primary border border-primary/20' :
+            row.status === 'replied' ? 'bg-green-100 text-green-700 border border-green-200' :
+            'bg-gray-100 text-gray-700 border border-gray-200'
           }`}>
             {getStatusLabel(row.status)}
           </span>
@@ -147,7 +148,7 @@ export default function ContactsPage() {
       key: 'date',
       label: 'Tarix',
       render: (row) => (
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 font-medium">
           {new Date(row.createdAt).toLocaleDateString('az-AZ')}
         </p>
       ),
@@ -164,7 +165,7 @@ export default function ContactsPage() {
                   e.stopPropagation();
                   setDetailModal({ isOpen: true, data: row });
                 }}
-                className="p-1 text-gray-600 hover:text-blue-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-secondary hover:bg-secondary/5 rounded-lg transition-colors"
                 title="Ətraflı"
               >
                 <MailOpen size={18} />
@@ -179,7 +180,7 @@ export default function ContactsPage() {
                     adminNotes: row.adminNotes || ''
                   });
                 }}
-                className="p-1 text-gray-600 hover:text-green-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                 title="Status dəyiş"
               >
                 <CheckCircle size={18} />
@@ -189,7 +190,7 @@ export default function ContactsPage() {
                   e.stopPropagation();
                   setDeleteModal({ isOpen: true, id: row._id, permanent: false });
                 }}
-                className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 title="Sil"
               >
                 <Trash2 size={18} />
@@ -202,7 +203,7 @@ export default function ContactsPage() {
                   e.stopPropagation();
                   handleRestore(row._id);
                 }}
-                className="p-1 text-gray-600 hover:text-green-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                 title="Bərpa et"
               >
                 <RotateCcw size={18} />
@@ -212,7 +213,7 @@ export default function ContactsPage() {
                   e.stopPropagation();
                   setDeleteModal({ isOpen: true, id: row._id, permanent: true });
                 }}
-                className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 title="Tamamilə sil"
               >
                 <Trash size={18} />
@@ -225,59 +226,67 @@ export default function ContactsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Müraciətlər</h1>
-          <p className="text-gray-600 mt-1">Bütün müraciətləri idarə edin</p>
-        </div>
-      </div>
+    <div className="space-y-8">
+      <AdminPageHeader 
+        title="Müraciətlər" 
+        description="Bütün müraciətləri idarə edin"
+      />
 
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Card className="p-4">
+          <Card className="p-4 border-l-4 border-l-gray-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Ümumi</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                <p className="text-sm font-medium text-gray-600">Ümumi</p>
+                <p className="text-2xl font-bold text-secondary mt-1">{stats.total}</p>
               </div>
-              <Mail className="text-gray-400" size={32} />
+              <div className="p-2 bg-gray-50 rounded-lg">
+                <Mail className="text-gray-400" size={24} />
+              </div>
             </div>
           </Card>
-          <Card className="p-4">
+          <Card className="p-4 border-l-4 border-l-secondary">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Yeni</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.new}</p>
+                <p className="text-sm font-medium text-gray-600">Yeni</p>
+                <p className="text-2xl font-bold text-secondary mt-1">{stats.new}</p>
               </div>
-              <Mail className="text-blue-400" size={32} />
+              <div className="p-2 bg-secondary/10 rounded-lg">
+                <Mail className="text-secondary" size={24} />
+              </div>
             </div>
           </Card>
-          <Card className="p-4">
+          <Card className="p-4 border-l-4 border-l-primary">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Oxunub</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.read}</p>
+                <p className="text-sm font-medium text-gray-600">Oxunub</p>
+                <p className="text-2xl font-bold text-primary mt-1">{stats.read}</p>
               </div>
-              <MailOpen className="text-yellow-400" size={32} />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <MailOpen className="text-primary" size={24} />
+              </div>
             </div>
           </Card>
-          <Card className="p-4">
+          <Card className="p-4 border-l-4 border-l-green-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Cavablandı</p>
-                <p className="text-2xl font-bold text-green-600">{stats.replied}</p>
+                <p className="text-sm font-medium text-gray-600">Cavablandı</p>
+                <p className="text-2xl font-bold text-green-600 mt-1">{stats.replied}</p>
               </div>
-              <CheckCircle className="text-green-400" size={32} />
+              <div className="p-2 bg-green-50 rounded-lg">
+                <CheckCircle className="text-green-500" size={24} />
+              </div>
             </div>
           </Card>
-          <Card className="p-4">
+          <Card className="p-4 border-l-4 border-l-gray-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Arxiv</p>
-                <p className="text-2xl font-bold text-gray-600">{stats.archived}</p>
+                <p className="text-sm font-medium text-gray-600">Arxiv</p>
+                <p className="text-2xl font-bold text-gray-600 mt-1">{stats.archived}</p>
               </div>
-              <Archive className="text-gray-400" size={32} />
+              <div className="p-2 bg-gray-50 rounded-lg">
+                <Archive className="text-gray-500" size={24} />
+              </div>
             </div>
           </Card>
         </div>
@@ -299,7 +308,7 @@ export default function ContactsPage() {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-secondary outline-none transition-all"
             >
               <option value="all">Bütün statuslar</option>
               <option value="new">📧 Yeni</option>
@@ -329,9 +338,9 @@ export default function ContactsPage() {
                 type="checkbox"
                 checked={showDeleted}
                 onChange={(e) => setShowDeleted(e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                className="w-4 h-4 text-primary rounded focus:ring-primary border-gray-300"
               />
-              <span className="text-sm font-medium text-gray-700">Silinmiş müraciətləri göstər</span>
+              <span className="text-sm font-medium text-secondary">Silinmiş müraciətləri göstər</span>
             </label>
 
             {(search || status !== 'all' || startDate || endDate || showDeleted) && (
@@ -424,40 +433,40 @@ export default function ContactsPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-700">Ad Soyad</p>
-                <p className="text-base">{`${detailModal.data.firstName} ${detailModal.data.lastName}`}</p>
+                <p className="text-sm font-medium text-gray-500">Ad Soyad</p>
+                <p className="text-base font-medium text-secondary">{`${detailModal.data.firstName} ${detailModal.data.lastName}`}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700">Email</p>
-                <p className="text-base">{detailModal.data.email}</p>
+                <p className="text-sm font-medium text-gray-500">Email</p>
+                <p className="text-base text-secondary">{detailModal.data.email}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700">Telefon</p>
-                <p className="text-base">{detailModal.data.phoneNumber}</p>
+                <p className="text-sm font-medium text-gray-500">Telefon</p>
+                <p className="text-base text-secondary">{detailModal.data.phoneNumber}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700">Status</p>
+                <p className="text-sm font-medium text-gray-500">Status</p>
                 <div className="flex items-center gap-2 mt-1">
                   {getStatusIcon(detailModal.data.status)}
-                  <span>{getStatusLabel(detailModal.data.status)}</span>
+                  <span className="font-medium">{getStatusLabel(detailModal.data.status)}</span>
                 </div>
               </div>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-700">Mövzu</p>
-              <p className="text-base">{detailModal.data.subject}</p>
+              <p className="text-sm font-medium text-gray-500 mb-1">Mövzu</p>
+              <p className="text-base font-medium text-secondary">{detailModal.data.subject}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-700">Mesaj</p>
-              <p className="text-base whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">{detailModal.data.message}</p>
+              <p className="text-sm font-medium text-gray-500 mb-2">Mesaj</p>
+              <p className="text-base whitespace-pre-wrap bg-gray-50 p-4 rounded-xl border border-gray-100 text-gray-700">{detailModal.data.message}</p>
             </div>
             {detailModal.data.adminNotes && (
               <div>
-                <p className="text-sm font-medium text-gray-700">Admin Qeydləri</p>
-                <p className="text-base whitespace-pre-wrap bg-blue-50 p-4 rounded-lg">{detailModal.data.adminNotes}</p>
+                <p className="text-sm font-medium text-gray-500 mb-2">Admin Qeydləri</p>
+                <p className="text-base whitespace-pre-wrap bg-blue-50 p-4 rounded-xl border border-blue-100 text-blue-900">{detailModal.data.adminNotes}</p>
               </div>
             )}
-            <div className="text-xs text-gray-500 pt-2 border-t">
+            <div className="text-xs text-gray-400 pt-3 border-t border-gray-100 text-right">
               <p>Göndərilmə tarixi: {new Date(detailModal.data.createdAt).toLocaleString('az-AZ')}</p>
             </div>
           </div>
@@ -472,11 +481,11 @@ export default function ContactsPage() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <label className="block text-sm font-medium text-secondary mb-2">Status</label>
             <select
               value={statusModal.currentStatus}
               onChange={(e) => setStatusModal({ ...statusModal, currentStatus: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white outline-none"
             >
               <option value="new">📧 Yeni</option>
               <option value="read">📖 Oxunub</option>

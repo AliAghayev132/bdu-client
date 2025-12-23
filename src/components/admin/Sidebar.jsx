@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
@@ -18,6 +17,8 @@ import { useDispatch } from 'react-redux';
 import { logout as logoutAction } from '@store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import SidebarHeader from './sidebar/SidebarHeader';
+import SidebarItem from './sidebar/SidebarItem';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
@@ -48,41 +49,26 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 flex flex-col">
-      <div className="p-6 border-b border-gray-200">
-        <h1 className="text-2xl font-bold text-gray-900">BDU Admin</h1>
-        <p className="text-sm text-gray-500 mt-1">İdarəetmə paneli</p>
-      </div>
+    <aside className="w-72 bg-white border-r border-gray-100 h-screen sticky top-0 flex flex-col shadow-sm z-40">
+      <SidebarHeader />
 
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
-          
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                isActive
-                  ? 'bg-blue-50 text-blue-600 font-medium'
-                  : 'text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              <Icon size={20} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
+      <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+        {menuItems.map((item) => (
+          <SidebarItem
+            key={item.href}
+            {...item}
+            isActive={pathname === item.href || pathname?.startsWith(item.href + '/')}
+          />
+        ))}
       </nav>
 
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-gray-100 bg-gray-50/50">
         <button
           onClick={handleLogout}
           disabled={isLoading}
-          className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+          className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 font-medium group disabled:opacity-50"
         >
-          <LogOut size={20} />
+          <LogOut size={20} className="group-hover:scale-110 transition-transform" />
           <span>Çıxış</span>
         </button>
       </div>

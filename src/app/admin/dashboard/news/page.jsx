@@ -8,6 +8,7 @@ import Table from '@components/admin/ui/Table';
 import Modal from '@components/admin/ui/Modal';
 import NewsModal from '@components/admin/NewsModal';
 import Input from '@components/admin/ui/Input';
+import AdminPageHeader from '@components/admin/AdminPageHeader';
 import { Plus, Edit, Trash2, Eye, EyeOff, Search, ExternalLink, RotateCcw, Trash } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -107,7 +108,7 @@ export default function NewsPage() {
       label: 'Başlıq',
       render: (row) => (
         <div>
-          <p className="font-medium">{row.title?.az || row.title}</p>
+          <p className="font-medium text-secondary">{row.title?.az || row.title}</p>
           <p className="text-xs text-gray-500 mt-1">
             {new Date(row.createdAt).toLocaleDateString('az-AZ')}
           </p>
@@ -126,7 +127,7 @@ export default function NewsPage() {
           other: '📌 Digər',
         };
         return (
-          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+          <span className="px-2.5 py-1 bg-primary/10 text-primary rounded-md text-xs font-medium border border-primary/10">
             {categoryMap[row.category] || row.category}
           </span>
         );
@@ -136,8 +137,10 @@ export default function NewsPage() {
       key: 'status',
       label: 'Status',
       render: (row) => (
-        <span className={`px-2 py-1 rounded text-xs ${
-          row.isPublished ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+        <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${
+          row.isPublished 
+            ? 'bg-green-100 text-green-700 border border-green-200' 
+            : 'bg-gray-100 text-gray-700 border border-gray-200'
         }`}>
           {row.isPublished ? 'Dərc edilib' : 'Qaralama'}
         </span>
@@ -146,7 +149,9 @@ export default function NewsPage() {
     {
       key: 'views',
       label: 'Baxış',
-      render: (row) => row.views || 0,
+      render: (row) => (
+        <span className="text-sm font-medium text-gray-600">{row.views || 0}</span>
+      ),
     },
     {
       key: 'actions',
@@ -160,7 +165,7 @@ export default function NewsPage() {
                   e.stopPropagation();
                   handlePreview(row);
                 }}
-                className="p-1 text-gray-600 hover:text-green-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
                 title="Önizləmə"
               >
                 <ExternalLink size={18} />
@@ -170,7 +175,7 @@ export default function NewsPage() {
                   e.stopPropagation();
                   handleTogglePublish(row._id);
                 }}
-                className="p-1 text-gray-600 hover:text-blue-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-secondary hover:bg-secondary/5 rounded-lg transition-colors"
                 title={row.isPublished ? 'Gizlət' : 'Dərc et'}
               >
                 {row.isPublished ? <Eye size={18} /> : <EyeOff size={18} />}
@@ -180,7 +185,7 @@ export default function NewsPage() {
                   e.stopPropagation();
                   setNewsModal({ isOpen: true, data: row });
                 }}
-                className="p-1 text-gray-600 hover:text-blue-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 title="Redaktə et"
               >
                 <Edit size={18} />
@@ -190,7 +195,7 @@ export default function NewsPage() {
                   e.stopPropagation();
                   setDeleteModal({ isOpen: true, id: row._id, permanent: false });
                 }}
-                className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                 title="Sil"
               >
                 <Trash2 size={18} />
@@ -203,7 +208,7 @@ export default function NewsPage() {
                   e.stopPropagation();
                   handleRestore(row._id);
                 }}
-                className="p-1 text-gray-600 hover:text-green-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                 title="Bərpa et"
               >
                 <RotateCcw size={18} />
@@ -213,7 +218,7 @@ export default function NewsPage() {
                   e.stopPropagation();
                   setDeleteModal({ isOpen: true, id: row._id, permanent: true });
                 }}
-                className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 title="Tamamilə sil"
               >
                 <Trash size={18} />
@@ -226,17 +231,16 @@ export default function NewsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Xəbərlər</h1>
-          <p className="text-gray-600 mt-1">Bütün xəbərləri idarə edin</p>
-        </div>
+    <div className="space-y-8">
+      <AdminPageHeader 
+        title="Xəbərlər" 
+        description="Bütün xəbərləri idarə edin"
+      >
         <Button onClick={() => setNewsModal({ isOpen: true, data: null })}>
           <Plus size={20} className="mr-2" />
           Yeni Xəbər
         </Button>
-      </div>
+      </AdminPageHeader>
 
       <Card>
         <div className="mb-6 space-y-4">
@@ -254,7 +258,7 @@ export default function NewsPage() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-secondary outline-none transition-all"
             >
               <option value="all">Bütün kateqoriyalar</option>
               <option value="university">🏛️ Universitet</option>
@@ -285,9 +289,9 @@ export default function NewsPage() {
                 type="checkbox"
                 checked={showDeleted}
                 onChange={(e) => setShowDeleted(e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                className="w-4 h-4 text-primary rounded focus:ring-primary border-gray-300"
               />
-              <span className="text-sm font-medium text-gray-700">Silinmiş xəbərləri göstər</span>
+              <span className="text-sm font-medium text-secondary">Silinmiş xəbərləri göstər</span>
             </label>
 
             {(search || category !== 'all' || startDate || endDate || showDeleted) && (

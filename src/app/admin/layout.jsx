@@ -7,8 +7,8 @@ export default function AdminRootLayout({ children }) {
   return (
     <ReduxProvider>
       {children}
-      {/* <Toaster 
-        position="top-right"
+      <Toaster 
+        position="top-center"
         toastOptions={{
           duration: 3000,
           style: {
@@ -16,7 +16,7 @@ export default function AdminRootLayout({ children }) {
             color: '#fff',
           },
         }}
-      /> */}
+      />
     </ReduxProvider>
   );
 }
