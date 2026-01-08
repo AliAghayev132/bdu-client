@@ -8,13 +8,14 @@ const ContactForm = ({ locale, type = 'contact' }) => {
     firstName: '',
     lastName: '',
     email: '',
-    phone: '',
+    phoneNumber: '',
     subject: '',
     message: ''
   });
 
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
+  const [isLoading, setIsLoading] = useState(false);
 
   const labels = {
     az: {
@@ -62,7 +63,8 @@ const ContactForm = ({ locale, type = 'contact' }) => {
     if (!formData.email.trim()) newErrors.email = t.required;
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = t.invalidEmail;
 
-    if (formData.phone && !/^[\d\s\+\-\(\)]+$/.test(formData.phone)) newErrors.phone = t.invalidPhone;
+    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = t.required;
+    else if (!/^[\d\s\+\-\(\)]+$/.test(formData.phoneNumber)) newErrors.phoneNumber = t.invalidPhone;
 
     if (!formData.subject.trim()) newErrors.subject = t.required;
     if (!formData.message.trim()) newErrors.message = t.required;
@@ -81,17 +83,23 @@ const ContactForm = ({ locale, type = 'contact' }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    setIsLoading(true);
     setStatus('loading');
+
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('http://localhost:3001/api/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, type, locale })
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         setStatus('success');
-        setFormData({ firstName: '', lastName: '', email: '', phone: '', subject: '', message: '' });
+        setFormData({ firstName: '', lastName: '', email: '', phoneNumber: '', subject: '', message: '' });
         setTimeout(() => setStatus('idle'), 5000);
       } else {
         setStatus('error');
@@ -101,6 +109,8 @@ const ContactForm = ({ locale, type = 'contact' }) => {
       console.error('Contact form error:', err);
       setStatus('error');
       setTimeout(() => setStatus('idle'), 5000);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -139,7 +149,7 @@ const ContactForm = ({ locale, type = 'contact' }) => {
               className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors ${
                 errors.firstName ? 'border-red-300 bg-red-50' : 'border-gray-200'
               }`}
-              disabled={status === 'loading'}
+              disabled={isLoading}
             />
             {errors.firstName && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.firstName}</p>}
           </div>
@@ -157,7 +167,7 @@ const ContactForm = ({ locale, type = 'contact' }) => {
               className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors ${
                 errors.lastName ? 'border-red-300 bg-red-50' : 'border-gray-200'
               }`}
-              disabled={status === 'loading'}
+              disabled={isLoading}
             />
             {errors.lastName && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.lastName}</p>}
           </div>
@@ -177,27 +187,27 @@ const ContactForm = ({ locale, type = 'contact' }) => {
               className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors ${
                 errors.email ? 'border-red-300 bg-red-50' : 'border-gray-200'
               }`}
-              disabled={status === 'loading'}
+              disabled={isLoading}
             />
             {errors.email && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.email}</p>}
           </div>
 
           <div>
-            <label htmlFor="phone" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
-              {t.phone}
+            <label htmlFor="phoneNumber" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-2">
+              {t.phone} <span className="text-red-500">*</span>
             </label>
             <input
               type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
+              id="phoneNumber"
+              name="phoneNumber"
+              value={formData.phoneNumber}
               onChange={handleChange}
               className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors ${
-                errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                errors.phoneNumber ? 'border-red-300 bg-red-50' : 'border-gray-200'
               }`}
-              disabled={status === 'loading'}
+              disabled={isLoading}
             />
-            {errors.phone && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.phone}</p>}
+            {errors.phoneNumber && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.phoneNumber}</p>}
           </div>
         </div>
 
@@ -214,7 +224,7 @@ const ContactForm = ({ locale, type = 'contact' }) => {
             className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors ${
               errors.subject ? 'border-red-300 bg-red-50' : 'border-gray-200'
             }`}
-            disabled={status === 'loading'}
+            disabled={isLoading}
           />
           {errors.subject && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.subject}</p>}
         </div>
@@ -232,7 +242,7 @@ const ContactForm = ({ locale, type = 'contact' }) => {
             className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors resize-none ${
               errors.message ? 'border-red-300 bg-red-50' : 'border-gray-200'
             }`}
-            disabled={status === 'loading'}
+            disabled={isLoading}
           />
           {errors.message && <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.message}</p>}
         </div>
@@ -240,10 +250,10 @@ const ContactForm = ({ locale, type = 'contact' }) => {
         <div className="pt-2">
           <button
             type="submit"
-            disabled={status === 'loading'}
+            disabled={isLoading}
             className="w-full rounded-lg sm:w-auto px-6 sm:px-12 py-2.5 sm:py-3 bg-primary text-white font-medium text-sm laptop:text-base hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
-            {status === 'loading' ? (
+            {isLoading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 {t.sending}
