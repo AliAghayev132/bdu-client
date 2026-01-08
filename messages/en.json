@@ -53,8 +53,8 @@
       "title": "Contact Us"
     }
   },
-  "news":{
-    "filter":{
+  "news": {
+    "filter": {
       "all-news": "ALL NEWS",
       "education": "EDUCATION",
       "science": "SCIENCE",
@@ -62,6 +62,15 @@
       "social": "SOCIAL",
       "cooperation": "COOPERATION",
       "internationalization": "INTERNATIONALIZATION"
+    }
+  },
+  "faculties": {
+    "title": "FACULTIES",
+    "description": "There are 16 faculties operating at Baku State University, where specialists are trained at bachelor, master and doctoral levels in various scientific fields.",
+    "categories": {
+      "natural": "NATURAL SCIENCES FACULTIES",
+      "humanities": "HUMANITIES FACULTIES",
+      "social": "SOCIAL SCIENCES FACULTIES"
     }
   }
 }

@@ -60,8 +60,8 @@
       "title": "Bizimlə Əlaqə"
     }
   },
-  "news":{
-    "filter":{
+  "news": {
+    "filter": {
       "all-news": "BÜTÜN XƏBƏRLƏR",
       "education": "TƏHSİL",
       "science": "ELM",
@@ -69,6 +69,15 @@
       "social": "SOSİAL",
       "cooperation": "ƏMƏKDAŞLIQ",
       "internationalization": "BEYNƏLMİLƏLLƏŞMƏ"
+    }
+  },
+  "faculties": {
+    "title": "FAKÜLTƏLƏR",
+    "description": "Bakı Dövlət Universitetində 16 fakültə fəaliyyət göstərir və bu fakültələrdə müxtəlif elmi istiqamətlərdə bakalavr, magistratura və doktorantura səviyyəsində mütəxəssislər hazırlanır.",
+    "categories": {
+      "natural": "TƏBİƏT FƏNLƏRİ FAKÜLTƏLƏRİ",
+      "humanities": "HUMANİTAR FƏNLƏR FAKÜLTƏLƏRİ",
+      "social": "SOSİAL FƏNLƏR FAKÜLTƏLƏRİ"
     }
   }
 }

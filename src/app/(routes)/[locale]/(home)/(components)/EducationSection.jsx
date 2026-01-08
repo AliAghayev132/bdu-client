@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 const RAW_ITEMS = [
   {
     key: "faculties",
-    href: "/faculties",
+    href: { az: "/fakulteler", en: "/faculties" },
     image:
       "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?q=80&w=1600&auto=format&fit=crop",
     span: "col-span-12 lg:col-span-6",
@@ -55,9 +55,24 @@ const RAW_ITEMS = [
   },
 ];
 
+// Helper function to resolve href (string or object)
+const resolveHref = (href, locale) => {
+  if (typeof href === 'object') {
+    return href[locale] || href.az;
+  }
+  return href;
+};
+
 export default async function EducationSection() {
   const t = await getTranslations("home.education");
-  const ITEMS = RAW_ITEMS.map((i) => ({ ...i, title: t(`items.${i.key}`) }));
+  const locale = (await import('next-intl/server')).getLocale ?
+    await (await import('next-intl/server')).getLocale() : 'az';
+
+  const ITEMS = RAW_ITEMS.map((i) => ({
+    ...i,
+    title: t(`items.${i.key}`),
+    resolvedHref: resolveHref(i.href, locale)
+  }));
 
   return (
     <section className="wrapper sm:py-10 py-4">
@@ -83,7 +98,7 @@ export default async function EducationSection() {
             return (
               <Link
                 key={item.key}
-                href={item.href}
+                href={item.resolvedHref}
                 className="group relative overflow-hidden sm:rounded-3xl rounded-2xl col-span-12 lg:col-span-6"
               >
                 <div className="aspect-[16/9] lg:aspect-[4/3] w-full h-full">
@@ -130,7 +145,7 @@ export default async function EducationSection() {
             {ITEMS.slice(1).map((item) => (
               <Link
                 key={item.key}
-                href={item.href}
+                href={item.resolvedHref}
                 className="group relative overflow-hidden sm:rounded-3xl rounded-2xl"
               >
                 <div className="aspect-square lg:aspect-[16/9] w-full">
