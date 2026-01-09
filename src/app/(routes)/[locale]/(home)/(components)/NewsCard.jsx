@@ -26,21 +26,35 @@ const NewsCard = memo(({ news }) => {
     });
   };
 
+  // Get proper image URL
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith('http')) return imagePath;
+    // If it's a local import (object with src), use it directly
+    if (typeof imagePath === 'object' && imagePath.src) return imagePath;
+    // Otherwise prepend the API image URL
+    return `${process.env.NEXT_PUBLIC_IMAGE_URL || ''}${imagePath}`;
+  };
+
+  const imageUrl = getImageUrl(news.image);
+  const newsPath = locale === 'az' ? `/xeberler/${news.slug || news.id}` : `/news/${news.slug || news.id}`;
+
   return (
     <Link
-      href={`/news/${news.slug || news.id}`}
+      href={newsPath}
       style={{ willChange: 'transform' }}
       className="group block rounded-2xl overflow-hidden transition-all duration-300 h-full bg-white"
     >
       {/* Image Container */}
       <div className="relative aspect-[16/9] overflow-hidden  rounded-2xl">
-        {news.image ? (
+        {imageUrl ? (
           <Image
-            src={news.image}
+            src={imageUrl}
             alt={news.title}
             width={1000}
             height={1000}
-             style={{willChange: 'transform',
+            style={{
+              willChange: 'transform',
               transition: 'all 0.3s ease',
             }}
             className="object-cover w-full h-full group-hover:scale-105"
@@ -53,7 +67,7 @@ const NewsCard = memo(({ news }) => {
             </svg>
           </div>
         )}
-        
+
         {/* Date Badge - Top Left Corner */}
         <div className="absolute top-0 rounded-br-2xl left-0 bg-white shadow-md border-l-2 border-t-2 rounded-tl-2xl border-primary/30">
           <div className="flex flex-col items-center justify-center lg:w-14 lg:h-14 md:w-12 md:h-12 w-10 h-10 p-2">
