@@ -4,6 +4,7 @@ import { memo } from 'react';
 import { Link } from '@/i18n/routing';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
+import { getImageUrl } from '@/utils/getImageUrl';
 
 // news schema {
 //     id: number;
@@ -26,19 +27,9 @@ const NewsCard = memo(({ news }) => {
     });
   };
 
-  // Get proper image URL
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    // If it's a local import (object with src), use it directly
-    if (typeof imagePath === 'object' && imagePath.src) return imagePath;
-    // Otherwise prepend the API image URL
-    return `${process.env.NEXT_PUBLIC_IMAGE_URL || ''}${imagePath}`;
-  };
-
   const imageUrl = getImageUrl(news.image);
   const newsPath = locale === 'az' ? `/xeberler/${news.slug || news.id}` : `/news/${news.slug || news.id}`;
-
+console.log(imageUrl)
   return (
     <Link
       href={newsPath}

@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Breadcrumbs from "../../../[category]/[...slug]/(components)/Breadcrumbs";
 import { Calendar, Eye, Tag, User, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import { getImageUrl } from "@/utils/getImageUrl";
 
 /**
  * NewsDetailContent - Xəbər detalları komponenti
@@ -109,11 +110,7 @@ export default function NewsDetailContent({ news, locale }) {
                 {/* {news.image && (
                     <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden mb-8">
                         <Image
-                            src={
-                                news.image.startsWith("http")
-                                    ? news.image
-                                    : `${process.env.NEXT_PUBLIC_IMAGE_URL || ""}${news.image}`
-                            }
+                            src={getImageUrl(news.image)}
                             alt={news.title}
                             fill
                             className="object-cover"
