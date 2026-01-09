@@ -21,10 +21,19 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bdu.edu.az";
+
   return {
     title: news.seo?.metaTitle || news.title,
     description: news.seo?.metaDescription || news.excerpt,
     keywords: news.seo?.keywords?.join(", "),
+    alternates: {
+      canonical: `${baseUrl}/en/news/${news.slug}`,
+      languages: {
+        az: `${baseUrl}/xeberler/${news.alternateSlug}`,
+        en: `${baseUrl}/en/news/${news.slug}`,
+      },
+    },
     openGraph: {
       title: news.title,
       description: news.excerpt,
@@ -60,7 +69,11 @@ export default async function NewsDetailPage({ params }) {
       <div className="grid xl:grid-cols-[1fr_320px] gap-6">
         {/* News Content - Left Side */}
         <div>
-          <NewsDetailContent news={news} locale={currentLocale} />
+          <NewsDetailContent
+            news={news}
+            locale={currentLocale}
+            alternateSlug={news.alternateSlug}
+          />
         </div>
 
         {/* Announcements Sidebar - Right Side (XL only) */}

@@ -1,17 +1,42 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import Breadcrumbs from "../../../[category]/[...slug]/(components)/Breadcrumbs";
 import { Calendar, Eye, Tag, User, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { getImageUrl } from "@/utils/getImageUrl";
+import { useAlternateSlug } from "@/context/AlternateSlugContext";
 
 /**
  * NewsDetailContent - Xəbər detalları komponenti
  */
-export default function NewsDetailContent({ news, locale }) {
+export default function NewsDetailContent({ news, locale, alternateSlug }) {
     const t = useTranslations("news");
+    const { setAlternateSlug, clearAlternateSlug } = useAlternateSlug();
+
+    // Set alternate slug in context for language switcher
+    useEffect(() => {
+        if (news && alternateSlug) {
+            // Alternativ dil üçün slugları context-ə yaz
+            const slugs = locale === "az"
+                ? {
+                    az: `/xeberler/${news.slug}`,
+                    en: `/news/${alternateSlug}`
+                }
+                : {
+                    az: `/xeberler/${alternateSlug}`,
+                    en: `/news/${news.slug}`
+                };
+            setAlternateSlug(slugs);
+        }
+
+        // Cleanup on unmount
+        return () => {
+            clearAlternateSlug();
+        };
+    }, [news, alternateSlug, locale, setAlternateSlug, clearAlternateSlug]);
 
     if (!news) {
         return (

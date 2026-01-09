@@ -106,10 +106,14 @@ export async function getNewsBySlug(slug, locale = "az") {
 export function transformNewsItem(newsItem, locale = "az") {
   if (!newsItem) return null;
 
+  const altLocale = locale === "az" ? "en" : "az";
+
   return {
     id: newsItem._id,
     title: newsItem.title?.[locale] || newsItem.title?.az || "",
     slug: newsItem.slug?.[locale] || newsItem.slug?.az || "",
+    // Alternativ dil üçün slug (dil dəyişdirəndə istifadə olunur)
+    alternateSlug: newsItem.slug?.[altLocale] || newsItem.slug?.az || "",
     excerpt: newsItem.excerpt?.[locale] || newsItem.excerpt?.az || "",
     content: newsItem.content?.[locale] || newsItem.content?.az || "",
     image: newsItem.coverImage || null,

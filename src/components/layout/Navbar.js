@@ -15,6 +15,7 @@ import { translateUrl } from "@/utils/urlTranslator";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import AnimatedButton from "../common/AnimatedButton/AnimatedButton";
+import { useAlternateSlug } from "@/context/AlternateSlugContext";
 
 export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   const t = useTranslations("nav");
@@ -31,14 +32,23 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Get alternate slugs from context (for dynamic pages like news/announcements)
+  const { alternateSlug } = useAlternateSlug();
+
   const handleLanguageChange = useCallback(
     (newLocale) => {
-      // Prefer explicit mapping from menuData/bottomNavItems
+      // 1. First check if we have dynamic alternate slug from context (news, announcements, etc.)
+      if (alternateSlug && alternateSlug[newLocale]) {
+        router.replace(alternateSlug[newLocale], { locale: newLocale });
+        return;
+      }
+
+      // 2. Fallback to static mapping from menuData/bottomNavItems
       const resolved = resolveLocalizedPath(pathname, newLocale);
       const targetPath = resolved || translateUrl(pathname, newLocale);
       router.replace(targetPath, { locale: newLocale });
     },
-    [pathname, router]
+    [pathname, router, alternateSlug]
   );
 
   const topMenuKeys = [
@@ -267,7 +277,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
         <div className="w-full border-t border-secondary/10"></div>
         <div
           ref={bottomNavRef}
-              style={{
+          style={{
             paddingLeft: showStickyLogo ? "146px" : "32px",
             transition: "all 0.3s ease",
           }}
@@ -276,11 +286,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
           {/* <button className="laptop:px-4 px-3 laptop:py-2 py-1.5 bg-bg-light  border border-white/30 hover:bg-secondary/80 hover:text-white laptop:text-sm text-xs font-medium transition-colors">
             e-BDU
           </button> */}
-             <AnimatedButton
-              label="e-BDU"
-              animateOnScroll={false}
-              width="8rem"
-            />
+          <AnimatedButton label="e-BDU" animateOnScroll={false} width="8rem" />
           {/* Right - Rector Info and Language Switcher */}
           <div className="flex items-center  laptop:gap-x-8 gap-x-6">
             {bottomNavItems.map((item) => (
