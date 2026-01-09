@@ -10,7 +10,13 @@ import {
   Users,
   Settings,
   Mail,
-  LogOut
+  LogOut,
+  BookOpen,
+  FileText,
+  UserCircle,
+  Building2,
+  Activity,
+  Menu
 } from 'lucide-react';
 import { useLogoutMutation } from '@store/api/authApi';
 import { useDispatch } from 'react-redux';
@@ -23,10 +29,16 @@ import SidebarItem from './sidebar/SidebarItem';
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
   { icon: Newspaper, label: 'Xəbərlər', href: '/admin/dashboard/news' },
+  { icon: BookOpen, label: 'Bloqlar', href: '/admin/dashboard/blogs' },
   { icon: Calendar, label: 'Tədbirlər', href: '/admin/dashboard/events' },
+  { icon: FileText, label: 'Səhifələr', href: '/admin/dashboard/pages' },
+  { icon: Menu, label: 'Menyular', href: '/admin/dashboard/menus' },
+  { icon: UserCircle, label: 'Kadr', href: '/admin/dashboard/persons' },
   { icon: Mail, label: 'Müraciətlər', href: '/admin/dashboard/contacts' },
   { icon: Image, label: 'Qalereya', href: '/admin/dashboard/gallery' },
   { icon: Megaphone, label: 'Elanlar', href: '/admin/dashboard/announcements' },
+  { icon: Building2, label: 'Fakültələr', href: '/admin/dashboard/faculties', superAdminOnly: true },
+  { icon: Activity, label: 'Sistem Logları', href: '/admin/dashboard/logs' },
   { icon: Users, label: 'İstifadəçilər', href: '/admin/dashboard/users' },
   { icon: Settings, label: 'Parametrlər', href: '/admin/dashboard/settings' },
 ];
