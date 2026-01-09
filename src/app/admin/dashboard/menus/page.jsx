@@ -699,6 +699,8 @@ function ItemFormModal({ isOpen, onClose, onSubmit, initialData }) {
   const { data: pagesData } = useGetPagesQuery({ page: 1, limit: 100, pageType: 'all', showDeleted: false });
   const pages = pagesData?.pages || [];
 
+  const [linkType, setLinkType] = useState('url');
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     id: '',
     label: { az: '', en: '' },
@@ -706,6 +708,16 @@ function ItemFormModal({ isOpen, onClose, onSubmit, initialData }) {
     description: { az: '', en: '' },
     page: '',
     hasDetail: false,
+  });
+
+  const filteredPages = pages.filter(page => {
+    const searchLower = searchTerm.toLowerCase();
+    const titleAz = page.title?.az?.toLowerCase() || '';
+    const titleEn = page.title?.en?.toLowerCase() || '';
+    const pathAz = page.path?.az?.toLowerCase() || '';
+    const pathEn = page.path?.en?.toLowerCase() || '';
+    return titleAz.includes(searchLower) || titleEn.includes(searchLower) || 
+           pathAz.includes(searchLower) || pathEn.includes(searchLower);
   });
 
   useEffect(() => {
@@ -718,6 +730,7 @@ function ItemFormModal({ isOpen, onClose, onSubmit, initialData }) {
         page: initialData.page || '',
         hasDetail: initialData.hasDetail || false,
       });
+      setLinkType(initialData.page ? 'page' : 'url');
     } else {
       setFormData({
         id: '',
@@ -727,12 +740,20 @@ function ItemFormModal({ isOpen, onClose, onSubmit, initialData }) {
         page: '',
         hasDetail: false,
       });
+      setLinkType('url');
     }
-  }, [initialData]);
+    setSearchTerm('');
+  }, [initialData, isOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    const submitData = { ...formData };
+    if (linkType === 'url') {
+      submitData.page = '';
+    } else {
+      submitData.href = { az: '', en: '' };
+    }
+    onSubmit(submitData);
   };
 
   return (
@@ -766,21 +787,6 @@ function ItemFormModal({ isOpen, onClose, onSubmit, initialData }) {
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Link (AZ)"
-            value={formData.href.az}
-            onChange={(e) => setFormData({ ...formData, href: { ...formData.href, az: e.target.value } })}
-            placeholder="/universitet/tarix"
-          />
-          <Input
-            label="Link (EN)"
-            value={formData.href.en}
-            onChange={(e) => setFormData({ ...formData, href: { ...formData.href, en: e.target.value } })}
-            placeholder="/university/history"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <Input
             label="Təsvir (AZ)"
             value={formData.description.az}
             onChange={(e) => setFormData({ ...formData, description: { ...formData.description, az: e.target.value } })}
@@ -794,34 +800,85 @@ function ItemFormModal({ isOpen, onClose, onSubmit, initialData }) {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Link Növü</label>
+          <div className="flex gap-4 mb-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                value="url"
+                checked={linkType === 'url'}
+                onChange={(e) => setLinkType(e.target.value)}
+                className="w-4 h-4 text-blue-600"
+              />
+              <span className="text-sm font-medium text-gray-700">URL</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                value="page"
+                checked={linkType === 'page'}
+                onChange={(e) => setLinkType(e.target.value)}
+                className="w-4 h-4 text-blue-600"
+              />
+              <span className="text-sm font-medium text-gray-700">Səhifə</span>
+            </label>
+          </div>
+        </div>
+
+        {linkType === 'url' ? (
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Link (AZ)"
+              value={formData.href.az}
+              onChange={(e) => setFormData({ ...formData, href: { ...formData.href, az: e.target.value } })}
+              placeholder="/universitet/tarix"
+            />
+            <Input
+              label="Link (EN)"
+              value={formData.href.en}
+              onChange={(e) => setFormData({ ...formData, href: { ...formData.href, en: e.target.value } })}
+              placeholder="/university/history"
+            />
+          </div>
+        ) : (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Səhifə</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Səhifə Seçin</label>
+            <Input
+              placeholder="Səhifə axtar (AZ/EN)..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="mb-2"
+            />
             <select
               value={formData.page}
               onChange={(e) => setFormData({ ...formData, page: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white max-h-48 overflow-y-auto"
+              size="5"
             >
-              <option value="">Səhifə seçin (opsional)</option>
-              {pages.map((page) => (
+              <option value="">Səhifə seçin</option>
+              {filteredPages.map((page) => (
                 <option key={page._id} value={page._id}>
-                  {page.title?.az || page.title} ({page.path?.az || page.path})
+                  {page.title?.az || page.title} | {page.title?.en} ({page.path?.az || page.path})
                 </option>
               ))}
             </select>
-            <p className="text-xs text-gray-500 mt-1">Səhifə seçilməsə, href istifadə ediləcək</p>
+            <p className="text-xs text-gray-500 mt-1">
+              {filteredPages.length} səhifə tapıldı
+            </p>
           </div>
-          <div className="flex items-center pt-8">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.hasDetail}
-                onChange={(e) => setFormData({ ...formData, hasDetail: e.target.checked })}
-                className="w-4 h-4 text-blue-600 rounded"
-              />
-              <span className="text-sm font-medium text-gray-700">Detail səhifəsi var</span>
-            </label>
-          </div>
+        )}
+
+        <div className="flex items-center">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.hasDetail}
+              onChange={(e) => setFormData({ ...formData, hasDetail: e.target.checked })}
+              className="w-4 h-4 text-blue-600 rounded"
+            />
+            <span className="text-sm font-medium text-gray-700">Detail səhifəsi var</span>
+          </label>
         </div>
 
         <div className="flex items-center gap-3 justify-end pt-4">
