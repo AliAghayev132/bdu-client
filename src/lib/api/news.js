@@ -13,7 +13,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 export async function getLatestNews(locale = "az", limit = 6) {
   try {
     const res = await fetch(
-      `${API_URL}/news/latest?locale=${locale}&limit=${limit}`,
+      `${API_URL}/misc/news/latest?locale=${locale}&limit=${limit}`,
       {
         next: { revalidate: 300 }, // 5 dəqiqə cache
       }
@@ -46,7 +46,7 @@ export async function getAllNews(
   category = null
 ) {
   try {
-    let url = `${API_URL}/news?locale=${locale}&page=${page}&limit=${limit}`;
+    let url = `${API_URL}/misc/news?locale=${locale}&page=${page}&limit=${limit}`;
     if (category) {
       url += `&category=${category}`;
     }
@@ -78,7 +78,7 @@ export async function getAllNews(
  */
 export async function getNewsBySlug(slug, locale = "az") {
   try {
-    const res = await fetch(`${API_URL}/news/${slug}?locale=${locale}`, {
+    const res = await fetch(`${API_URL}/misc/news/${slug}?locale=${locale}`, {
       next: { revalidate: 300 },
     });
 

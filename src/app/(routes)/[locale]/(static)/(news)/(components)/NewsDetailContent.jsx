@@ -106,7 +106,7 @@ export default function NewsDetailContent({ news, locale }) {
                 </header>
 
                 {/* Cover Image */}
-                {news.image && (
+                {/* {news.image && (
                     <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden mb-8">
                         <Image
                             src={
@@ -121,7 +121,7 @@ export default function NewsDetailContent({ news, locale }) {
                             sizes="(max-width: 768px) 100vw, 1200px"
                         />
                     </div>
-                )}
+                )} */}
 
                 {/* Content */}
                 <div className="max-w-4xl">
