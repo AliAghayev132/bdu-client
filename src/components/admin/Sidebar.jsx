@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
@@ -16,7 +17,9 @@ import {
   UserCircle,
   Building2,
   Activity,
-  Menu
+  Menu,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { useLogoutMutation } from '@store/api/authApi';
 import { useDispatch } from 'react-redux';
@@ -33,9 +36,7 @@ const menuItems = [
   { icon: Calendar, label: 'Tədbirlər', href: '/admin/dashboard/events' },
   { icon: FileText, label: 'Səhifələr', href: '/admin/dashboard/pages' },
   { icon: Menu, label: 'Menyular', href: '/admin/dashboard/menus' },
-  { icon: UserCircle, label: 'Kadr', href: '/admin/dashboard/persons' },
   { icon: Mail, label: 'Müraciətlər', href: '/admin/dashboard/contacts' },
-  { icon: Image, label: 'Qalereya', href: '/admin/dashboard/gallery' },
   { icon: Megaphone, label: 'Elanlar', href: '/admin/dashboard/announcements' },
   { icon: Building2, label: 'Fakültələr', href: '/admin/dashboard/faculties', superAdminOnly: true },
   { icon: Activity, label: 'Sistem Logları', href: '/admin/dashboard/logs' },
@@ -48,6 +49,7 @@ export default function Sidebar() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [logout, { isLoading }] = useLogoutMutation();
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -61,8 +63,16 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-72 bg-white border-r border-gray-100 h-screen sticky top-0 flex flex-col shadow-sm z-40">
-      <SidebarHeader />
+    <aside className={`${isCollapsed ? 'w-20' : 'w-72'} bg-white border-r border-gray-100 h-screen sticky top-0 flex flex-col shadow-sm z-40 transition-all duration-300`}>
+      <SidebarHeader isCollapsed={isCollapsed} />
+
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="absolute -right-3 top-20 bg-white border border-gray-200 rounded-full p-1.5 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110"
+        title={isCollapsed ? 'Genişlət' : 'Kiçilt'}
+      >
+        {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+      </button>
 
       <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
         {menuItems.map((item) => (
@@ -70,6 +80,7 @@ export default function Sidebar() {
             key={item.href}
             {...item}
             isActive={pathname === item.href || pathname?.startsWith(item.href + '/')}
+            isCollapsed={isCollapsed}
           />
         ))}
       </nav>
@@ -78,10 +89,11 @@ export default function Sidebar() {
         <button
           onClick={handleLogout}
           disabled={isLoading}
-          className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 font-medium group disabled:opacity-50"
+          className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-4 py-3 w-full rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 font-medium group disabled:opacity-50`}
+          title={isCollapsed ? 'Çıxış' : ''}
         >
           <LogOut size={20} className="group-hover:scale-110 transition-transform" />
-          <span>Çıxış</span>
+          {!isCollapsed && <span>Çıxış</span>}
         </button>
       </div>
     </aside>

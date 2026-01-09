@@ -87,7 +87,8 @@ export default function BlogsPage() {
       setBlogModal({ isOpen: false, data: null });
       refetch();
     } catch (error) {
-      toast.error(error?.data?.message || 'Xəta baş verdi');
+      const errorMsg = error?.data?.message?.message || error?.data?.message || 'Xəta baş verdi';
+      toast.error(errorMsg);
     }
   };
 
@@ -98,7 +99,8 @@ export default function BlogsPage() {
       setBlogModal({ isOpen: false, data: null });
       refetch();
     } catch (error) {
-      toast.error(error?.data?.message || 'Xəta baş verdi');
+      const errorMsg = error?.data?.message?.message || error?.data?.message || 'Xəta baş verdi';
+      toast.error(errorMsg);
     }
   };
 

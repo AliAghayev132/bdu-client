@@ -61,24 +61,62 @@ export default function TiptapEditor({
     immediatelyRender: false,
     extensions: [
       StarterKit.configure({
-        heading: { levels: [1, 2, 3, 4] },
+        heading: {
+          levels: [1, 2, 3, 4, 5, 6],
+        },
+        bold: true,
+        italic: true,
+        strike: true,
+        code: true,
+        bulletList: true,
+        orderedList: true,
+        blockquote: true,
+        codeBlock: true,
+        horizontalRule: true,
+        hardBreak: true,
+        history: true,
       }),
       Underline,
-      Highlight,
-      Link.configure({ openOnClick: true, autolink: true, linkOnPaste: true }),
-      Image,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      Highlight.configure({
+        multicolor: true,
+      }),
+      Link.configure({ 
+        openOnClick: false,
+        autolink: true, 
+        linkOnPaste: true,
+        HTMLAttributes: {
+          class: 'text-blue-600 underline hover:text-blue-800',
+        },
+      }),
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'max-w-full h-auto rounded-lg',
+        },
+      }),
+      TextAlign.configure({ 
+        types: ["heading", "paragraph"],
+        alignments: ['left', 'center', 'right', 'justify'],
+      }),
     ],
     content: content || "",
     editorProps: {
       attributes: {
-        class: `prose prose-sm sm:prose-base max-w-none focus:outline-none`,
+        class: `prose prose-sm sm:prose-base lg:prose-lg max-w-none focus:outline-none min-h-[400px] p-4`,
       },
     },
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML());
     },
   });
+
+  // Update editor content when prop changes (e.g., language switch)
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content || '', false);
+    }
+  }, [content, editor]);
 
   // ============================================
   // Image Upload Handler
@@ -193,21 +231,39 @@ export default function TiptapEditor({
 
             {/* Headings */}
             <ToolbarButton
-              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+              onClick={() => {
+                if (editor.isActive("heading", { level: 1 })) {
+                  editor.chain().focus().setParagraph().run();
+                } else {
+                  editor.chain().focus().setHeading({ level: 1 }).run();
+                }
+              }}
               isActive={editor.isActive("heading", { level: 1 })}
               title="Heading 1"
             >
               <Heading1 size={18} />
             </ToolbarButton>
             <ToolbarButton
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+              onClick={() => {
+                if (editor.isActive("heading", { level: 2 })) {
+                  editor.chain().focus().setParagraph().run();
+                } else {
+                  editor.chain().focus().setHeading({ level: 2 }).run();
+                }
+              }}
               isActive={editor.isActive("heading", { level: 2 })}
               title="Heading 2"
             >
               <Heading2 size={18} />
             </ToolbarButton>
             <ToolbarButton
-              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+              onClick={() => {
+                if (editor.isActive("heading", { level: 3 })) {
+                  editor.chain().focus().setParagraph().run();
+                } else {
+                  editor.chain().focus().setHeading({ level: 3 }).run();
+                }
+              }}
               isActive={editor.isActive("heading", { level: 3 })}
               title="Heading 3"
             >
