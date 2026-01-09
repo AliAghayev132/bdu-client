@@ -1,67 +1,37 @@
 import { Link } from '@/i18n/routing';
-import { getTranslations } from 'next-intl/server';
-
-// Fetch announcements - Server Component
-async function getAnnouncements() {
-  // TODO: Replace with actual API call
-  // const res = await fetch('https://api.bdu.edu.az/announcements', {
-  //   next: { revalidate: 180 }
-  // });
-  // return res.json();
-  
-  return [
-    {
-      id: 1,
-      title: 'BDU tələbələri üçün kibertəhlükəsizlik təlimi',
-      date: '2025-10-02',
-      time: '13:24'
-    },
-    {
-      id: 2,
-      title: 'BDU tələbələri üçün süni intellekt təlimi',
-      date: '2025-10-01',
-      time: '17:23'
-    },
-    {
-      id: 3,
-      title: 'BDU tələbələrinin nəzərinə: Onlayn GNSS təlimi',
-      date: '2025-09-30',
-      time: '11:58'
-    },
-    {
-      id: 4,
-      title: '"BDU könüllüləri" təşkilatına qəbul elan edilir',
-      date: '2025-09-29',
-      time: '19:04'
-    },
-    {
-      id: 5,
-      title: 'BDU fakültə və kafedralarında boş olan vəzifələri tutmaq üçün müsabiqə elan edir',
-      date: '2025-09-18',
-      time: '17:20'
-    },
-    {
-      id: 6,
-      title: 'BDU Elmi Şurasının yeni tədris ili üçün',
-      date: '2025-09-11',
-      time: '15:39'
-    }
-  ];
-}
+import { getTranslations, getLocale } from 'next-intl/server';
+import { getActiveAnnouncements, transformAnnouncementsArray } from '@/lib/api/announcements';
 
 export default async function AnnouncementsList() {
   const t = await getTranslations('home');
-  const announcements = await getAnnouncements();
+  const locale = await getLocale();
+
+  // Fetch real announcements from API
+  const announcementsData = await getActiveAnnouncements(locale);
+  const announcements = transformAnnouncementsArray(announcementsData, locale);
 
   // Format date for display
   const formatDate = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('az-AZ', {
+    return date.toLocaleDateString(locale === 'az' ? 'az-AZ' : 'en-US', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     });
   };
+
+  // Format time
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleTimeString(locale === 'az' ? 'az-AZ' : 'en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const announcementsPath = locale === 'az' ? '/elanlar' : '/announcements';
 
   return (
     <div className="bg-gradient-to-br from-[#B8956A]/10 to-[#B8956A]/5 rounded-3xl overflow-hidden">
@@ -74,39 +44,45 @@ export default async function AnnouncementsList() {
 
       {/* Announcements List with Custom Scrollbar */}
       <div className="custom-scrollbar max-h-[700px] overflow-y-auto">
-        <div className="divide-y divide-gray-200">
-          {announcements.map((item) => (
-            <Link
-              key={item.id}
-              href={`/announcements/${item.id}`}
-              className="block px-6 py-4 hover:bg-white/50 transition-colors group"
-            >
-              {/* Date and Time */}
-              <div className="flex items-center gap-2 text-xs text-[#B8956A] font-medium mb-2">
-                <time suppressHydrationWarning>{formatDate(item.date)}</time>
-                <span>|</span>
-                <time suppressHydrationWarning>{item.time}</time>
-              </div>
+        {announcements.length > 0 ? (
+          <div className="divide-y divide-gray-200">
+            {announcements.map((item) => (
+              <Link
+                key={item.id}
+                href={`${announcementsPath}/${item.slug || item.id}`}
+                className="block px-6 py-4 hover:bg-white/50 transition-colors group"
+              >
+                {/* Date and Time */}
+                <div className="flex items-center gap-2 text-xs text-[#B8956A] font-medium mb-2">
+                  <time suppressHydrationWarning>{formatDate(item.publishedAt || item.startDate)}</time>
+                  <span>|</span>
+                  <time suppressHydrationWarning>{formatTime(item.publishedAt || item.startDate)}</time>
+                </div>
 
-              {/* Title */}
-              <h3 className="text-sm text-gray-700 group-hover:text-primary transition-colors leading-snug line-clamp-2">
-                {item.title}
-              </h3>
+                {/* Title */}
+                <h3 className="text-sm text-gray-700 group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                  {item.title}
+                </h3>
 
-              {/* ELAN Badge */}
-              <div className="mt-2 inline-flex items-center gap-1 text-xs text-[#B8956A] font-medium">
-                <span>– ELAN</span>
-              </div>
-            </Link>
-          ))}
-        </div>
+                {/* Type Badge */}
+                <div className="mt-2 inline-flex items-center gap-1 text-xs text-[#B8956A] font-medium">
+                  <span>– {locale === 'az' ? 'ELAN' : 'ANNOUNCEMENT'}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="px-6 py-8 text-center text-gray-500">
+            {locale === 'az' ? 'Hazırda aktiv elan yoxdur' : 'No active announcements'}
+          </div>
+        )}
       </div>
 
       {/* Footer Button */}
       <div className="border-t border-gray-200">
         <Link
-          href="/announcements"
-          className="block w-full text-center px-4 py-2.5 bg-[#B8956A] text-white  hover:bg-[#A07D54] transition-colors font-medium text-sm"
+          href={announcementsPath}
+          className="block w-full text-center px-4 py-2.5 bg-[#B8956A] text-white hover:bg-[#A07D54] transition-colors font-medium text-sm"
         >
           {t('announcements.viewAll', { default: 'BÜTÜN ELANLAR' })}
         </Link>

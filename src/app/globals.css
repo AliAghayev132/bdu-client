@@ -63,6 +63,11 @@ button{
   margin-right: auto;
 }
 
+.news-content img{
+  margin-left:auto;
+  margin-right:auto;
+}
+
 /* Custom Animations */
 @keyframes fade-in {
   from {

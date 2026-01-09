@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getNewsBySlug, transformNewsItem } from "@/lib/api/news";
 import NewsDetailContent from "../../(components)/NewsDetailContent";
+import AnnouncementsList from "@/app/(routes)/[locale]/(home)/(components)/AnnouncementsList";
 
 /**
  * Xəbər Detalları Səhifəsi (Azərbaycanca)
@@ -20,10 +21,19 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bdu.edu.az";
+
   return {
     title: news.seo?.metaTitle || news.title,
     description: news.seo?.metaDescription || news.excerpt,
     keywords: news.seo?.keywords?.join(", "),
+    alternates: {
+      canonical: `${baseUrl}/xeberler/${news.slug}`,
+      languages: {
+        az: `${baseUrl}/xeberler/${news.slug}`,
+        en: `${baseUrl}/en/news/${news.alternateSlug}`,
+      },
+    },
     openGraph: {
       title: news.title,
       description: news.excerpt,
@@ -54,5 +64,23 @@ export default async function XeberlerDetailPage({ params }) {
     notFound();
   }
 
-  return <NewsDetailContent news={news} locale={currentLocale} />;
+  return (
+    <div className="wrapper mx-auto px-4">
+      <div className="grid xl:grid-cols-[1fr_320px] gap-6">
+        {/* News Content - Left Side */}
+        <div>
+          <NewsDetailContent
+            news={news}
+            locale={currentLocale}
+            alternateSlug={news.alternateSlug}
+          />
+        </div>
+
+        {/* Announcements Sidebar - Right Side (XL only) */}
+        <aside className="hidden xl:block sticky top-24 h-fit">
+          <AnnouncementsList />
+        </aside>
+      </div>
+    </div>
+  );
 }

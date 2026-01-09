@@ -8,6 +8,7 @@ import { translateUrl } from "@/utils/urlTranslator";
 import { useGSAP } from "@gsap/react";
 import { menuData, bottomNavItems, getLabel } from "@/data/menuData";
 import { ChevronRight } from "lucide-react";
+import { useAlternateSlug } from "@/context/AlternateSlugContext";
 
 // Recursive Menu Item Component for submenu slides
 const MenuItem = memo(({ item, locale, onClose, onNavigate }) => {
@@ -70,12 +71,22 @@ function MobileMenu({ isOpen, onClose }) {
   const [navigationStack, setNavigationStack] = useState([{ type: "main" }]);
   const currentSlide = navigationStack[navigationStack.length - 1];
 
+  // Get alternate slugs from context (for dynamic pages like news/announcements)
+  const { alternateSlug } = useAlternateSlug();
+
   const handleLanguageChange = useCallback(
     (newLocale) => {
+      // 1. First check if we have dynamic alternate slug from context
+      if (alternateSlug && alternateSlug[newLocale]) {
+        router.replace(alternateSlug[newLocale], { locale: newLocale });
+        return;
+      }
+
+      // 2. Fallback to static URL translation
       const translatedPath = translateUrl(pathname, newLocale);
       router.replace(translatedPath, { locale: newLocale });
     },
-    [pathname, router]
+    [pathname, router, alternateSlug]
   );
 
   // Convert menuData to array

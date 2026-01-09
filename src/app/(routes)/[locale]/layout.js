@@ -1,8 +1,9 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
-import UserLayout from '@/components/layout/UserLayout';
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
+import UserLayout from "@/components/layout/UserLayout";
+import { AlternateSlugProvider } from "@/context/AlternateSlugContext";
 
 export default async function LocaleLayout({ children, params }) {
   const { locale } = await params;
@@ -15,9 +16,9 @@ export default async function LocaleLayout({ children, params }) {
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <UserLayout>
-        {children}
-      </UserLayout>
+      <AlternateSlugProvider>
+        <UserLayout>{children}</UserLayout>
+      </AlternateSlugProvider>
     </NextIntlClientProvider>
   );
 }
