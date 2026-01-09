@@ -12,7 +12,7 @@
   --bg-light: #EFF0F1;
 }
 
-@theme{
+@theme {
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
@@ -186,6 +186,126 @@ button{
   outline: none;
 }
 
+.ProseMirror h1 {
+  font-size: 2.25rem !important;
+  font-weight: 700 !important;
+  line-height: 2.5rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.ProseMirror h2 {
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+  line-height: 2.25rem !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.875rem !important;
+}
+
+.ProseMirror h3 {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  line-height: 2rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.ProseMirror h4 {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  line-height: 1.75rem !important;
+  margin-top: 0.875rem !important;
+  margin-bottom: 0.625rem !important;
+}
+
+.ProseMirror p {
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5rem !important;
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.ProseMirror ul {
+  list-style-type: disc !important;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal !important;
+}
+
+.ProseMirror li {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.ProseMirror blockquote {
+  border-left: 4px solid #e5e7eb !important;
+  padding-left: 1rem !important;
+  margin-left: 0 !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+  font-style: italic !important;
+  color: #6b7280 !important;
+}
+
+.ProseMirror code {
+  background-color: #f3f4f6 !important;
+  padding: 0.125rem 0.375rem !important;
+  border-radius: 0.25rem !important;
+  font-family: monospace !important;
+  font-size: 0.875em !important;
+}
+
+.ProseMirror pre {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+  padding: 1rem !important;
+  border-radius: 0.5rem !important;
+  overflow-x: auto !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.ProseMirror pre code {
+  background-color: transparent !important;
+  padding: 0 !important;
+  color: inherit !important;
+}
+
+.ProseMirror hr {
+  border: none !important;
+  border-top: 2px solid #e5e7eb !important;
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+
+.ProseMirror strong {
+  font-weight: 700 !important;
+}
+
+.ProseMirror em {
+  font-style: italic !important;
+}
+
+.ProseMirror u {
+  text-decoration: underline !important;
+}
+
+.ProseMirror s {
+  text-decoration: line-through !important;
+}
+
+.ProseMirror mark {
+  background-color: #fef08a !important;
+  padding: 0.125rem 0.25rem !important;
+  border-radius: 0.125rem !important;
+}
+
 .ProseMirror img {
   max-width: 100%;
   height: auto;
@@ -195,6 +315,14 @@ button{
 .ProseMirror ::selection,
 .ProseMirror *::selection {
   background: rgba(57, 102, 176, 0.25);
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
 }
 
 .tiptap-editor {

@@ -19,7 +19,8 @@ import {
   Activity,
   Menu,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  MessageSquare
 } from 'lucide-react';
 import { useLogoutMutation } from '@store/api/authApi';
 import { useDispatch } from 'react-redux';
@@ -37,6 +38,7 @@ const menuItems = [
   { icon: FileText, label: 'Səhifələr', href: '/admin/dashboard/pages' },
   { icon: Menu, label: 'Menyular', href: '/admin/dashboard/menus' },
   { icon: Mail, label: 'Müraciətlər', href: '/admin/dashboard/contacts' },
+  { icon: MessageSquare, label: 'Rektora Müraciət', href: '/admin/dashboard/rector-appeals' },
   { icon: Megaphone, label: 'Elanlar', href: '/admin/dashboard/announcements' },
   { icon: Building2, label: 'Fakültələr', href: '/admin/dashboard/faculties', superAdminOnly: true },
   { icon: Activity, label: 'Sistem Logları', href: '/admin/dashboard/logs' },
