@@ -63,9 +63,9 @@ export default function NewsDetailContent({ news, locale }) {
         <>
             <Breadcrumbs breadcrumbs={breadcrumbs} />
 
-            <article className="wrapper mx-auto px-4 py-6">
+            <article className="py-6 w-full">
                 {/* Header */}
-                <header className="mb-8">
+                <header className="mb-8 w-full">
                     {/* Category Badge */}
                     {news.category && (
                         <span
@@ -97,12 +97,6 @@ export default function NewsDetailContent({ news, locale }) {
                                 </span>
                             </div>
                         )}
-                        {news.author && (
-                            <div className="flex items-center gap-1.5">
-                                <User className="w-4 h-4" />
-                                <span>{news.author}</span>
-                            </div>
-                        )}
                     </div>
                 </header>
 
@@ -121,7 +115,7 @@ export default function NewsDetailContent({ news, locale }) {
                 )} */}
 
                 {/* Content */}
-                <div className="max-w-4xl">
+                <div className="w-full">
                     {/* Excerpt */}
                     {news.excerpt && (
                         <p className="text-lg text-gray-600 mb-6 font-medium leading-relaxed border-l-4 border-primary pl-4">
@@ -132,7 +126,7 @@ export default function NewsDetailContent({ news, locale }) {
                     {/* Main Content - HTML */}
                     {news.content && (
                         <div
-                            className="prose prose-lg max-w-none prose-headings:text-secondary prose-a:text-primary prose-img:rounded-xl"
+                            className="news-content prose prose-lg max-w-none prose-headings:text-secondary prose-a:text-primary prose-img:rounded-xl prose-img:mx-auto prose-img:block text-container tracking-wider leading-[1.8] text-[18px] font-medium"
                             dangerouslySetInnerHTML={{ __html: news.content }}
                         />
                     )}

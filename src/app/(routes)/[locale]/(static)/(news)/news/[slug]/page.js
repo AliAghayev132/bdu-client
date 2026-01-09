@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getNewsBySlug, transformNewsItem } from "@/lib/api/news";
 import NewsDetailContent from "../../(components)/NewsDetailContent";
+import AnnouncementsList from "@/app/(routes)/[locale]/(home)/(components)/AnnouncementsList";
 
 /**
  * News Detail Page (English)
@@ -54,5 +55,19 @@ export default async function NewsDetailPage({ params }) {
     notFound();
   }
 
-  return <NewsDetailContent news={news} locale={currentLocale} />;
+  return (
+    <div className="wrapper mx-auto px-4">
+      <div className="grid xl:grid-cols-[1fr_320px] gap-6">
+        {/* News Content - Left Side */}
+        <div>
+          <NewsDetailContent news={news} locale={currentLocale} />
+        </div>
+
+        {/* Announcements Sidebar - Right Side (XL only) */}
+        <aside className="hidden xl:block sticky top-24 h-fit">
+          <AnnouncementsList />
+        </aside>
+      </div>
+    </div>
+  );
 }
