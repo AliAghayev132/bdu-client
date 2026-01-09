@@ -52,6 +52,7 @@ export default async function AnnouncementsDetailPage({ params }) {
     <AnnouncementDetailContent
       announcement={announcement}
       locale={currentLocale}
+      alternateSlug={announcement.alternateSlug}
     />
   );
 }

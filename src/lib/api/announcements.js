@@ -138,10 +138,14 @@ export async function getAnnouncementById(id, locale = "az") {
 export function transformAnnouncementItem(item, locale = "az") {
   if (!item) return null;
 
+  const altLocale = locale === "az" ? "en" : "az";
+
   return {
     id: item._id,
     title: item.title?.[locale] || item.title?.az || "",
     slug: item.slug?.[locale] || item.slug?.az || "",
+    // Alternativ dil üçün slug (dil dəyişdirəndə istifadə olunur)
+    alternateSlug: item.slug?.[altLocale] || item.slug?.az || "",
     content: item.content?.[locale] || item.content?.az || "",
     type: item.type || "info",
     priority: item.priority || "medium",

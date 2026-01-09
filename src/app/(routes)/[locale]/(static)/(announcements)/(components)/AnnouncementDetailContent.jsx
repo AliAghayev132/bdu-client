@@ -1,16 +1,41 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import Breadcrumbs from "../../../[category]/[...slug]/(components)/Breadcrumbs";
 import { Calendar, Eye, Users, ArrowLeft, Clock, Paperclip, AlertTriangle } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { getAnnouncementTypeColor, getAnnouncementTypeName } from "@/lib/api/announcements";
+import { useAlternateSlug } from "@/context/AlternateSlugContext";
 
 /**
  * AnnouncementDetailContent - Elan detalları komponenti
  */
-export default function AnnouncementDetailContent({ announcement, locale }) {
+export default function AnnouncementDetailContent({ announcement, locale, alternateSlug }) {
+    const { setAlternateSlug, clearAlternateSlug } = useAlternateSlug();
+
+    // Set alternate slug in context for language switcher
+    useEffect(() => {
+        if (announcement && alternateSlug) {
+            // Alternativ dil üçün slugları context-ə yaz
+            const slugs = locale === "az"
+                ? {
+                    az: `/elanlar/${announcement.slug}`,
+                    en: `/announcements/${alternateSlug}`
+                }
+                : {
+                    az: `/elanlar/${alternateSlug}`,
+                    en: `/announcements/${announcement.slug}`
+                };
+            setAlternateSlug(slugs);
+        }
+
+        // Cleanup on unmount
+        return () => {
+            clearAlternateSlug();
+        };
+    }, [announcement, alternateSlug, locale, setAlternateSlug, clearAlternateSlug]);
     if (!announcement) {
         return (
             <div className="wrapper mx-auto px-4 py-10 text-center">
