@@ -157,121 +157,122 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   return (
     <nav
       ref={navRef}
-      className="bdu-nav text-secondary hidden lg:block relative z-50"
+      className="bdu-nav text-white hidden lg:block relative z-50"
       onMouseEnter={handleNavbarEnter}
       onMouseLeave={handleNavbarLeave}
     >
-      <div className="relative mx-auto">
+      <div className="relative mx-auto ">
         {/* Main Navigation - Top Nav */}
-        <div
-          ref={topNavRef}
-          className="bdu-nav-top wrapper relative flex items-center justify-between min-1600:py-2 py-1"
-          style={{
-            paddingLeft: showStickyLogo ? "130px" : "16px",
-            transition: "all 0.3s ease",
-          }}
-          onMouseLeave={(e) => {
-            const relatedTarget = e.relatedTarget;
-            if (relatedTarget && relatedTarget instanceof Element) {
-              if (relatedTarget.closest(".bdu-mega-menu")) {
-                return;
-              }
-            }
-            if (closeTimeoutRef.current) {
-              clearTimeout(closeTimeoutRef.current);
-            }
-            closeTimeoutRef.current = setTimeout(() => {
-              setActiveMenu(null);
-            }, 150);
-          }}
-        >
+        <div className="w-full bg-[#2C4B62]/70 relative">
           <div
-            ref={stickyLogoRef}
-            className="absolute left-10 top-full -translate-y-1/2 opacity-0 scale-90"
-            style={{ pointerEvents: "none" }}
+            ref={topNavRef}
+            className="bdu-nav-top  wrapper relative flex items-center justify-between min-1600:py-2 py-1 "
+            style={{
+              paddingLeft: showStickyLogo ? "130px" : "16px",
+              transition: "all 0.3s ease",
+            }}
+            onMouseLeave={(e) => {
+              const relatedTarget = e.relatedTarget;
+              if (relatedTarget && relatedTarget instanceof Element) {
+                if (relatedTarget.closest(".bdu-mega-menu")) {
+                  return;
+                }
+              }
+              if (closeTimeoutRef.current) {
+                clearTimeout(closeTimeoutRef.current);
+              }
+              closeTimeoutRef.current = setTimeout(() => {
+                setActiveMenu(null);
+              }, 150);
+            }}
           >
-            <Link href="/">
-              <Image
-                src="/bsu-logo.png"
-                alt="BDU Logo"
-                width={80}
-                height={80}
-                className="object-contain"
-              />
-            </Link>
-          </div>
-          {/* e-BDU Button */}
-          {/* <Link
+            <div
+              ref={stickyLogoRef}
+              className="absolute left-10 top-full -translate-y-1/2 opacity-0 scale-90"
+              style={{ pointerEvents: "none" }}
+            >
+              <Link href="/">
+                <Image
+                  src="/bsu-logo.png"
+                  alt="BDU Logo"
+                  width={80}
+                  height={80}
+                  className="object-contain"
+                />
+              </Link>
+            </div>
+            {/* e-BDU Button */}
+            {/* <Link
             href="/e-bdu"
             className="px-4 py-2 bg-white border border-secondary hover:bg-secondary/80 hover:text-white rounded text-sm font-medium transition-colors"
           >
             e-BDU
           </Link> */}
 
-          {/* Desktop Mega Menu */}
-          <div className="nav-top-links w-full flex items-center justify-between space-x-1">
-            <div className="flex items-center gap-1">
-              {topMenuKeys.map((menuKey) => {
-                const menuItem = menuData[menuKey];
-                return (
-                  <div
-                    key={menuKey}
-                    className="relative"
-                    onMouseEnter={() => handleMenuItemEnter(menuKey)}
-                  >
-                    <button className="px-4 laptop:py-4 py-3 laptop:text-[14px] text-xs font-semibold hover:text-primary transition-colors uppercase">
-                      {getLabel(menuItem, locale)}
-                    </button>
-                  </div>
-                );
-              })}
+            {/* Desktop Mega Menu */}
+            <div className="nav-top-links w-full flex items-center justify-between space-x-1">
+              <div className="flex items-center gap-1">
+                {topMenuKeys.map((menuKey) => {
+                  const menuItem = menuData[menuKey];
+                  return (
+                    <div
+                      key={menuKey}
+                      className="relative"
+                      onMouseEnter={() => handleMenuItemEnter(menuKey)}
+                    >
+                      <button className="px-4 laptop:py-4 py-3 laptop:text-[14px] text-xs font-semibold hover:text-primary transition-colors uppercase">
+                        {getLabel(menuItem, locale)}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+              {/* Language Switcher */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleLanguageChange("az")}
+                  className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
+                    locale === "az"
+                      ? "bg-secondary text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  AZ
+                </button>
+                <button
+                  onClick={() => handleLanguageChange("en")}
+                  className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
+                    locale === "en"
+                      ? "bg-secondary text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
             </div>
-            {/* Language Switcher */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => handleLanguageChange("az")}
-                className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
-                  locale === "az"
-                    ? "bg-secondary text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                AZ
-              </button>
-              <button
-                onClick={() => handleLanguageChange("en")}
-                className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
-                  locale === "en"
-                    ? "bg-secondary text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                EN
-              </button>
-            </div>
-          </div>
 
-          {/* Search */}
-          {/* <div>
+            {/* Search */}
+            {/* <div>
             <input
               type="search"
               placeholder="Axtarış..."
               className="px-4 py-1.5 rounded bg-white border border-secondary/30 text-secondary placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
             />
           </div> */}
-          <div></div>
-        </div>
+            <div></div>
+          </div>
 
-        {/* Single Mega Menu - Content switches based on activeMenu */}
-        <MegaMenu
-          activeMenu={activeMenu}
-          menuData={menuData}
-          topMenuKeys={topMenuKeys}
-          isOpen={activeMenu !== null}
-          onClose={handleCloseMenu}
-          onMouseEnterFromNav={handleNavbarEnter}
-          navbarTop={topNavBottom ?? navbarTop}
-        />
+          {/* Single Mega Menu - Content switches based on activeMenu */}
+          <MegaMenu
+            activeMenu={activeMenu}
+            menuData={menuData}
+            topMenuKeys={topMenuKeys}
+            isOpen={activeMenu !== null}
+            onClose={handleCloseMenu}
+            onMouseEnterFromNav={handleNavbarEnter}
+          />
+        </div>
 
         {/* Bottom Navigation */}
         <div className="w-full border-t border-secondary/10"></div>
@@ -281,7 +282,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
             paddingLeft: showStickyLogo ? "146px" : "32px",
             transition: "all 0.3s ease",
           }}
-          className="bdu-nav-bottom  wrapper flex items-center justify-between space-x-6 laptop:py-4 py-2 transition-all duration-400"
+          className="bdu-nav-bottom  wrapper flex items-center justify-between space-x-6 laptop:py-2 py-2 transition-all duration-400"
         >
           {/* <button className="laptop:px-4 px-3 laptop:py-2 py-1.5 bg-bg-light  border border-white/30 hover:bg-secondary/80 hover:text-white laptop:text-sm text-xs font-medium transition-colors">
             e-BDU
@@ -295,7 +296,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                 href={
                   typeof item.href === "object" ? item.href[locale] : item.href
                 }
-                className="laptop:text-[14px] text-[12px] font-medium hover:text-primary transition-colors text-center"
+                className="laptop:text-[14px] text-[12px] font-medium hover:text-gray-200 transition-colors text-center"
               >
                 {getLabel(item, locale)}
               </Link>

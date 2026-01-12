@@ -122,7 +122,6 @@ export default function MegaMenu({
   isOpen,
   onClose,
   onMouseEnterFromNav,
-  navbarTop = 0,
 }) {
   const locale = useLocale();
   const menuRef = useRef(null);
@@ -213,13 +212,13 @@ export default function MegaMenu({
           ease: "power2.out",
         });
 
-          if (imageRef.current) {
-        gsap.fromTo(
-          imageRef.current,
-          { y: 50, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: 0.2 }
-        );
-      }
+        if (imageRef.current) {
+          gsap.fromTo(
+            imageRef.current,
+            { y: 50, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: 0.2 }
+          );
+        }
       } else {
         gsap.to(menuRef.current, {
           autoAlpha: 0,
@@ -257,12 +256,12 @@ export default function MegaMenu({
   return (
     <div
       ref={menuRef}
-      className="bdu-mega-menu max-w-[1600px] mx-auto fixed left-0 right-0 z-60  w-[96%]"
+      className="bdu-mega-menu max-w-[1540px] mx-auto absolute left-0 right-0 z-[60] w-full"
       style={{
         display: "none",
         opacity: 0,
         visibility: "hidden",
-        top: navbarTop > 0 ? `${navbarTop}px` : "var(--navbar-height, 120px)",
+        top: "100%",
       }}
       onMouseEnter={handleMenuEnter}
       onMouseLeave={handleMenuLeave}
@@ -276,7 +275,7 @@ export default function MegaMenu({
       {/* Decorative top border */}
       {/* <div className="h-1 bg-gradient-to-r from-primary via-secondary to-primary"></div> */}
 
-      <div className="relative max-w-[1600px] mx-auto border-2 border-primary/50 rounded-xl bg-bg-light overflow-x-auto custom-scrollbar">
+      <div className="relative max-w-[1540px] mx-auto border-2 border-primary/50 rounded-xl bg-bg-light overflow-x-auto custom-scrollbar">
         <div className="w-xl overflow-hidden absolute bottom-0 right-5 z-10">
           <Image
             ref={imageRef}

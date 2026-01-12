@@ -20,7 +20,7 @@ export default function FacultyHeaderTop({ onMenuToggle }) {
       className="border-b border-white/20"
       style={{ backgroundColor: themeColor }}
     >
-      <div className="max-w-[1600px] mx-auto px-4 min-w-1600:py-2.5 py-2">
+      <div className="max-w-[1540px] mx-auto px-4 min-w-1600:py-2.5 py-2">
         {/* Mobile View */}
         <div className="flex lg:hidden py-2 items-center justify-between">
           <div className="flex items-center sm:gap-3 gap-1.5">

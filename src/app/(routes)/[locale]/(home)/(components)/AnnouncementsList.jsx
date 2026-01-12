@@ -34,7 +34,7 @@ export default async function AnnouncementsList() {
   const announcementsPath = locale === 'az' ? '/elanlar' : '/announcements';
 
   return (
-    <div className="bg-gradient-to-br from-[#B8956A]/10 to-[#B8956A]/5 rounded-3xl overflow-hidden">
+    <div className="bg-gradient-to-br from-[#B8956A]/10 to-[#B8956A]/5  overflow-hidden">
       {/* Header */}
       <div className="bg-[#B8956A] px-6 py-4 flex items-center justify-between">
         <h2 className="text-white font-bold text-lg">
