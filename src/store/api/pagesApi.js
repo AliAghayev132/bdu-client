@@ -80,6 +80,54 @@ export const pagesApi = baseApi.injectEndpoints({
         { type: 'Pages', id: 'LIST' },
       ],
     }),
+
+    // Column management mutations for personPage
+    addPageColumn: builder.mutation({
+      query: ({ pageId, data }) => ({
+        url: `/admin/pages/${pageId}/columns`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { pageId }) => [
+        { type: 'Pages', id: pageId },
+        { type: 'Pages', id: 'LIST' },
+      ],
+    }),
+
+    updatePageColumn: builder.mutation({
+      query: ({ pageId, columnIndex, data }) => ({
+        url: `/admin/pages/${pageId}/columns/${columnIndex}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { pageId }) => [
+        { type: 'Pages', id: pageId },
+        { type: 'Pages', id: 'LIST' },
+      ],
+    }),
+
+    deletePageColumn: builder.mutation({
+      query: ({ pageId, columnIndex }) => ({
+        url: `/admin/pages/${pageId}/columns/${columnIndex}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, error, { pageId }) => [
+        { type: 'Pages', id: pageId },
+        { type: 'Pages', id: 'LIST' },
+      ],
+    }),
+
+    reorderPageColumns: builder.mutation({
+      query: ({ pageId, columns }) => ({
+        url: `/admin/pages/${pageId}/columns/reorder`,
+        method: 'POST',
+        body: { columns },
+      }),
+      invalidatesTags: (result, error, { pageId }) => [
+        { type: 'Pages', id: pageId },
+        { type: 'Pages', id: 'LIST' },
+      ],
+    }),
   }),
 });
 
@@ -90,4 +138,8 @@ export const {
   useUpdatePageMutation,
   useDeletePageMutation,
   useTogglePublishPageMutation,
+  useAddPageColumnMutation,
+  useUpdatePageColumnMutation,
+  useDeletePageColumnMutation,
+  useReorderPageColumnsMutation,
 } = pagesApi;

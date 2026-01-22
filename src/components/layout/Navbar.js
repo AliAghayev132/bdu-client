@@ -6,7 +6,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import MegaMenu from "./MegaMenu";
 import {
-  menuData,
   bottomNavItems,
   getLabel,
   resolveLocalizedPath,
@@ -17,7 +16,7 @@ import gsap from "gsap";
 import AnimatedButton from "../common/AnimatedButton/AnimatedButton";
 import { useAlternateSlug } from "@/context/AlternateSlugContext";
 
-export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
+export default function Navbar({ onMenuToggle, navbarTop = 0, menuData = {} }) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const [activeMenu, setActiveMenu] = useState(null);
@@ -51,13 +50,10 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
     [pathname, router, alternateSlug]
   );
 
-  const topMenuKeys = [
-    "university",
-    "education",
-    "science",
-    "social",
-    "cooperation",
-  ];
+  // Get top menu keys from backend data (only mega type menus)
+  const topMenuKeys = Object.keys(menuData).filter(
+    key => menuData[key]?.type === 'mega'
+  ).sort((a, b) => (menuData[a]?.order || 0) - (menuData[b]?.order || 0));
 
   const handleNavbarLeave = useCallback((e) => {
     // Clear any existing timeout first

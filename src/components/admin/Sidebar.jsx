@@ -20,7 +20,8 @@ import {
   Menu,
   ChevronLeft,
   ChevronRight,
-  MessageSquare
+  MessageSquare,
+  UserCog
 } from 'lucide-react';
 import { useLogoutMutation } from '@store/api/authApi';
 import { useDispatch } from 'react-redux';
@@ -37,6 +38,7 @@ const menuItems = [
   { icon: Calendar, label: 'Tədbirlər', href: '/admin/dashboard/events' },
   { icon: FileText, label: 'Səhifələr', href: '/admin/dashboard/pages' },
   { icon: Menu, label: 'Menyular', href: '/admin/dashboard/menus' },
+  { icon: UserCog, label: 'Şəxslər', href: '/admin/dashboard/persons' },
   { icon: Mail, label: 'Müraciətlər', href: '/admin/dashboard/contacts' },
   { icon: MessageSquare, label: 'Rektora Müraciət', href: '/admin/dashboard/rector-appeals' },
   { icon: Megaphone, label: 'Elanlar', href: '/admin/dashboard/announcements' },

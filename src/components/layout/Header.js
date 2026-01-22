@@ -4,12 +4,23 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import HeaderTop from './HeaderTop';
 import Navbar from './Navbar';
+import { getMegaMenus } from '@/lib/api/menu';
 
 export default function Header({ onMenuToggle }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [navbarTop, setNavbarTop] = useState(0);
+  const [menuData, setMenuData] = useState({});
   const headerTopRef = useRef(null);
   const navbarRef = useRef(null);
+
+  // Fetch mega menu data
+  useEffect(() => {
+    async function fetchMenus() {
+      const menus = await getMegaMenus();
+      setMenuData(menus);
+    }
+    fetchMenus();
+  }, []);
 
   // Scroll event
   useEffect(() => {
@@ -95,7 +106,7 @@ export default function Header({ onMenuToggle }) {
         ref={navbarRef}
         className="bdu-navbar w-full mx-auto sticky top-0 z-50 bg-white"
       >
-        <Navbar onMenuToggle={onMenuToggle} navbarTop={navbarTop} />
+        <Navbar onMenuToggle={onMenuToggle} navbarTop={navbarTop} menuData={menuData} />
       </div>
     </>
   );

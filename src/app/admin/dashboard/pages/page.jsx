@@ -7,9 +7,10 @@ import Button from '@components/admin/ui/Button';
 import Table from '@components/admin/ui/Table';
 import Modal from '@components/admin/ui/Modal';
 import PageModal from '@components/admin/PageModal';
+import PageColumnsModal from '@components/admin/PageColumnsModal';
 import Input from '@components/admin/ui/Input';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
-import { Plus, Edit, Trash2, Eye, EyeOff, Search, ExternalLink, FileText } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, Search, ExternalLink, FileText, Columns } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function PagesPage() {
@@ -19,6 +20,7 @@ export default function PagesPage() {
   const [showDeleted, setShowDeleted] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null });
   const [pageModal, setPageModal] = useState({ isOpen: false, data: null });
+  const [columnsModal, setColumnsModal] = useState({ isOpen: false, data: null });
 
   const { data, isLoading, refetch } = useGetPagesQuery({ 
     page, 
@@ -66,7 +68,8 @@ export default function PagesPage() {
       setPageModal({ isOpen: false, data: null });
       refetch();
     } catch (error) {
-      toast.error(error?.data?.message || 'Xəta baş verdi');
+      const errorMessage = error?.data?.message?.message || error?.data?.message || 'Xəta baş verdi';
+      toast.error(errorMessage);
     }
   };
 
@@ -77,7 +80,8 @@ export default function PagesPage() {
       setPageModal({ isOpen: false, data: null });
       refetch();
     } catch (error) {
-      toast.error(error?.data?.message || 'Xəta baş verdi');
+      const errorMessage = error?.data?.message?.message || error?.data?.message || 'Xəta baş verdi';
+      toast.error(errorMessage);
     }
   };
 
@@ -104,6 +108,7 @@ export default function PagesPage() {
           blog: '📝 Bloq',
           list: '📋 Siyahı',
           custom: '⚙️ Xüsusi',
+          personPage: '👥 Şəxslər',
         };
         return (
           <span className="px-2.5 py-1 bg-primary/10 text-primary rounded-md text-xs font-medium border border-primary/10">
@@ -139,6 +144,18 @@ export default function PagesPage() {
       label: 'Əməliyyatlar',
       render: (row) => (
         <div className="flex items-center gap-2">
+          {row.pageType === 'personPage' && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setColumnsModal({ isOpen: true, data: row });
+              }}
+              className="p-1.5 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+              title="Sütunları İdarə Et"
+            >
+              <Columns size={18} />
+            </button>
+          )}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -220,6 +237,7 @@ export default function PagesPage() {
               <option value="blog">📝 Bloq</option>
               <option value="list">📋 Siyahı</option>
               <option value="custom">⚙️ Xüsusi</option>
+              <option value="personPage">👥 Şəxslər</option>
             </select>
 
             <div className="flex items-center gap-4">
@@ -305,6 +323,16 @@ export default function PagesPage() {
         onSubmit={pageModal.data ? handleUpdatePage : handleCreatePage}
         initialData={pageModal.data}
         isLoading={isCreating || isUpdating}
+      />
+
+      <PageColumnsModal
+        isOpen={columnsModal.isOpen}
+        onClose={() => setColumnsModal({ isOpen: false, data: null })}
+        page={columnsModal.data}
+        onSuccess={() => {
+          setColumnsModal({ isOpen: false, data: null });
+          refetch();
+        }}
       />
     </div>
   );
