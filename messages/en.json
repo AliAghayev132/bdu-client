@@ -51,6 +51,46 @@
     },
     "contact": {
       "title": "Contact Us"
+    },
+    "alumni": {
+      "title": "OUR PRIDE",
+      "viewAll": "VIEW ALL"
+    },
+    "science": {
+      "title": "SCIENCE AND INNOVATION",
+      "viewAll": "LEARN MORE",
+      "items": {
+        "library": "SCIENTIFIC LIBRARY",
+        "research": "CENTER OF EXCELLENCE FOR RESEARCH, DEVELOPMENT AND INNOVATION",
+        "techCenter": "STUDENT SCIENTIFIC-TECHNICAL CREATIVITY CENTER",
+        "labs": "RESEARCH LABORATORIES",
+        "journals": "SCIENTIFIC JOURNALS"
+      }
+    },
+    "social": {
+      "title": "SOCIAL LIFE",
+      "items": {
+        "dormitory": "Student Dormitory",
+        "library": "Library",
+        "culture": "Culture and Creativity",
+        "tv": "BSU TV",
+        "cafeteria": "Cafeteria",
+        "sports": "Sports and Health",
+        "newspaper": "\"Baku University\" Newspaper",
+        "medical": "Medical Services",
+        "leisure": "Leisure and Recreation"
+      },
+      "descriptions": {
+        "dormitory": "Modern living conditions and dormitory services for students.",
+        "library": "Library equipped with rich book collection and reading rooms.",
+        "culture": "Cultural events, concerts and creative circles.",
+        "tv": "University television channel and media services.",
+        "cafeteria": "Cafeteria services for students and staff.",
+        "sports": "Sports complexes, physical education and health programs.",
+        "newspaper": "Presents articles about the educational and scientific activities, social and cultural life of the University to the public.",
+        "medical": "Medical examination and health services for students.",
+        "leisure": "Leisure and entertainment opportunities for students."
+      }
     }
   },
   "news": {

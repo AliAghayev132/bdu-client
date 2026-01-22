@@ -16,6 +16,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import AnimatedButton from "../common/AnimatedButton/AnimatedButton";
 import { useAlternateSlug } from "@/context/AlternateSlugContext";
+import eBduImg from '@/assets/images/e-bsu-text.svg'
 
 export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   const t = useTranslations("nav");
@@ -48,7 +49,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
       const targetPath = resolved || translateUrl(pathname, newLocale);
       router.replace(targetPath, { locale: newLocale });
     },
-    [pathname, router, alternateSlug]
+    [pathname, router, alternateSlug],
   );
 
   const topMenuKeys = [
@@ -166,9 +167,9 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
         <div className="w-full bg-[#2C4B62]/70 relative">
           <div
             ref={topNavRef}
-            className="bdu-nav-top  wrapper relative flex items-center justify-between min-1600:py-2 py-1 "
+            className="bdu-nav-top max-w-[1600px] mx-auto px-15 relative flex items-center justify-between min-1600:py-2 py-1 "
             style={{
-              paddingLeft: showStickyLogo ? "130px" : "16px",
+              paddingLeft: showStickyLogo ? "160px" : "60px",
               transition: "all 0.3s ease",
             }}
             onMouseLeave={(e) => {
@@ -188,7 +189,7 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
           >
             <div
               ref={stickyLogoRef}
-              className="absolute left-10 top-full -translate-y-1/2 opacity-0 scale-90"
+              className="absolute left-16 top-full -translate-y-1/2 opacity-0 scale-90"
               style={{ pointerEvents: "none" }}
             >
               <Link href="/">
@@ -227,29 +228,21 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                   );
                 })}
               </div>
-              {/* Language Switcher */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleLanguageChange("az")}
-                  className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
-                    locale === "az"
-                      ? "bg-secondary text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  AZ
-                </button>
-                <button
-                  onClick={() => handleLanguageChange("en")}
-                  className={`px-3 py-1 laptop:text-sm text-xs font-medium transition-colors ${
-                    locale === "en"
-                      ? "bg-secondary text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  EN
-                </button>
-              </div>
+              {/* e-BDU Button */}
+              {/* <AnimatedButton
+                label="e-BDU"
+                animateOnScroll={false}
+                width="8rem"
+              /> */}
+              <button className="px-4 bg-white rounded-md py-2">
+                <Image
+                  src={eBduImg}
+                  alt="e-BDU"
+                  width={60}
+                  height={60}
+                  className="object-contain"
+                />
+              </button>
             </div>
 
             {/* Search */}
@@ -279,15 +272,34 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
         <div
           ref={bottomNavRef}
           style={{
-            paddingLeft: showStickyLogo ? "146px" : "32px",
+            opacity: showStickyLogo ? "0" : "1",
             transition: "all 0.3s ease",
           }}
-          className="bdu-nav-bottom  wrapper flex items-center justify-between space-x-6 laptop:py-2 py-2 transition-all duration-400"
+          className="bdu-nav-bottom  max-w-[1600px] mx-auto px-15 flex items-center justify-between space-x-6 laptop:py-2 py-2 transition-all duration-400"
         >
-          {/* <button className="laptop:px-4 px-3 laptop:py-2 py-1.5 bg-bg-light  border border-white/30 hover:bg-secondary/80 hover:text-white laptop:text-sm text-xs font-medium transition-colors">
-            e-BDU
-          </button> */}
-          <AnimatedButton label="e-BDU" animateOnScroll={false} width="8rem" />
+          {/* Language Switcher */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleLanguageChange("az")}
+              className={`px-2 py-1 laptop:text-sm hover:bg-text-200 text-xs  transition-colors ${
+                locale === "az"
+                  ? "bg-transparent text-white font-bold"
+                  : "bg-transparent text-white font-semibold "
+              }`}
+            >
+              AZ
+            </button>
+            <button
+              onClick={() => handleLanguageChange("en")}
+              className={`px-2 py-1 laptop:text-sm hover:bg-text-200 text-xs  transition-colors ${
+                locale === "en"
+                  ? "bg-transparent text-white font-bold"
+                  : "bg-transparent text-white font-semibold"
+              }`}
+            >
+              EN
+            </button>
+          </div>
           {/* Right - Rector Info and Language Switcher */}
           <div className="flex items-center  laptop:gap-x-8 gap-x-6">
             {bottomNavItems.map((item) => (
