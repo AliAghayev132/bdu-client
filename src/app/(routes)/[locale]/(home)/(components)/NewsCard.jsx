@@ -34,10 +34,10 @@ console.log(imageUrl)
     <Link
       href={newsPath}
       style={{ willChange: 'transform' }}
-      className="group block rounded-2xl overflow-hidden transition-all duration-300 h-full bg-white"
+      className="group block overflow-hidden transition-all duration-300 h-full bg-white"
     >
       {/* Image Container */}
-      <div className="relative aspect-[16/9] overflow-hidden  rounded-2xl">
+      <div className="relative aspect-[16/9] overflow-hidden">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -60,7 +60,7 @@ console.log(imageUrl)
         )}
 
         {/* Date Badge - Top Left Corner */}
-        <div className="absolute top-0 rounded-br-2xl left-0 bg-white shadow-md border-l-2 border-t-2 rounded-tl-2xl border-primary/30">
+        <div className="absolute top-0 left-0 bg-white shadow-md border-2 border-primary/30">
           <div className="flex flex-col items-center justify-center lg:w-14 lg:h-14 md:w-12 md:h-12 w-10 h-10 p-2">
             <time className="lg:text-2xl md:text-xl sm:text-lg font-bold text-primary leading-none" suppressHydrationWarning>
               {new Date(news.date).getDate()}

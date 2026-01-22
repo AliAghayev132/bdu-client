@@ -76,7 +76,7 @@ export default async function EducationSection() {
 
   return (
     <section className="wrapper sm:py-10 py-4">
-      <div className="bg-primary/5 rounded-3xl xl:border-2 border-primary/20 sm:py-8 sm:px-8 py-6 px-4">
+      <div className="bg-primary/5 xl:border-2 border-primary/20 sm:py-8 sm:px-8 py-6 px-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="md:text-2xl sm:text-xl text-lg font-bold text-secondary">
             {t("title")}
@@ -99,7 +99,7 @@ export default async function EducationSection() {
               <Link
                 key={item.key}
                 href={item.resolvedHref}
-                className="group relative overflow-hidden sm:rounded-3xl rounded-2xl col-span-12 lg:col-span-6"
+                className="group relative overflow-hidden col-span-12 lg:col-span-6"
               >
                 <div className="aspect-[16/9] lg:aspect-[4/3] w-full h-full">
                   <div className="relative w-full h-full">
@@ -116,7 +116,7 @@ export default async function EducationSection() {
                 </div>
                 <div className="pointer-events-none absolute inset-0 flex items-end">
                   <div className="w-full p-3 sm:p-4">
-                    <div className="inline-flex items-center gap-2 rounded-xl bg-white/90 text-secondary px-3 sm:px-4 py-2 shadow-sm backdrop-blur group-hover:bg-white transition-colors">
+                    <div className="inline-flex items-center gap-2  bg-white/90 text-secondary px-3 sm:px-4 py-2 shadow-sm backdrop-blur group-hover:bg-white transition-colors">
                       <span className="font-bold tracking-wide text-[10px] sm:text-xs laptop:text-sm">
                         {item.title}
                       </span>
@@ -146,7 +146,7 @@ export default async function EducationSection() {
               <Link
                 key={item.key}
                 href={item.resolvedHref}
-                className="group relative overflow-hidden sm:rounded-3xl rounded-2xl"
+                className="group relative overflow-hidden"
               >
                 <div className="aspect-square lg:aspect-[16/9] w-full">
                   <div className="relative w-full h-full">
@@ -162,7 +162,7 @@ export default async function EducationSection() {
                 </div>
                 <div className="pointer-events-none absolute inset-0 flex items-end">
                   <div className="w-full p-2 sm:p-3 laptop:p-4">
-                    <div className="inline-flex items-center gap-2 rounded-xl bg-white/90 text-secondary px-3 sm:px-4 py-2 shadow-sm backdrop-blur group-hover:bg-white transition-colors">
+                    <div className="inline-flex items-center gap-2 bg-white/90 text-secondary px-3 sm:px-4 py-2 shadow-sm backdrop-blur group-hover:bg-white transition-colors">
                       <span className="font-bold tracking-wide text-[10px] sm:text-xs laptop:text-sm">
                         {item.title}
                       </span>

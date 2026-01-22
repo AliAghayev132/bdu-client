@@ -8,7 +8,7 @@
   --foreground: #171717;
   --primary: #AA9674;
   --secondary: #2C4B62;
-  --container: #49637B;
+  --container: #b1cbe1;
   --bg-light: #EFF0F1;
 }
 
@@ -44,7 +44,7 @@ button{
 }
 
 .wrapper {
-  max-width: 1660px;
+  max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 30px;

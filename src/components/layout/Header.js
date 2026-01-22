@@ -104,7 +104,7 @@ export default function Header({ onMenuToggle }) {
       {/* Navbar - Sticky */}
       <div 
         ref={navbarRef}
-        className="bdu-navbar w-full mx-auto sticky top-0 z-50 bg-white"
+        className="bdu-navbar w-full mx-auto sticky top-0 z-50 bg-[#003A68]/50 backdrop-blur-lg"
       >
         <Navbar onMenuToggle={onMenuToggle} navbarTop={navbarTop} menuData={menuData} />
       </div>

@@ -25,7 +25,7 @@ export default async function NewsSection({ locale }) {
       <div className="wrapper bg-white">
         <div className="grid xl:grid-cols-[1fr_320px] gap-4">
           {/* News Section - Left Side */}
-          <div className="bg-primary/5 xl:border-2 border-primary/20 sm:py-8 sm:px-8 px-4 py-6 rounded-3xl overflow-hidden">
+          <div className="bg-primary/5 xl:border-2 border-primary/20 sm:py-8 sm:px-8 px-4 py-6 overflow-hidden">
             {/* Section Header */}
             <div className="flex items-center justify-between mb-8">
               <h2 className="md:text-2xl sm:text-xl text-lg font-bold text-secondary">
@@ -88,7 +88,7 @@ export default async function NewsSection({ locale }) {
         </div>
 
         {/* Mobile Announcements - Horizontal Scroll */}
-        <div className="xl:hidden bg-primary/5 sm:py-8 sm:px-8 py-6 px-4 rounded-3xl sm:mt-12 mt-6 overflow-hidden">
+        <div className="xl:hidden bg-primary/5 sm:py-8 sm:px-8 py-6 px-4 sm:mt-12 mt-6 overflow-hidden">
           <div className="flex items-center justify-between mb-6">
             <h2 className="md:text-2xl sm:text-xl text-lg font-bold text-secondary">
               {t("announcements.title", { default: "ELANLAR" })}
