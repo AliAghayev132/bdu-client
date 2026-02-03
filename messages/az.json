@@ -58,6 +58,46 @@
     },
     "contact": {
       "title": "Bizimlə Əlaqə"
+    },
+    "alumni": {
+      "title": "FƏXRLƏRİMİZ",
+      "viewAll": "BÜTÜN SİYAHI"
+    },
+    "science": {
+      "title": "ELM VƏ İNNOVASİYA",
+      "viewAll": "ƏTRAFLISI",
+      "items": {
+        "library": "ELMİ KİTABXANA",
+        "research": "TƏDQİQAT, İNKİŞAF VƏ İNNOVASİYALAR ÜZRƏ MÜKƏMMƏLLIK MƏRKƏZİ",
+        "techCenter": "TƏLƏBƏ ELMİ-TEXNİKİ YARADICILIQ MƏRKƏZİ",
+        "labs": "ELMİ-TƏDQİQAT LABORATORİYALARI",
+        "journals": "ELMİ JURNALLAR"
+      }
+    },
+    "social": {
+      "title": "SOSİAL HƏYAT",
+      "items": {
+        "dormitory": "Tələbə Evi",
+        "library": "Kitab Evi",
+        "culture": "Mədəniyyət və yaradıcılıq",
+        "tv": "BDU TV",
+        "cafeteria": "İctimai iaşə",
+        "sports": "İdman və sağlamlıq",
+        "newspaper": "\"Bakı Universiteti\" qəzeti",
+        "medical": "Tibbi xidmət",
+        "leisure": "İstirahət və asudə vaxt"
+      },
+      "descriptions": {
+        "dormitory": "Tələbələr üçün müasir yaşayış şəraiti və yataqxana xidmətləri.",
+        "library": "Zəngin kitab fondu və oxu zalları ilə təchiz olunmuş kitabxana.",
+        "culture": "Mədəni tədbirlər, konsertlər və yaradıcılıq dərnəkləri.",
+        "tv": "Universitetin televiziya kanalı və media xidmətləri.",
+        "cafeteria": "Tələbələr və əməkdaşlar üçün yeməkxana xidmətləri.",
+        "sports": "İdman kompleksləri, bədən tərbiyəsi və sağlamlıq proqramları.",
+        "newspaper": "İctimaiyyətə Universitetin təhsil və elmi fəaliyyəti, sosial-mədəni həyatına dair yazılar təqdim edir.",
+        "medical": "Tələbələr üçün tibbi müayinə və sağlamlıq xidmətləri.",
+        "leisure": "Tələbələr üçün istirahət və əyləncə imkanları."
+      }
     }
   },
   "news": {
