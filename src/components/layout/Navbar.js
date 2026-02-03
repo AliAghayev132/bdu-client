@@ -16,7 +16,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import AnimatedButton from "../common/AnimatedButton/AnimatedButton";
 import { useAlternateSlug } from "@/context/AlternateSlugContext";
-import eBduImg from '@/assets/images/e-bsu-text.svg'
+import eBduImg from "@/assets/images/e-bsu-text.svg";
 
 export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   const t = useTranslations("nav");
@@ -234,15 +234,6 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
                 animateOnScroll={false}
                 width="8rem"
               /> */}
-              <button className="px-4 bg-white rounded-md py-2">
-                <Image
-                  src={eBduImg}
-                  alt="e-BDU"
-                  width={60}
-                  height={60}
-                  className="object-contain"
-                />
-              </button>
             </div>
 
             {/* Search */}
@@ -278,23 +269,33 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
           className="bdu-nav-bottom  max-w-[1600px] mx-auto px-15 flex items-center justify-between space-x-6 laptop:py-2 py-2 transition-all duration-400"
         >
           {/* Language Switcher */}
+
           <div className="flex items-center gap-2">
+            <button className="px-4 bg-white rounded-md py-2">
+              <Image
+                src={eBduImg}
+                alt="e-BDU"
+                width={60}
+                height={60}
+                className="object-contain"
+              />
+            </button>
             <button
               onClick={() => handleLanguageChange("az")}
-              className={`px-2 py-1 laptop:text-sm hover:bg-text-200 text-xs  transition-colors ${
+              className={`px-3 py-1 laptop:text-sm text-xs font-medium rounded-md transition-all duration-300 ${
                 locale === "az"
-                  ? "bg-transparent text-white font-bold"
-                  : "bg-transparent text-white font-semibold "
+                  ? "bg-white text-[#2C4B62] shadow-md"
+                  : "bg-white/10 text-white  border border-white/20 backdrop-blur-sm hover:bg-white/20"
               }`}
             >
               AZ
             </button>
             <button
               onClick={() => handleLanguageChange("en")}
-              className={`px-2 py-1 laptop:text-sm hover:bg-text-200 text-xs  transition-colors ${
+              className={`px-3 py-1 laptop:text-sm text-xs font-medium  rounded-md transition-all duration-300 ${
                 locale === "en"
-                  ? "bg-transparent text-white font-bold"
-                  : "bg-transparent text-white font-semibold"
+                  ? "bg-white text-[#2C4B62]  shadow-md"
+                  : "bg-white/10 text-white border border-white/20 backdrop-blur-sm hover:bg-white/20"
               }`}
             >
               EN
