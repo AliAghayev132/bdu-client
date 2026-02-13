@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export function useScrolling(target, options = {}) {
   const { debounce = 150, fallbackToDocument = true } = options
   const [isScrolling, setIsScrolling] = useState(false)
+  const isScrollingRef = useRef(false)
 
   useEffect(() => {
     // Resolve element or window
@@ -35,15 +36,24 @@ export function useScrolling(target, options = {}) {
     const supportsScrollEnd = element === window && "onscrollend" in window
 
     const handleScroll = () => {
-      if (!isScrolling) setIsScrolling(true)
+      if (!isScrollingRef.current) {
+        isScrollingRef.current = true
+        setIsScrolling(true)
+      }
 
       if (!supportsScrollEnd) {
         clearTimeout(timeout)
-        timeout = setTimeout(() => setIsScrolling(false), debounce)
+        timeout = setTimeout(() => {
+          isScrollingRef.current = false
+          setIsScrolling(false)
+        }, debounce)
       }
     }
 
-    const handleScrollEnd = () => setIsScrolling(false)
+    const handleScrollEnd = () => {
+      isScrollingRef.current = false
+      setIsScrolling(false)
+    }
 
     on(eventTarget, "scroll", handleScroll)
     if (supportsScrollEnd) {
@@ -57,7 +67,7 @@ export function useScrolling(target, options = {}) {
       }
       clearTimeout(timeout)
     };
-  }, [target, debounce, fallbackToDocument, isScrolling])
+  }, [target, debounce, fallbackToDocument])
 
   return isScrolling
 }

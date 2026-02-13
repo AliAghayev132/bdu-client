@@ -7,4 +7,8 @@ export const links = {
         az:"/elanlar",
         en:"/announcements"
     },
+    events:{
+        az:"/tedbirler",
+        en:"/events"
+    },
 }

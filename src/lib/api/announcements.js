@@ -140,6 +140,8 @@ export function transformAnnouncementItem(item, locale = "az") {
 
   const altLocale = locale === "az" ? "en" : "az";
 
+  const IMAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL || "";
+
   return {
     id: item._id,
     title: item.title?.[locale] || item.title?.az || "",
@@ -147,6 +149,7 @@ export function transformAnnouncementItem(item, locale = "az") {
     // Alternativ dil üçün slug (dil dəyişdirəndə istifadə olunur)
     alternateSlug: item.slug?.[altLocale] || item.slug?.az || "",
     content: item.content?.[locale] || item.content?.az || "",
+    coverImage: item.coverImage ? (item.coverImage.startsWith("http") ? item.coverImage : `${IMAGE_URL}${item.coverImage}`) : "",
     type: item.type || "info",
     priority: item.priority || "medium",
     startDate: item.startDate,

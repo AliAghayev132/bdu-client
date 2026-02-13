@@ -1,12 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+
+// API Hooks
 import { 
   useGetMenusQuery, 
   useCreateMenuMutation, 
   useUpdateMenuMutation, 
   useDeleteMenuMutation, 
   useToggleMenuActiveMutation,
+  useReorderMenusMutation,
   useAddColumnMutation,
   useUpdateColumnMutation,
   useDeleteColumnMutation,
@@ -17,20 +20,25 @@ import {
   useUpdateSubitemMutation,
   useDeleteSubitemMutation,
 } from '@store/api/menuApi';
-import { useGetPagesQuery } from '@store/api/pagesApi';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Modal from '@components/admin/ui/Modal';
-import MenuItemTree from '@components/admin/MenuItemTree';
+
+// UI Components
+import { Card, Button, Modal } from '@components/admin/ui';
+import MenuCard from './MenuCard';
+import MenuFormModal from './MenuFormModal';
+import ColumnFormModal from './ColumnFormModal';
+import ItemFormModal from './ItemFormModal';
 import SubitemFormModal from './SubitemFormModal';
-import Input from '@components/admin/ui/Input';
-import { Plus, Edit, Trash2, Eye, EyeOff, ChevronDown, ChevronRight, ArrowUp, ArrowDown, Columns, List, MoreVertical } from 'lucide-react';
+
+// Icons
+import { Plus } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
+import { confirmDialog } from '@utils/confirmDialog';
 
 export default function MenusPage() {
   const [menuModal, setMenuModal] = useState({ isOpen: false, data: null });
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null });
-  const [expandedMenus, setExpandedMenus] = useState({});
 
   const [columnModal, setColumnModal] = useState({ isOpen: false, menuId: null, columnIndex: null, data: null });
   const [itemModal, setItemModal] = useState({ isOpen: false, menuId: null, columnIndex: null, itemIndex: null, data: null });
@@ -43,6 +51,7 @@ export default function MenusPage() {
   const [updateMenu, { isLoading: isUpdating }] = useUpdateMenuMutation();
   const [deleteMenu, { isLoading: isDeleting }] = useDeleteMenuMutation();
   const [toggleActive] = useToggleMenuActiveMutation();
+  const [reorderMenus] = useReorderMenusMutation();
   
   // Column mutations
   const [addColumn] = useAddColumnMutation();
@@ -59,6 +68,7 @@ export default function MenusPage() {
   const [updateSubitem] = useUpdateSubitemMutation();
   const [deleteSubitem] = useDeleteSubitemMutation();
 
+  // ========== Menu CRUD ==========
   const handleCreateMenu = async (data) => {
     try {
       await createMenu(data).unwrap();
@@ -102,46 +112,39 @@ export default function MenusPage() {
     }
   };
 
+  // ========== Ordering (atomic batch reorder) ==========
   const handleMoveUp = async (index) => {
-    if (index === 0) return;
-    
-    const newOrder = menus[index - 1].order;
-    try {
-      await updateMenu({ 
-        id: menus[index]._id, 
-        data: { ...menus[index], order: newOrder } 
-      }).unwrap();
-      toast.success('Sıralama yeniləndi');
-      refetch();
-    } catch (error) {
-      toast.error('Xəta baş verdi');
-    }
+    if (index <= 0) return;
+    await swapAndReorder(index, index - 1);
   };
 
   const handleMoveDown = async (index) => {
-    if (index === menus.length - 1) return;
-    
-    const newOrder = menus[index + 1].order;
+    if (index >= menus.length - 1) return;
+    await swapAndReorder(index, index + 1);
+  };
+
+  const swapAndReorder = async (indexA, indexB) => {
+    // Build a new order array: swap positions of A and B, assign sequential order values
+    const reordered = [...menus];
+    const temp = reordered[indexA];
+    reordered[indexA] = reordered[indexB];
+    reordered[indexB] = temp;
+
+    const items = reordered.map((menu, i) => ({
+      id: menu._id,
+      order: i,
+    }));
+
     try {
-      await updateMenu({ 
-        id: menus[index]._id, 
-        data: { ...menus[index], order: newOrder } 
-      }).unwrap();
+      await reorderMenus(items).unwrap();
       toast.success('Sıralama yeniləndi');
       refetch();
     } catch (error) {
-      toast.error('Xəta baş verdi');
+      toast.error('Sıralama xətası baş verdi');
     }
   };
 
-  const toggleExpand = (menuId) => {
-    setExpandedMenus(prev => ({
-      ...prev,
-      [menuId]: !prev[menuId]
-    }));
-  };
-
-  // Column handlers
+  // ========== Column handlers ==========
   const handleAddColumn = async (data) => {
     try {
       await addColumn({ menuId: columnModal.menuId, data }).unwrap();
@@ -175,7 +178,7 @@ export default function MenusPage() {
     }
   };
 
-  // Item handlers
+  // ========== Item handlers ==========
   const handleAddItem = async (data) => {
     try {
       await addItem({ menuId: itemModal.menuId, columnIndex: itemModal.columnIndex, data }).unwrap();
@@ -209,7 +212,23 @@ export default function MenusPage() {
     }
   };
 
-  // Subitem handlers
+  // ========== Subitem handlers ==========
+  const handleDeleteSubitemDirect = async (menuId, columnIndex, itemIndex, subitemIndex) => {
+    const confirmed = await confirmDialog({
+      title: 'Alt elementi sil?',
+      text: 'Bu alt element silinəcək.',
+      confirmButtonText: 'Bəli, sil',
+    });
+    if (!confirmed) return;
+    try {
+      await deleteSubitem({ menuId, columnIndex, itemIndex, subitemIndex }).unwrap();
+      toast.success('Alt element silindi');
+      refetch();
+    } catch (error) {
+      toast.error('Xəta baş verdi');
+    }
+  };
+
   const handleAddSubitem = async (data) => {
     try {
       await addSubitem({ 
@@ -284,172 +303,32 @@ export default function MenusPage() {
         ) : (
           <div className="space-y-2">
             {menus.map((menu, index) => (
-              <div
+              <MenuCard
                 key={menu._id}
-                className="bg-white border-2 rounded-lg border-gray-200"
-              >
-                <div className="p-4 flex items-center gap-4">
-                  <div className="flex flex-col gap-1">
-                    <button
-                      onClick={() => handleMoveUp(index)}
-                      disabled={index === 0}
-                      className="p-1 text-gray-600 hover:text-blue-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                      title="Yuxarı"
-                    >
-                      <ArrowUp size={16} />
-                    </button>
-                    <button
-                      onClick={() => handleMoveDown(index)}
-                      disabled={index === menus.length - 1}
-                      className="p-1 text-gray-600 hover:text-blue-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                      title="Aşağı"
-                    >
-                      <ArrowDown size={16} />
-                    </button>
-                  </div>
-
-                  <button
-                    onClick={() => toggleExpand(menu._id)}
-                    className="p-1 hover:bg-gray-100 rounded transition-colors"
-                  >
-                    {expandedMenus[menu._id] ? (
-                      <ChevronDown size={20} className="text-gray-600" />
-                    ) : (
-                      <ChevronRight size={20} className="text-gray-600" />
-                    )}
-                  </button>
-
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <h3 className="font-semibold text-gray-900">{menu.label.az}</h3>
-                      <span className="text-sm text-gray-500">({menu.label.en})</span>
-                      <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
-                        {menu.id}
-                      </span>
-                      {menu.isActive ? (
-                        <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
-                          Aktiv
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
-                          Deaktiv
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {menu.columns?.length || 0} sütun, {menu.columns?.reduce((acc, col) => acc + (col.items?.length || 0), 0) || 0} element
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleToggleActive(menu._id)}
-                      className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
-                      title={menu.isActive ? 'Deaktiv et' : 'Aktiv et'}
-                    >
-                      {menu.isActive ? <Eye size={18} /> : <EyeOff size={18} />}
-                    </button>
-                    <button
-                      onClick={() => setMenuModal({ isOpen: true, data: menu })}
-                      className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
-                      title="Redaktə et"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button
-                      onClick={() => setDeleteModal({ isOpen: true, id: menu._id })}
-                      className="p-2 text-gray-600 hover:text-red-600 transition-colors"
-                      title="Sil"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </div>
-
-                {expandedMenus[menu._id] && (
-                  <div className="px-4 pb-4 border-t border-gray-200 mt-2 pt-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-medium text-gray-700">Sütunlar və Elementlər</h4>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setColumnModal({ isOpen: true, menuId: menu._id, columnIndex: null, data: null })}
-                      >
-                        <Plus size={16} className="mr-1" />
-                        Sütun əlavə et
-                      </Button>
-                    </div>
-                    
-                    {menu.columns?.length === 0 ? (
-                      <p className="text-gray-500 text-sm text-center py-4">Heç bir sütun yoxdur</p>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {menu.columns?.map((column, colIndex) => (
-                          <div key={colIndex} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                            <div className="flex items-center justify-between mb-3">
-                              <h5 className="font-medium text-sm text-gray-800">
-                                {column.title?.az || 'Başlıqsız'}
-                                <span className="text-gray-400 ml-1">({column.title?.en})</span>
-                              </h5>
-                              <div className="flex items-center gap-1">
-                                <button
-                                  onClick={() => setColumnModal({ isOpen: true, menuId: menu._id, columnIndex: colIndex, data: column })}
-                                  className="p-1 text-gray-500 hover:text-blue-600 transition-colors"
-                                  title="Redaktə et"
-                                >
-                                  <Edit size={14} />
-                                </button>
-                                <button
-                                  onClick={() => setDeleteColumnModal({ isOpen: true, menuId: menu._id, columnIndex: colIndex })}
-                                  className="p-1 text-gray-500 hover:text-red-600 transition-colors"
-                                  title="Sil"
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-2 mb-3">
-                              {column.items?.map((item, itemIndex) => (
-                                <MenuItemTree
-                                  key={itemIndex}
-                                  item={item}
-                                  itemIndex={itemIndex}
-                                  columnIndex={colIndex}
-                                  menuId={menu._id}
-                                  level={0}
-                                  onEdit={(menuId, columnIndex, itemIndex, item) => {
-                                    setItemModal({ isOpen: true, menuId, columnIndex, itemIndex, data: item });
-                                  }}
-                                  onDelete={(menuId, columnIndex, itemIndex) => {
-                                    setDeleteItemModal({ isOpen: true, menuId, columnIndex, itemIndex });
-                                  }}
-                                  onAddSubitem={(menuId, columnIndex, itemIndex) => {
-                                    setSubitemModal({ isOpen: true, menuId, columnIndex, itemIndex, subitemIndex: null, data: null });
-                                  }}
-                                />
-                              ))}
-                            </div>
-                            
-                            <button
-                              onClick={() => setItemModal({ isOpen: true, menuId: menu._id, columnIndex: colIndex, itemIndex: null, data: null })}
-                              className="w-full py-2 text-sm text-blue-600 hover:bg-blue-50 rounded border border-dashed border-blue-300 transition-colors"
-                            >
-                              <Plus size={14} className="inline mr-1" />
-                              Element əlavə et
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                menu={menu}
+                index={index}
+                totalMenus={menus.length}
+                onMoveUp={handleMoveUp}
+                onMoveDown={handleMoveDown}
+                onToggleActive={handleToggleActive}
+                onEdit={(menu) => setMenuModal({ isOpen: true, data: menu })}
+                onDelete={(id) => setDeleteModal({ isOpen: true, id })}
+                onAddColumn={(menuId) => setColumnModal({ isOpen: true, menuId, columnIndex: null, data: null })}
+                onEditColumn={(menuId, colIndex, column) => setColumnModal({ isOpen: true, menuId, columnIndex: colIndex, data: column })}
+                onDeleteColumn={(menuId, colIndex) => setDeleteColumnModal({ isOpen: true, menuId, columnIndex: colIndex })}
+                onAddItem={(menuId, colIndex) => setItemModal({ isOpen: true, menuId, columnIndex: colIndex, itemIndex: null, data: null })}
+                onEditItem={(menuId, colIndex, itemIndex, item) => setItemModal({ isOpen: true, menuId, columnIndex: colIndex, itemIndex, data: item })}
+                onDeleteItem={(menuId, colIndex, itemIndex) => setDeleteItemModal({ isOpen: true, menuId, columnIndex: colIndex, itemIndex })}
+                onAddSubitem={(menuId, colIndex, itemIndex) => setSubitemModal({ isOpen: true, menuId, columnIndex: colIndex, itemIndex, subitemIndex: null, data: null })}
+                onEditSubitem={(menuId, colIndex, itemIndex, subitemIndex, subitem) => setSubitemModal({ isOpen: true, menuId, columnIndex: colIndex, itemIndex, subitemIndex, data: subitem })}
+                onDeleteSubitem={(menuId, colIndex, itemIndex, subitemIndex) => handleDeleteSubitemDirect(menuId, colIndex, itemIndex, subitemIndex)}
+              />
             ))}
           </div>
         )}
       </Card>
 
+      {/* Delete Menu Modal */}
       <Modal
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, id: null })}
@@ -461,23 +340,17 @@ export default function MenusPage() {
             Bu menunu silmək istədiyinizdən əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
           </p>
           <div className="flex items-center gap-3 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => setDeleteModal({ isOpen: false, id: null })}
-            >
+            <Button variant="outline" onClick={() => setDeleteModal({ isOpen: false, id: null })}>
               Ləğv et
             </Button>
-            <Button
-              variant="danger"
-              onClick={handleDelete}
-              loading={isDeleting}
-            >
+            <Button variant="danger" onClick={handleDelete} loading={isDeleting}>
               Sil
             </Button>
           </div>
         </div>
       </Modal>
 
+      {/* Menu Form Modal */}
       <MenuFormModal
         isOpen={menuModal.isOpen}
         onClose={() => setMenuModal({ isOpen: false, data: null })}
@@ -486,7 +359,7 @@ export default function MenusPage() {
         isLoading={isCreating || isUpdating}
       />
 
-      {/* Column Modal */}
+      {/* Column Form Modal */}
       <ColumnFormModal
         isOpen={columnModal.isOpen}
         onClose={() => setColumnModal({ isOpen: false, menuId: null, columnIndex: null, data: null })}
@@ -514,7 +387,7 @@ export default function MenusPage() {
         </div>
       </Modal>
 
-      {/* Item Modal */}
+      {/* Item Form Modal */}
       <ItemFormModal
         isOpen={itemModal.isOpen}
         onClose={() => setItemModal({ isOpen: false, menuId: null, columnIndex: null, itemIndex: null, data: null })}
@@ -542,7 +415,7 @@ export default function MenusPage() {
         </div>
       </Modal>
 
-      {/* Subitem Modal */}
+      {/* Subitem Form Modal */}
       <SubitemFormModal
         isOpen={subitemModal.isOpen}
         onClose={() => setSubitemModal({ isOpen: false, menuId: null, columnIndex: null, itemIndex: null, subitemIndex: null, data: null })}
@@ -553,339 +426,3 @@ export default function MenusPage() {
   );
 }
 
-function MenuFormModal({ isOpen, onClose, onSubmit, initialData, isLoading }) {
-  const [formData, setFormData] = useState({
-    id: '',
-    label: { az: '', en: '' },
-    type: 'mega',
-    order: 0,
-  });
-
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        id: initialData.id || '',
-        label: initialData.label || { az: '', en: '' },
-        type: initialData.type || 'mega',
-        order: initialData.order || 0,
-      });
-    } else {
-      setFormData({ id: '', label: { az: '', en: '' }, type: 'mega', order: 0 });
-    }
-  }, [initialData]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
-
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={initialData ? 'Menunu Redaktə Et' : 'Yeni Menu Yarat'}
-      size="md"
-    >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label="Menu ID"
-          required
-          value={formData.id}
-          onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-          placeholder="university"
-          disabled={!!initialData}
-        />
-
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Başlıq (AZ)"
-            required
-            value={formData.label.az}
-            onChange={(e) => setFormData({ ...formData, label: { ...formData.label, az: e.target.value } })}
-            placeholder="UNİVERSİTET"
-          />
-          <Input
-            label="Başlıq (EN)"
-            required
-            value={formData.label.en}
-            onChange={(e) => setFormData({ ...formData, label: { ...formData.label, en: e.target.value } })}
-            placeholder="UNIVERSITY"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Tip</label>
-          <select
-            value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-          >
-            <option value="mega">Mega Menu</option>
-            <option value="dropdown">Dropdown</option>
-            <option value="link">Link</option>
-          </select>
-        </div>
-
-        <Input
-          label="Sıra"
-          type="number"
-          value={formData.order}
-          onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
-          placeholder="0"
-        />
-
-        <div className="flex items-center gap-3 justify-end pt-4">
-          <Button variant="outline" onClick={onClose} type="button">
-            Ləğv et
-          </Button>
-          <Button type="submit" loading={isLoading}>
-            {initialData ? 'Yenilə' : 'Yarat'}
-          </Button>
-        </div>
-      </form>
-    </Modal>
-  );
-}
-
-// Column Form Modal
-function ColumnFormModal({ isOpen, onClose, onSubmit, initialData }) {
-  const [formData, setFormData] = useState({
-    title: { az: '', en: '' },
-  });
-
-  useEffect(() => {
-    if (initialData) {
-      setFormData({ title: initialData.title || { az: '', en: '' } });
-    } else {
-      setFormData({ title: { az: '', en: '' } });
-    }
-  }, [initialData]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title={initialData ? 'Sütunu Redaktə Et' : 'Yeni Sütun'} size="md">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Başlıq (AZ)"
-            required
-            value={formData.title.az}
-            onChange={(e) => setFormData({ ...formData, title: { ...formData.title, az: e.target.value } })}
-            placeholder="Ümumi"
-          />
-          <Input
-            label="Başlıq (EN)"
-            required
-            value={formData.title.en}
-            onChange={(e) => setFormData({ ...formData, title: { ...formData.title, en: e.target.value } })}
-            placeholder="General"
-          />
-        </div>
-        <div className="flex items-center gap-3 justify-end pt-4">
-          <Button variant="outline" onClick={onClose} type="button">Ləğv et</Button>
-          <Button type="submit">{initialData ? 'Yenilə' : 'Əlavə et'}</Button>
-        </div>
-      </form>
-    </Modal>
-  );
-}
-
-// Item Form Modal
-function ItemFormModal({ isOpen, onClose, onSubmit, initialData }) {
-  const { data: pagesData } = useGetPagesQuery({ page: 1, limit: 100, pageType: 'all', showDeleted: false });
-  const pages = pagesData?.pages || [];
-
-  const [linkType, setLinkType] = useState('url');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [formData, setFormData] = useState({
-    id: '',
-    label: { az: '', en: '' },
-    href: { az: '', en: '' },
-    description: { az: '', en: '' },
-    page: '',
-    hasDetail: false,
-  });
-
-  const filteredPages = pages.filter(page => {
-    const searchLower = searchTerm.toLowerCase();
-    const titleAz = page.title?.az?.toLowerCase() || '';
-    const titleEn = page.title?.en?.toLowerCase() || '';
-    const pathAz = page.path?.az?.toLowerCase() || '';
-    const pathEn = page.path?.en?.toLowerCase() || '';
-    return titleAz.includes(searchLower) || titleEn.includes(searchLower) || 
-           pathAz.includes(searchLower) || pathEn.includes(searchLower);
-  });
-
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        id: initialData.id || '',
-        label: initialData.label || { az: '', en: '' },
-        href: initialData.href || { az: '', en: '' },
-        description: initialData.description || { az: '', en: '' },
-        page: initialData.page || '',
-        hasDetail: initialData.hasDetail || false,
-      });
-      setLinkType(initialData.page ? 'page' : 'url');
-    } else {
-      setFormData({
-        id: '',
-        label: { az: '', en: '' },
-        href: { az: '', en: '' },
-        description: { az: '', en: '' },
-        page: '',
-        hasDetail: false,
-      });
-      setLinkType('url');
-    }
-    setSearchTerm('');
-  }, [initialData, isOpen]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const submitData = { ...formData };
-    if (linkType === 'url') {
-      submitData.page = '';
-    } else {
-      submitData.href = { az: '', en: '' };
-    }
-    onSubmit(submitData);
-  };
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title={initialData ? 'Elementi Redaktə Et' : 'Yeni Element'} size="lg">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label="Element ID"
-          required
-          value={formData.id}
-          onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-          placeholder="history"
-          disabled={!!initialData}
-        />
-        
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Ad (AZ)"
-            required
-            value={formData.label.az}
-            onChange={(e) => setFormData({ ...formData, label: { ...formData.label, az: e.target.value } })}
-            placeholder="Universitetin tarixi"
-          />
-          <Input
-            label="Ad (EN)"
-            required
-            value={formData.label.en}
-            onChange={(e) => setFormData({ ...formData, label: { ...formData.label, en: e.target.value } })}
-            placeholder="University History"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Təsvir (AZ)"
-            value={formData.description.az}
-            onChange={(e) => setFormData({ ...formData, description: { ...formData.description, az: e.target.value } })}
-            placeholder="Qısa təsvir"
-          />
-          <Input
-            label="Təsvir (EN)"
-            value={formData.description.en}
-            onChange={(e) => setFormData({ ...formData, description: { ...formData.description, en: e.target.value } })}
-            placeholder="Short description"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Link Növü</label>
-          <div className="flex gap-4 mb-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                value="url"
-                checked={linkType === 'url'}
-                onChange={(e) => setLinkType(e.target.value)}
-                className="w-4 h-4 text-blue-600"
-              />
-              <span className="text-sm font-medium text-gray-700">URL</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                value="page"
-                checked={linkType === 'page'}
-                onChange={(e) => setLinkType(e.target.value)}
-                className="w-4 h-4 text-blue-600"
-              />
-              <span className="text-sm font-medium text-gray-700">Səhifə</span>
-            </label>
-          </div>
-        </div>
-
-        {linkType === 'url' ? (
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="Link (AZ)"
-              value={formData.href.az}
-              onChange={(e) => setFormData({ ...formData, href: { ...formData.href, az: e.target.value } })}
-              placeholder="/universitet/tarix"
-            />
-            <Input
-              label="Link (EN)"
-              value={formData.href.en}
-              onChange={(e) => setFormData({ ...formData, href: { ...formData.href, en: e.target.value } })}
-              placeholder="/university/history"
-            />
-          </div>
-        ) : (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Səhifə Seçin</label>
-            <Input
-              placeholder="Səhifə axtar (AZ/EN)..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="mb-2"
-            />
-            <select
-              value={formData.page}
-              onChange={(e) => setFormData({ ...formData, page: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white max-h-48 overflow-y-auto"
-              size="5"
-            >
-              <option value="">Səhifə seçin</option>
-              {filteredPages.map((page) => (
-                <option key={page._id} value={page._id}>
-                  {page.title?.az || page.title} | {page.title?.en} ({page.path?.az || page.path})
-                </option>
-              ))}
-            </select>
-            <p className="text-xs text-gray-500 mt-1">
-              {filteredPages.length} səhifə tapıldı
-            </p>
-          </div>
-        )}
-
-        <div className="flex items-center">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={formData.hasDetail}
-              onChange={(e) => setFormData({ ...formData, hasDetail: e.target.checked })}
-              className="w-4 h-4 text-blue-600 rounded"
-            />
-            <span className="text-sm font-medium text-gray-700">Detail səhifəsi var</span>
-          </label>
-        </div>
-
-        <div className="flex items-center gap-3 justify-end pt-4">
-          <Button variant="outline" onClick={onClose} type="button">Ləğv et</Button>
-          <Button type="submit">{initialData ? 'Yenilə' : 'Əlavə et'}</Button>
-        </div>
-      </form>
-    </Modal>
-  );
-}

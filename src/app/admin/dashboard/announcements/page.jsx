@@ -1,16 +1,22 @@
 'use client';
 
+// React
 import { useState } from 'react';
+
+// API
 import { useGetAnnouncementsQuery, useDeleteAnnouncementMutation, useTogglePublishAnnouncementMutation, useTogglePinAnnouncementMutation, useCreateAnnouncementMutation, useUpdateAnnouncementMutation, useRestoreAnnouncementMutation } from '@store/api/announcementsApi';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Table from '@components/admin/ui/Table';
-import Modal from '@components/admin/ui/Modal';
-import AnnouncementModal from '@components/admin/AnnouncementModal';
-import Input from '@components/admin/ui/Input';
+
+// UI Components
+import { Card, Button, Table, Input, SearchInput, SelectFilter, FilterBar } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
-import { Plus, Edit, Trash2, Eye, EyeOff, Search, Pin, PinOff, RotateCcw } from 'lucide-react';
+import AnnouncementModal from '@components/admin/AnnouncementModal';
+
+// Icons
+import { Plus, Edit, Trash2, Eye, EyeOff, Pin, PinOff, RotateCcw } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
+import { confirmDialog } from '@utils/confirmDialog';
 
 export default function AnnouncementsPage() {
   const [page, setPage] = useState(1);
@@ -20,7 +26,6 @@ export default function AnnouncementsPage() {
   const [showInactive, setShowInactive] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null });
   const [announcementModal, setAnnouncementModal] = useState({ isOpen: false, data: null });
 
   const { data, isLoading, refetch } = useGetAnnouncementsQuery({ 
@@ -40,11 +45,16 @@ export default function AnnouncementsPage() {
   const [updateAnnouncement, { isLoading: isUpdating }] = useUpdateAnnouncementMutation();
   const [restoreAnnouncement] = useRestoreAnnouncementMutation();
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
+    const confirmed = await confirmDialog({
+      title: 'Elanı sil?',
+      text: 'Bu elanı silmək istədiyinizdən əminsiniz?',
+      confirmButtonText: 'Bəli, sil',
+    });
+    if (!confirmed) return;
     try {
-      await deleteAnnouncement(deleteModal.id).unwrap();
+      await deleteAnnouncement(id).unwrap();
       toast.success('Elan silindi');
-      setDeleteModal({ isOpen: false, id: null });
       refetch();
     } catch (error) {
       toast.error('Xəta baş verdi');
@@ -220,7 +230,7 @@ export default function AnnouncementsPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setDeleteModal({ isOpen: true, id: row._id });
+                  handleDelete(row._id);
                 }}
                 className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                 title="Sil"
@@ -258,53 +268,17 @@ export default function AnnouncementsPage() {
       </AdminPageHeader>
 
       <Card>
-        <div className="mb-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <Input
-                placeholder="Elan axtar..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-secondary outline-none transition-all"
-            >
-              <option value="all">Bütün növlər</option>
-              <option value="info">ℹ️ Məlumat</option>
-              <option value="warning">⚠️ Xəbərdarlıq</option>
-              <option value="urgent">🚨 Təcili</option>
-              <option value="event">📅 Tədbir</option>
-              <option value="academic">🎓 Akademik</option>
-              <option value="other">📌 Digər</option>
-            </select>
-
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-secondary outline-none transition-all"
-            >
-              <option value="all">Bütün prioritetlər</option>
-              <option value="low">🟢 Aşağı</option>
-              <option value="medium">🟡 Orta</option>
-              <option value="high">🟠 Yüksək</option>
-              <option value="critical">🔴 Kritik</option>
-            </select>
-
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              placeholder="Başlanğıc tarixi"
-            />
-          </div>
-
-          <div className="flex items-center gap-4">
+        <FilterBar
+          showClear={!!(search || type !== 'all' || priority !== 'all' || startDate || showInactive)}
+          onClear={() => {
+            setSearch('');
+            setType('all');
+            setPriority('all');
+            setStartDate('');
+            setShowInactive(false);
+            setPage(1);
+          }}
+          checkboxes={
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -314,84 +288,59 @@ export default function AnnouncementsPage() {
               />
               <span className="text-sm font-medium text-secondary">Silinmiş elanları göstər</span>
             </label>
+          }
+        >
+          <SearchInput
+            placeholder="Elan axtar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-            {(search || type !== 'all' || priority !== 'all' || startDate || showInactive) && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSearch('');
-                  setType('all');
-                  setPriority('all');
-                  setStartDate('');
-                  setShowInactive(false);
-                  setPage(1);
-                }}
-              >
-                Filterləri təmizlə
-              </Button>
-            )}
-          </div>
-        </div>
+          <SelectFilter
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            options={[
+              { value: 'all', label: 'Bütün növlər' },
+              { value: 'info', label: 'ℹ️ Məlumat' },
+              { value: 'warning', label: '⚠️ Xəbərdarlıq' },
+              { value: 'urgent', label: '� Təcili' },
+              { value: 'event', label: '📅 Tədbir' },
+              { value: 'academic', label: '🎓 Akademik' },
+              { value: 'other', label: '📌 Digər' },
+            ]}
+          />
+
+          <SelectFilter
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            options={[
+              { value: 'all', label: 'Bütün prioritetlər' },
+              { value: 'low', label: '🟢 Aşağı' },
+              { value: 'medium', label: '🟡 Orta' },
+              { value: 'high', label: '🟠 Yüksək' },
+              { value: 'critical', label: '🔴 Kritik' },
+            ]}
+          />
+
+          <Input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            placeholder="Başlanğıc tarixi"
+          />
+        </FilterBar>
 
         <Table
           columns={columns}
           data={data?.announcements || []}
           loading={isLoading}
+          pagination={{
+            currentPage: page,
+            totalPages: data?.totalPages || 1,
+            onPageChange: setPage,
+          }}
         />
-
-        {data?.totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              Əvvəlki
-            </Button>
-            <span className="text-sm text-gray-600">
-              Səhifə {page} / {data.totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page + 1)}
-              disabled={page === data.totalPages}
-            >
-              Növbəti
-            </Button>
-          </div>
-        )}
       </Card>
-
-      <Modal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, id: null })}
-        title="Elanı sil"
-        size="sm"
-      >
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            Bu elanı silmək istədiyinizdən əminsiniz? Sonradan bərpa edə biləcəksiniz.
-          </p>
-          <div className="flex items-center gap-3 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => setDeleteModal({ isOpen: false, id: null })}
-            >
-              Ləğv et
-            </Button>
-            <Button
-              variant="danger"
-              onClick={handleDelete}
-              loading={isDeleting}
-            >
-              Sil
-            </Button>
-          </div>
-        </div>
-      </Modal>
 
       <AnnouncementModal
         isOpen={announcementModal.isOpen}

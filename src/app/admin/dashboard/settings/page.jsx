@@ -1,11 +1,16 @@
 'use client';
 
+// React
 import { useState } from 'react';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Input from '@components/admin/ui/Input';
+
+// UI Components
+import { Card, Button, Input } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
+
+// Icons
 import { Save, Globe, Bell, Lock, Palette } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
 
 export default function SettingsPage() {

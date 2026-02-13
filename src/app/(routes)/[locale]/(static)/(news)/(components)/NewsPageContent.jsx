@@ -13,7 +13,7 @@ const NewsPageContent = ({ content, news, locale }) => {
   const [activeCategory, setActiveCategory] = React.useState(t("filter.all-news"));
   if (!content) return null;
 
-   const path = locale === "az" ? "/xeberler" : "/en/news";
+  const path = locale === "az" ? "/xeberler" : "/en/news";
   const breadcrumbs = [
     { label: locale === "az" ? "Ana səhifə" : "Home", href: "/" },
     { label: content.breadcrumbs, href: path },
@@ -30,10 +30,11 @@ const NewsPageContent = ({ content, news, locale }) => {
           <PageTitle title={content.title} />
         </header>
         <main>
-
-          <NewsFilter activeCategory={activeCategory} setActiveCategory={setActiveCategory}/>
-          <SectionTitle>{activeCategory}</SectionTitle>
-          <NewsList news={news}/>
+          <div>
+            <NewsFilter activeCategory={activeCategory} setActiveCategory={setActiveCategory}/>
+            <SectionTitle>{activeCategory}</SectionTitle>
+            <NewsList news={news}/>
+          </div>
         </main>
       </div>
     </>

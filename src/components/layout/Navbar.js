@@ -6,7 +6,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import MegaMenu from "./MegaMenu";
 import {
-  menuData,
   bottomNavItems,
   getLabel,
   resolveLocalizedPath,
@@ -18,7 +17,7 @@ import AnimatedButton from "../common/AnimatedButton/AnimatedButton";
 import { useAlternateSlug } from "@/context/AlternateSlugContext";
 import eBduImg from "@/assets/images/e-bsu-text.svg";
 
-export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
+export default function Navbar({ onMenuToggle, navbarTop = 0, menuData = {}, onSearchOpen }) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const [activeMenu, setActiveMenu] = useState(null);
@@ -52,13 +51,10 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
     [pathname, router, alternateSlug],
   );
 
-  const topMenuKeys = [
-    "university",
-    "education",
-    "science",
-    "social",
-    "cooperation",
-  ];
+  // Get top menu keys from backend data (only mega type menus)
+  const topMenuKeys = Object.keys(menuData).filter(
+    key => menuData[key]?.type === 'mega'
+  ).sort((a, b) => (menuData[a]?.order || 0) - (menuData[b]?.order || 0));
 
   const handleNavbarLeave = useCallback((e) => {
     // Clear any existing timeout first
@@ -111,26 +107,32 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
   }, []);
 
   useEffect(() => {
+    let rafId = null;
     const handleMeasure = () => {
-      if (topNavRef.current) {
-        const rect = topNavRef.current.getBoundingClientRect();
-        setTopNavBottom(rect.bottom);
-      }
-      if (navRef.current) {
-        const atTop = navRef.current.getBoundingClientRect().top <= 0;
-        const isDesktop =
-          typeof window !== "undefined" &&
-          window.matchMedia &&
-          window.matchMedia("(min-width: 1024px)").matches;
-        setShowStickyLogo(atTop && isDesktop);
-      }
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        if (topNavRef.current) {
+          const rect = topNavRef.current.getBoundingClientRect();
+          setTopNavBottom(rect.bottom);
+        }
+        if (navRef.current) {
+          const atTop = navRef.current.getBoundingClientRect().top <= 0;
+          const isDesktop =
+            typeof window !== "undefined" &&
+            window.matchMedia &&
+            window.matchMedia("(min-width: 1024px)").matches;
+          setShowStickyLogo(atTop && isDesktop);
+        }
+        rafId = null;
+      });
     };
     handleMeasure();
-    window.addEventListener("scroll", handleMeasure);
+    window.addEventListener("scroll", handleMeasure, { passive: true });
     window.addEventListener("resize", handleMeasure);
     return () => {
       window.removeEventListener("scroll", handleMeasure);
       window.removeEventListener("resize", handleMeasure);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -236,14 +238,6 @@ export default function Navbar({ onMenuToggle, navbarTop = 0 }) {
               /> */}
             </div>
 
-            {/* Search */}
-            {/* <div>
-            <input
-              type="search"
-              placeholder="Axtarış..."
-              className="px-4 py-1.5 rounded bg-white border border-secondary/30 text-secondary placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-            />
-          </div> */}
             <div></div>
           </div>
 

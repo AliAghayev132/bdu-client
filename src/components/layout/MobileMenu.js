@@ -59,7 +59,7 @@ const MenuItem = memo(({ item, locale, onClose, onNavigate }) => {
 
 MenuItem.displayName = "MenuItem";
 
-function MobileMenu({ isOpen, onClose }) {
+function MobileMenu({ isOpen, onClose, onSearchOpen }) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -248,14 +248,12 @@ function MobileMenu({ isOpen, onClose }) {
 
       {/* Search */}
       <div className="px-4 py-3 border-b border-primary/20">
-        <div className="relative">
-          <input
-            type="search"
-            placeholder={locale === "az" ? "Axtar" : "Search"}
-            className="w-full pl-4 pr-10 py-2.5 border border-primary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm"
-          />
+        <button
+          onClick={() => { onClose(); onSearchOpen?.(); }}
+          className="w-full flex items-center gap-3 pl-4 pr-10 py-2.5 border border-primary/30 rounded-lg text-sm text-gray-400 hover:border-primary/50 transition-colors text-left"
+        >
           <svg
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+            className="w-4 h-4 text-gray-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -267,7 +265,8 @@ function MobileMenu({ isOpen, onClose }) {
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
-        </div>
+          {locale === "az" ? "Saytda axtar..." : "Search the site..."}
+        </button>
       </div>
 
       {/* Main Categories */}

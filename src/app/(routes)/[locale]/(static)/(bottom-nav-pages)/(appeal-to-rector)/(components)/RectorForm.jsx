@@ -77,7 +77,9 @@ const RectorForm = ({ locale, type = 'rector' }) => {
       newErrors.email = t.invalidEmail;
     }
     
-    if (formData.phone && !/^[\d\s\+\-\(\)]+$/.test(formData.phone)) {
+    if (!formData.phone.trim()) {
+      newErrors.phone = t.required;
+    } else if (!/^[\d\s\+\-\(\)]+$/.test(formData.phone)) {
       newErrors.phone = t.invalidPhone;
     }
     
@@ -112,16 +114,20 @@ const RectorForm = ({ locale, type = 'rector' }) => {
     setStatus('loading');
     
     try {
-      // TODO: Replace with actual API endpoint
-      const response = await fetch('/api/contact', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+      const response = await fetch(`${API_URL}/misc/rector-appeal`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          ...formData,
-          type,
-          locale
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phoneNumber: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+          category: 'other',
         })
       });
       
@@ -264,7 +270,7 @@ const RectorForm = ({ locale, type = 'rector' }) => {
           {/* Phone */}
           <div>
             <label htmlFor="phone" className="block laptop:text-sm text-xs font-medium text-gray-700 mb-1">
-              {t.phone}
+              {t.phone} <span className="text-red-500">*</span>
             </label>
             <input
               type="tel"

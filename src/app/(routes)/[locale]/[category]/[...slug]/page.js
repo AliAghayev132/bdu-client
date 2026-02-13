@@ -9,6 +9,10 @@ import BlogContent from "./(components)/BlogContent";
 import SubPagesGrid from "./(components)/SubPagesGrid";
 import AuthorInfo from "./(components)/AuthorInfo";
 import StructuredData from "@/components/seo/StructuredData";
+import { getPageByPath, transformPageData } from "@/lib/api/pages";
+import { getPersonBySlug } from "@/lib/api/persons";
+import DynamicPageContent from "@/app/(routes)/[locale]/[...slug]/(components)/DynamicPageContent";
+import PersonDetailContent from "@/app/(routes)/[locale]/[...slug]/(components)/PersonDetailContent";
 
 // Bu dynamic page bütün nested route-ları handle edəcək
 // Məsələn:
@@ -25,8 +29,37 @@ export default async function DynamicPage({ params }) {
   // MenuData-dan məlumat gətir (SINGLE SOURCE OF TRUTH)
   const pageData = getPageDataFromMenu(fullPath, locale);
 
-  // If no page data, show NotFound
+  // MenuData-da tapılmadısa, backend API-dən yoxla (dinamik səhifələr + şəxslər)
   if (!pageData) {
+    // 1. Tam path ilə backend-dən səhifə axtarışı
+    const backendPage = await getPageByPath(fullPath, locale);
+    if (backendPage) {
+      const transformed = transformPageData(backendPage, locale);
+      return <DynamicPageContent page={transformed} locale={locale} rawPage={backendPage} />;
+    }
+
+    // 2. Parent path personPage + son segment person slug axtarışı
+    const allSegments = [category, ...(slug || [])];
+    if (allSegments.length >= 2) {
+      const personSlug = allSegments[allSegments.length - 1];
+      const parentPath = "/" + allSegments.slice(0, -1).join("/");
+
+      const parentPage = await getPageByPath(parentPath, locale);
+      if (parentPage && parentPage.pageType === "personPage") {
+        const person = await getPersonBySlug(personSlug, locale);
+        if (person) {
+          const parentPageData = transformPageData(parentPage, locale);
+          return <PersonDetailContent person={person} locale={locale} parentPage={parentPageData} />;
+        }
+      }
+    }
+
+    // 3. Birbaşa person slug axtarışı (category özü slug ola bilər)
+    const person = await getPersonBySlug(allSegments[allSegments.length - 1], locale);
+    if (person) {
+      return <PersonDetailContent person={person} locale={locale} parentPage={null} />;
+    }
+
     return <NotFound locale={locale} />;
   }
 
@@ -145,6 +178,31 @@ export async function generateMetadata({ params }) {
   const pageData = getPageDataFromMenu(fullPath, locale);
   
   if (!pageData) {
+    // Backend-dən dinamik səhifə/şəxs metadata-sı
+    const allSegments = [category, ...(slug || [])];
+
+    // Tam path ilə səhifə
+    const backendPage = await getPageByPath(fullPath, locale);
+    if (backendPage) {
+      const p = transformPageData(backendPage, locale);
+      return { title: p.seo?.metaTitle || p.title, description: p.seo?.metaDescription || p.description };
+    }
+
+    // Parent path + person slug
+    if (allSegments.length >= 2) {
+      const personSlug = allSegments[allSegments.length - 1];
+      const parentPath = "/" + allSegments.slice(0, -1).join("/");
+      const parentPage = await getPageByPath(parentPath, locale);
+      if (parentPage?.pageType === "personPage") {
+        const person = await getPersonBySlug(personSlug, locale);
+        if (person) {
+          const name = person.name?.[locale] || person.name?.az || "";
+          const position = person.position?.[locale] || person.position?.az || "";
+          return { title: `${name} - ${position}`, description: person.bio?.[locale] || position };
+        }
+      }
+    }
+
     return {
       title: locale === 'az' ? 'Səhifə tapılmadı' : 'Page Not Found',
       description: 'Bakı Dövlət Universiteti'

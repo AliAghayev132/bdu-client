@@ -1,14 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Save } from 'lucide-react';
+import { X, Save, ImagePlus, Trash2 } from 'lucide-react';
+import Image from 'next/image';
 import Button from '@components/admin/ui/Button';
 import Input from '@components/admin/ui/Input';
 import Textarea from '@components/admin/ui/Textarea';
 import toast from 'react-hot-toast';
 
+const IMAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL || '';
+
 export default function AnnouncementModal({ isOpen, onClose, onSubmit, initialData = null, isLoading = false }) {
   const [currentLang, setCurrentLang] = useState('az');
+  const [coverImageFile, setCoverImageFile] = useState(null);
+  const [coverImagePreview, setCoverImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     title: { az: '', en: '' },
     content: { az: '', en: '' },
@@ -18,6 +23,7 @@ export default function AnnouncementModal({ isOpen, onClose, onSubmit, initialDa
     endDate: '',
     targetAudience: ['all'],
     isPinned: false,
+    coverImage: null,
   });
 
   useEffect(() => {
@@ -26,7 +32,15 @@ export default function AnnouncementModal({ isOpen, onClose, onSubmit, initialDa
         ...initialData,
         startDate: initialData.startDate ? new Date(initialData.startDate).toISOString().split('T')[0] : '',
         endDate: initialData.endDate ? new Date(initialData.endDate).toISOString().split('T')[0] : '',
+        coverImage: initialData.coverImage || null,
       });
+      if (initialData.coverImage) {
+        const src = initialData.coverImage.startsWith('http') ? initialData.coverImage : `${IMAGE_URL}${initialData.coverImage}`;
+        setCoverImagePreview(src);
+      } else {
+        setCoverImagePreview(null);
+      }
+      setCoverImageFile(null);
     }
   }, [initialData]);
 
@@ -75,6 +89,14 @@ export default function AnnouncementModal({ isOpen, onClose, onSubmit, initialDa
     submitData.append('targetAudience', JSON.stringify(formData.targetAudience));
     submitData.append('isPinned', formData.isPinned);
 
+    if (coverImageFile) {
+      submitData.append('coverImage', coverImageFile);
+    } else if (formData.coverImage) {
+      submitData.append('existingCoverImage', formData.coverImage);
+    } else {
+      submitData.append('existingCoverImage', '');
+    }
+
     await onSubmit(submitData);
   };
 
@@ -89,7 +111,10 @@ export default function AnnouncementModal({ isOpen, onClose, onSubmit, initialDa
       endDate: '',
       targetAudience: ['all'],
       isPinned: false,
+      coverImage: null,
     });
+    setCoverImageFile(null);
+    setCoverImagePreview(null);
     onClose();
   };
 
@@ -256,6 +281,44 @@ export default function AnnouncementModal({ isOpen, onClose, onSubmit, initialDa
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Cover Image */}
+              <div>
+                <label className="block text-sm font-bold text-secondary mb-3">Üzlük Şəkli</label>
+                {coverImagePreview ? (
+                  <div className="relative w-full h-48 rounded-xl overflow-hidden border border-gray-200 mb-2">
+                    <Image src={coverImagePreview} alt="Cover" fill className="object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCoverImageFile(null);
+                        setCoverImagePreview(null);
+                        setFormData({ ...formData, coverImage: null });
+                      }}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all">
+                    <ImagePlus size={28} className="text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">Şəkil yüklə</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setCoverImageFile(file);
+                          setCoverImagePreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </label>
+                )}
               </div>
 
               <label className="flex items-center gap-3 cursor-pointer px-4 py-3 bg-yellow-50 rounded-xl border border-yellow-200 hover:bg-yellow-100 transition-colors">

@@ -140,3 +140,31 @@ export function transformNewsArray(newsArray, locale = "az") {
   if (!Array.isArray(newsArray)) return [];
   return newsArray.map((item) => transformNewsItem(item, locale));
 }
+
+/**
+ * Recommended news gətir (news detail page üçün)
+ * @param {string} newsId - current news ID
+ * @param {string} locale - az/en
+ * @param {number} limit - news sayı
+ */
+export async function getRecommendedNews(newsId, locale = "az", limit = 3) {
+  try {
+    const res = await fetch(
+      `${API_URL}/misc/news/${newsId}/recommended?locale=${locale}&limit=${limit}`,
+      {
+        next: { revalidate: 300 },
+      }
+    );
+
+    if (!res.ok) {
+      console.error("Failed to fetch recommended news:", res.status);
+      return [];
+    }
+
+    const data = await res.json();
+    return data.data || [];
+  } catch (error) {
+    console.error("Error fetching recommended news:", error);
+    return [];
+  }
+}

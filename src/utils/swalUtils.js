@@ -1,17 +1,9 @@
-import Swal from "sweetalert2";
-
-// Helper to show a confirmation dialog (same UX as doctors)
+// Helper to show a confirmation dialog using native confirm
+// (sweetalert2 was not installed — using native fallback)
 export const confirmAction = async (
   title = "Əminsiniz?",
   text = "Bu addım geri qaytarıla bilməz!"
 ) => {
-  return Swal.fire({
-    title,
-    text,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3966b0",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Davam et",
-  });
+  const confirmed = window.confirm(`${title}\n${text}`);
+  return { isConfirmed: confirmed };
 };

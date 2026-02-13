@@ -7,6 +7,7 @@ import { ChevronRight } from "lucide-react";
 import { translateUrl } from "@/utils/urlTranslator";
 import { links } from "@/data/staticPages";
 import AnimatedButton from "@/components/common/AnimatedButton/AnimatedButton";
+import SearchTrigger from "@/components/common/SearchTrigger";
 import { ArrowRight } from "lucide-react";
 import { getLatestNews, transformNewsArray } from "@/lib/api/news";
 
@@ -80,20 +81,14 @@ export default async function NewsSection({ locale }) {
           {/* Announcements Sidebar - Right Side */}
           <aside className="hidden xl:block">
             {/* Search and Social Media - Above Announcements */}
-            <div className="flex items-center justify-between gap-3 mb-4">
-              {/* Search Input */}
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  placeholder="Axtarış"
-                  className="w-full px-3 py-2 pr-10 border-2 border-secondary/30 rounded-md bg-white text-secondary placeholder-secondary/50 text-sm focus:outline-none focus:border-secondary transition-colors"
-                />
-                <button className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary/60 hover:text-secondary transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </button>
-              </div>
+            <div className="flex items-center flex-col justify-between gap-3 mb-4">
+              {/* Search Button */}
+              <SearchTrigger className="relative w-full flex items-center gap-2 px-3 py-2 pr-10 border-2 border-secondary/30 rounded-md bg-white text-secondary/50 text-sm hover:border-secondary transition-colors text-left cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-secondary/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {locale === "az" ? "Saytda axtar..." : "Search..."}
+              </SearchTrigger>
 
               {/* Social Media Icons */}
               <div className="flex items-center gap-1.5">

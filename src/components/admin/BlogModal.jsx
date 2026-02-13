@@ -1,23 +1,11 @@
-'use client';
+// DEPRECATED: This modal component has been replaced by full-screen page routes.
+// Use /admin/dashboard/blogs/create and /admin/dashboard/blogs/[id]/edit instead.
 
-import { useState, useEffect } from 'react';
-import { X, ArrowLeft, ArrowRight, Save } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import Button from '@components/admin/ui/Button';
-import Input from '@components/admin/ui/Input';
-import Textarea from '@components/admin/ui/Textarea';
-import toast from 'react-hot-toast';
+export default function BlogModal() {
+  return null;
+}
 
-const TiptapEditor = dynamic(() => import('@components/admin/editor/TiptapEditor'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-96">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary"></div>
-    </div>
-  ),
-});
-
-export default function BlogModal({ isOpen, onClose, onSubmit, initialData = null, isLoading = false }) {
+function _OriginalBlogModal({ isOpen, onClose, onSubmit, initialData = null, isLoading = false }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [currentLang, setCurrentLang] = useState('az');
   const [formData, setFormData] = useState({
@@ -241,7 +229,7 @@ export default function BlogModal({ isOpen, onClose, onSubmit, initialData = nul
 
           <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
             {currentStep === 1 ? (
-              <div className="space-y-8 max-w-5xl mx-auto">
+              <div className="space-y-8">
                 <Input
                   label={`Başlıq (${currentLang.toUpperCase()})`}
                   required

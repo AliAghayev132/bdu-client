@@ -151,7 +151,7 @@ export default function NewsDetailContent({ news, locale, alternateSlug }) {
                     {/* Main Content - HTML */}
                     {news.content && (
                         <div
-                            className="news-content prose prose-lg max-w-none prose-headings:text-secondary prose-a:text-primary prose-img:rounded-xl prose-img:mx-auto prose-img:block text-container tracking-wider leading-[1.8] text-[18px] font-medium"
+                            className="ProseMirror news-content prose prose-lg max-w-none prose-headings:text-secondary prose-a:text-primary prose-img:rounded-xl prose-img:mx-auto prose-img:block text-container tracking-wider leading-[1.8] text-[18px] font-medium"
                             dangerouslySetInnerHTML={{ __html: news.content }}
                         />
                     )}

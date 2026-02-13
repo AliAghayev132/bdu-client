@@ -9,12 +9,35 @@ export default function MenuItemTree({
   columnIndex, 
   menuId, 
   level = 0,
+  parentItemIndex = null,
   onEdit, 
   onDelete,
-  onAddSubitem 
+  onAddSubitem,
+  onEditSubitem,
+  onDeleteSubitem,
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasSubitems = item.subitems && item.subitems.length > 0;
+
+  const handleEdit = () => {
+    if (level > 0 && onEditSubitem) {
+      onEditSubitem(menuId, columnIndex, parentItemIndex, itemIndex, item);
+    } else {
+      onEdit(menuId, columnIndex, itemIndex, item);
+    }
+  };
+
+  const handleDelete = () => {
+    if (level > 0 && onDeleteSubitem) {
+      onDeleteSubitem(menuId, columnIndex, parentItemIndex, itemIndex);
+    } else {
+      onDelete(menuId, columnIndex, itemIndex);
+    }
+  };
+
+  const handleAddSubitem = () => {
+    onAddSubitem(menuId, columnIndex, level > 0 ? parentItemIndex : itemIndex);
+  };
 
   return (
     <div className={`${level > 0 ? 'ml-6 mt-2' : ''}`}>
@@ -44,22 +67,24 @@ export default function MenuItemTree({
             </div>
           </div>
           <div className="flex items-center gap-1">
+            {level === 0 && (
+              <button
+                onClick={handleAddSubitem}
+                className="p-1 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded transition-colors"
+                title="Alt element əlavə et"
+              >
+                <Plus size={12} />
+              </button>
+            )}
             <button
-              onClick={() => onAddSubitem(menuId, columnIndex, itemIndex, level)}
-              className="p-1 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded transition-colors"
-              title="Alt element əlavə et"
-            >
-              <Plus size={12} />
-            </button>
-            <button
-              onClick={() => onEdit(menuId, columnIndex, itemIndex, item, level)}
+              onClick={handleEdit}
               className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
               title="Redaktə et"
             >
               <Edit size={12} />
             </button>
             <button
-              onClick={() => onDelete(menuId, columnIndex, itemIndex, level)}
+              onClick={handleDelete}
               className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
               title="Sil"
             >
@@ -75,13 +100,16 @@ export default function MenuItemTree({
             <MenuItemTree
               key={subIndex}
               item={subitem}
-              itemIndex={Array.isArray(itemIndex) ? [...itemIndex, subIndex] : itemIndex}
+              itemIndex={subIndex}
               columnIndex={columnIndex}
               menuId={menuId}
               level={level + 1}
+              parentItemIndex={level === 0 ? itemIndex : parentItemIndex}
               onEdit={onEdit}
               onDelete={onDelete}
               onAddSubitem={onAddSubitem}
+              onEditSubitem={onEditSubitem}
+              onDeleteSubitem={onDeleteSubitem}
             />
           ))}
         </div>

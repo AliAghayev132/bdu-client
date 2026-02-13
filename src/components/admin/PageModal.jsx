@@ -76,12 +76,12 @@ export default function PageModal({ isOpen, onClose, onSubmit, initialData = nul
   };
 
   const validateStep1 = () => {
-    if (!formData.title.az || !formData.title.en) {
-      toast.error('Başlıq hər iki dildə doldurulmalıdır');
-      return false;
-    }
     if (!formData.path.az || !formData.path.en) {
       toast.error('Path hər iki dildə doldurulmalıdır');
+      return false;
+    }
+    if (!formData.title.az || !formData.title.en) {
+      toast.error('Başlıq hər iki dildə doldurulmalıdır');
       return false;
     }
     return true;
@@ -183,7 +183,7 @@ export default function PageModal({ isOpen, onClose, onSubmit, initialData = nul
 
           <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
             {currentStep === 1 ? (
-              <div className="space-y-8 max-w-5xl mx-auto">
+              <div className="space-y-8">
                 <Input
                   label={`Path/URL (${currentLang.toUpperCase()})`}
                   required
@@ -239,6 +239,7 @@ export default function PageModal({ isOpen, onClose, onSubmit, initialData = nul
                     <option value="blog">📝 Bloq</option>
                     <option value="list">📋 Siyahı</option>
                     <option value="custom">⚙️ Xüsusi</option>
+                    <option value="personPage">👥 Şəxslər</option>
                   </select>
                 </div>
 

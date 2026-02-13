@@ -1,14 +1,19 @@
 'use client';
 
+// React
 import { useState } from 'react';
+
+// API
 import { useGetLogsQuery, useClearLogsMutation } from '@store/api/logsApi';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Table from '@components/admin/ui/Table';
-import Modal from '@components/admin/ui/Modal';
-import Input from '@components/admin/ui/Input';
+
+// UI Components
+import { Card, Button, Table, Modal, Input, SearchInput, SelectFilter, FilterBar } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
-import { Search, Trash2, AlertCircle, CheckCircle, Info, XCircle } from 'lucide-react';
+
+// Icons
+import { Trash2, AlertCircle, CheckCircle, Info, XCircle } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
 
 export default function LogsPage() {
@@ -126,95 +131,63 @@ export default function LogsPage() {
       </AdminPageHeader>
 
       <Card>
-        <div className="mb-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <Input
-                placeholder="Log axtar..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+        <FilterBar
+          showClear={!!(search || type !== 'all' || startDate || endDate)}
+          onClear={() => {
+            setSearch('');
+            setType('all');
+            setStartDate('');
+            setEndDate('');
+            setPage(1);
+          }}
+        >
+          <SearchInput
+            placeholder="Log axtar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-secondary outline-none transition-all"
-            >
-              <option value="all">Bütün növlər</option>
-              <option value="MAIL_SENT">✉️ Mail göndərildi</option>
-              <option value="MAIL_ERROR">❌ Mail xətası</option>
-              <option value="AUTH_LOGIN">🔐 Giriş</option>
-              <option value="AUTH_LOGOUT">🚪 Çıxış</option>
-              <option value="CREATE">➕ Yaradılma</option>
-              <option value="UPDATE">✏️ Yenilənmə</option>
-              <option value="DELETE">🗑️ Silinmə</option>
-              <option value="ERROR">⚠️ Xəta</option>
-            </select>
+          <SelectFilter
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            options={[
+              { value: 'all', label: 'Bütün növlər' },
+              { value: 'MAIL_SENT', label: '✉️ Mail göndərildi' },
+              { value: 'MAIL_ERROR', label: '❌ Mail xətası' },
+              { value: 'AUTH_LOGIN', label: '🔐 Giriş' },
+              { value: 'AUTH_LOGOUT', label: '🚪 Çıxış' },
+              { value: 'CREATE', label: '➕ Yaradılma' },
+              { value: 'UPDATE', label: '✏️ Yenilənmə' },
+              { value: 'DELETE', label: '🗑️ Silinmə' },
+              { value: 'ERROR', label: '⚠️ Xəta' },
+            ]}
+          />
 
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              placeholder="Başlanğıc tarixi"
-            />
+          <Input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            placeholder="Başlanğıc tarixi"
+          />
 
-            <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              placeholder="Son tarix"
-            />
-          </div>
-
-          {(search || type !== 'all' || startDate || endDate) && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSearch('');
-                setType('all');
-                setStartDate('');
-                setEndDate('');
-                setPage(1);
-              }}
-            >
-              Filterləri təmizlə
-            </Button>
-          )}
-        </div>
+          <Input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            placeholder="Son tarix"
+          />
+        </FilterBar>
 
         <Table
           columns={columns}
           data={data?.logs || []}
           loading={isLoading}
+          pagination={{
+            currentPage: page,
+            totalPages: data?.totalPages || 1,
+            onPageChange: setPage,
+          }}
         />
-
-        {data?.totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              Əvvəlki
-            </Button>
-            <span className="text-sm text-gray-600">
-              Səhifə {page} / {data.totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page + 1)}
-              disabled={page === data.totalPages}
-            >
-              Növbəti
-            </Button>
-          </div>
-        )}
       </Card>
 
       <Modal

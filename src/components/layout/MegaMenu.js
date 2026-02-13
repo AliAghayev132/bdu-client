@@ -59,37 +59,51 @@ const SubMenuPanel = memo(function SubMenuPanel({
               onMouseEnter={() => handleSubItemEnter(subIndex)}
               onMouseLeave={handleSubItemLeave}
             >
-              <div onClick={onClose}>
-                <Link
-                  href={
-                    typeof subitem.href === "object"
-                      ? subitem.href[locale]
-                      : subitem.href
-                  }
-                  className={`group flex items-center justify-between px-4 py-2 rounded-lg laptop:text-sm text-xs transition-all ${
-                    hoveredSubItem === subIndex
-                      ? "bg-white text-primary font-medium"
-                      : "text-gray-700 hover:bg-white/50"
-                  }`}
-                >
-                  <span>{getLabel(subitem, locale)}</span>
-                  {subitem.subitems && (
-                    <svg
-                      className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary transition-all"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  )}
-                </Link>
-              </div>
+              {(() => {
+                const itemHref = typeof subitem.href === "object"
+                  ? subitem.href[locale]
+                  : subitem.href;
+                const hasValidHref = itemHref && itemHref !== "#" && itemHref !== "";
+
+                const className = `group flex items-center justify-between px-4 py-2 rounded-lg laptop:text-sm text-xs transition-all ${
+                  hoveredSubItem === subIndex
+                    ? "bg-white text-primary font-medium"
+                    : "text-gray-700 hover:bg-white/50"
+                }`;
+
+                const content = <span>{getLabel(subitem, locale)}</span>;
+                const arrow = subitem.subitems && (
+                  <svg
+                    className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary transition-all"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                );
+
+                return hasValidHref ? (
+                  <Link
+                    href={itemHref}
+                    onClick={onClose}
+                    className={className}
+                  >
+                    {content}
+                    {arrow}
+                  </Link>
+                ) : (
+                  <div className={`${className} cursor-default`}>
+                    {content}
+                    {arrow}
+                  </div>
+                );
+              })()}
             </li>
           ))}
         </ul>
@@ -244,14 +258,14 @@ export default function MegaMenu({
   const currentItem = menuData[activeMenu];
   if (!currentItem || !currentItem.columns) return null;
 
-  // Create sections with column titles
+  // Create sections with column titles, sorting items by order
   const sections = currentItem.columns.map((column) => ({
     title: column.title,
-    items: column.items,
+    items: [...(column.items || [])].sort((a, b) => (a.order || 0) - (b.order || 0)),
   }));
 
   // Flatten all items for indexing (keep for backward compatibility)
-  const allItems = currentItem.columns.flatMap((column) => column.items);
+  const allItems = sections.flatMap((section) => section.items);
 
   return (
     <div
@@ -319,19 +333,13 @@ export default function MegaMenu({
                             onMouseEnter={() => handleItemEnter(globalIndex)}
                             onMouseLeave={handleItemLeave}
                           >
-                            <div onClick={onClose}>
-                              <Link
-                                href={
-                                  typeof navItem.href === "object"
-                                    ? navItem.href[locale]
-                                    : navItem.href
-                                }
-                                className={`group flex items-center rounded-lg overflow-hidden justify-between px-4 py-2 transition-all duration-150 ${
-                                  hoveredItem === globalIndex.toString()
-                                    ? "bg-white text-primary"
-                                    : "text-gray-700 hover:bg-white/50"
-                                }`}
-                              >
+                            {(() => {
+                              const itemHref = typeof navItem.href === "object"
+                                ? navItem.href[locale]
+                                : navItem.href;
+                              const hasValidHref = itemHref && itemHref !== "#" && itemHref !== "";
+                              
+                              const content = (
                                 <div className="flex-1">
                                   <div className="laptop:text-sm text-xs font-medium">
                                     {getLabel(navItem, locale)}
@@ -342,24 +350,46 @@ export default function MegaMenu({
                                     </div>
                                   )}
                                 </div>
+                              );
 
-                                {navItem.subitems && (
-                                  <svg
-                                    className="w-4 h-4 text-gray-400 group-hover:text-primary transition-all"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M9 5l7 7-7 7"
-                                    />
-                                  </svg>
-                                )}
-                              </Link>
-                            </div>
+                              const arrow = navItem.subitems && (
+                                <svg
+                                  className="w-4 h-4 text-gray-400 group-hover:text-primary transition-all"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                  />
+                                </svg>
+                              );
+
+                              const className = `group flex items-center rounded-lg overflow-hidden justify-between px-4 py-2 transition-all duration-150 ${
+                                hoveredItem === globalIndex.toString()
+                                  ? "bg-white text-primary"
+                                  : "text-gray-700 hover:bg-white/50"
+                              }`;
+
+                              return hasValidHref ? (
+                                <Link
+                                  href={itemHref}
+                                  onClick={onClose}
+                                  className={className}
+                                >
+                                  {content}
+                                  {arrow}
+                                </Link>
+                              ) : (
+                                <div className={`${className} cursor-default`}>
+                                  {content}
+                                  {arrow}
+                                </div>
+                              );
+                            })()}
                           </li>
                         );
                       })}

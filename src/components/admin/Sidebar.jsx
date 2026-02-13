@@ -20,7 +20,9 @@ import {
   Menu,
   ChevronLeft,
   ChevronRight,
-  MessageSquare
+  MessageSquare,
+  UserCog,
+  Home
 } from 'lucide-react';
 import { useLogoutMutation } from '@store/api/authApi';
 import { useDispatch } from 'react-redux';
@@ -32,11 +34,13 @@ import SidebarItem from './sidebar/SidebarItem';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
+  { icon: Home, label: 'Ana Səhifə', href: '/admin/dashboard/home' },
   { icon: Newspaper, label: 'Xəbərlər', href: '/admin/dashboard/news' },
   { icon: BookOpen, label: 'Bloqlar', href: '/admin/dashboard/blogs' },
   { icon: Calendar, label: 'Tədbirlər', href: '/admin/dashboard/events' },
   { icon: FileText, label: 'Səhifələr', href: '/admin/dashboard/pages' },
   { icon: Menu, label: 'Menyular', href: '/admin/dashboard/menus' },
+  { icon: UserCog, label: 'Şəxslər', href: '/admin/dashboard/persons' },
   { icon: Mail, label: 'Müraciətlər', href: '/admin/dashboard/contacts' },
   { icon: MessageSquare, label: 'Rektora Müraciət', href: '/admin/dashboard/rector-appeals' },
   { icon: Megaphone, label: 'Elanlar', href: '/admin/dashboard/announcements' },
@@ -77,7 +81,18 @@ export default function Sidebar() {
       </button>
 
       <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
-        {menuItems.map((item) => (
+        {menuItems
+          .filter((item) => {
+            if (item.superAdminOnly) {
+              const stored = typeof window !== 'undefined' ? localStorage.getItem('admin_user') : null;
+              try {
+                const user = stored ? JSON.parse(stored) : null;
+                return user?.role === 'super_admin';
+              } catch { return false; }
+            }
+            return true;
+          })
+          .map((item) => (
           <SidebarItem
             key={item.href}
             {...item}

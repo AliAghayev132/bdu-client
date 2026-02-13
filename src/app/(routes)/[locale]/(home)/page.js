@@ -1,12 +1,15 @@
 import BlogSection from "./(components)/BlogSection/BlogSection";
 import HeroSlider from "./(components)/HeroSlider";
 import NewsSection from "./(components)/NewsSection";
+import EventsSwiper from "./(components)/EventsSwiper";
 import EducationSection from "./(components)/EducationSection";
 import AlumniCarousel from "./(components)/AlumniCarousel";
 import ScienceSection from "./(components)/ScienceSection";
 import SocialSection from "./(components)/SocialSection";
 import ExternalLinksSection from "./(components)/ExternalLinksSection";
 import InternationalRelationsSection from "./(components)/InternationalRelations";
+import { getHomePageData } from "@/lib/api/home";
+import { getUpcomingEvents } from "@/lib/api/events";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -32,13 +35,19 @@ export async function generateMetadata({ params }) {
 
 export default async function HomePage({ params }) {
   const { locale } = await params;
+  const [homeData, upcomingEvents] = await Promise.all([
+    getHomePageData(),
+    getUpcomingEvents(locale, 10),
+  ]);
+
   return (
     <div className="home overflow-hidden">
-      <HeroSlider />
+      <HeroSlider apiSlides={homeData?.slides} />
       <NewsSection locale={locale} />
       <ExternalLinksSection />
+      <EventsSwiper events={upcomingEvents} />
       <EducationSection />
-      <AlumniCarousel />
+      <AlumniCarousel apiPrides={homeData?.prides} />
       <ScienceSection />
       <SocialSection />
       <InternationalRelationsSection />
