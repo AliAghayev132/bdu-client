@@ -5,6 +5,8 @@ import EducationSection from "./(components)/EducationSection";
 import AlumniCarousel from "./(components)/AlumniCarousel";
 import ScienceSection from "./(components)/ScienceSection";
 import SocialSection from "./(components)/SocialSection";
+import ExternalLinksSection from "./(components)/ExternalLinksSection";
+import InternationalRelationsSection from "./(components)/InternationalRelations";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -34,10 +36,12 @@ export default async function HomePage({ params }) {
     <div className="home overflow-hidden">
       <HeroSlider />
       <NewsSection locale={locale} />
+      <ExternalLinksSection />
       <EducationSection />
       <AlumniCarousel />
       <ScienceSection />
       <SocialSection />
+      <InternationalRelationsSection />
       <BlogSection />
     </div>
   );

@@ -98,6 +98,31 @@
         "medical": "Tələbələr üçün tibbi müayinə və sağlamlıq xidmətləri.",
         "leisure": "Tələbələr üçün istirahət və əyləncə imkanları."
       }
+    },
+    "internationalRelations": {
+      "title": "BEYNƏLXALQ ƏLAQƏLƏR",
+      "items": {
+        "foreignStudents": "XARİCİ TƏLƏBƏLƏR",
+        "doubleDegree": "BEYNƏLXALQ İKİLİ DİPLOM PROQRAMLARI",
+        "internationalCenters": "BEYNƏLXALQ KAFEDRA, İNSTİTUT VƏ MƏRKƏZLƏR",
+        "internationalOrgs": "BDU-NUN ÜZV OLDUĞU BEYNƏLXALQ TƏŞKİLATLAR",
+        "grants": "BEYNƏLXALQ QRANT LAYİHƏLƏRİ"
+      }
+    },
+    "externalLinks": {
+      "viewAll": "HAMISI",
+      "items": {
+        "youth": "AZƏRBAYCAN RESPUBLİKASININ|GƏNCLƏR VƏ İDMAN NAZİRLİYİ",
+        "academy": "AZƏRBAYCAN MİLLİ ELMLƏR AKADEMİYASI",
+        "attestation": "AZƏRBAYCAN RESPUBLİKASININ PREZİDENTİ YANINDA|ALİ ATTESTASİYA KOMİSSİYASI",
+        "examCenter": "DÖVLƏT İMTAHAN MƏRKƏZİ",
+        "unesco": "UNESCO ÜZRƏ AZƏRBAYCAN RESPUBLİKASININ|MİLLİ KOMİSSİYASI",
+        "azertac": "AZƏRBAYCAN DÖVLƏT İNFORMASİYA AGENTLİYİ|AZƏRTAC",
+        "intellectual": "ƏQLİ MÜLKİYYƏT AGENTLİYİ",
+        "heydar-aliyev-fond": "HEYDƏR ALİYEV FONDU",
+        "azerbaycan-portal": "AZƏRBAYCAN PORTALI",
+        "virtual-qarabagh": "VIRTUAL QARABAĞ"
+      }
     }
   },
   "news": {

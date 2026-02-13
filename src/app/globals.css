@@ -33,6 +33,16 @@
   --breakpoint-container: 1500px;
 }
 
+@font-face {
+  font-family: "Mark Pro";
+  src: url("/fonts/Mark Pro/Mark Pro.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+000-5FF; /* Latin glyphs */
+}
+
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -61,6 +71,10 @@ button{
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.font-mark-pro{
+  font-family: "Mark Pro", sans-serif;
 }
 
 .news-content img{

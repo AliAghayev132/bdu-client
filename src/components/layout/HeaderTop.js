@@ -79,16 +79,23 @@ export default function HeaderTop({ onMenuToggle }) {
           </div>
 
           {/* Center - BDU Logo - Absolute positioning for perfect centering */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <Link href="/" className="block">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+            <Link href="/" className="block mb-1">
               <Image
                 src="/bsu-icon.svg"
                 alt="BDU Logo"
-                width={64}
-                height={64}
+                width={60}
+                height={60}
                 className="object-contain"
               />
             </Link>
+            
+            {/* 1919 Decorative Line */}
+            <div className="flex items-center w-[300px] gap-2 mt-2">
+              <div className="h-[0.8px] flex-1 bg-primary" />
+              <span className="text-[14px] font-bold text-primary tracking-[2px] font-mark-pro">1919</span>
+              <div className="h-[0.8px] flex-1 bg-primary" />
+            </div>
           </div>
 
           {/* Right - Rector Info and Language Switcher */}

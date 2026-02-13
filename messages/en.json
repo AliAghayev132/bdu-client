@@ -91,6 +91,32 @@
         "medical": "Medical examination and health services for students.",
         "leisure": "Leisure and entertainment opportunities for students."
       }
+    },
+    "internationalRelations": {
+      "title": "INTERNATIONAL RELATIONS",
+      "items": {
+        "foreignStudents": "FOREIGN STUDENTS",
+        "doubleDegree": "INTERNATIONAL DOUBLE DEGREE PROGRAMS",
+        "internationalCenters": "INTERNATIONAL DEPARTMENTS, INSTITUTES AND CENTERS",
+        "internationalOrgs": "INTERNATIONAL ORGANIZATIONS BSU IS A MEMBER OF",
+        "grants": "INTERNATIONAL GRANT PROJECTS"
+      }
+    },
+    "externalLinks": {
+      "viewAll": "ALL LISTS",
+      "items": {
+        "youth": "MINISTRY OF YOUTH AND SPORTS OF THE|REPUBLIC OF AZERBAIJAN",
+        "academy": "AZERBAIJAN NATIONAL ACADEMY OF SCIENCES",
+        "attestation": "HIGHER ATTESTATION COMMISSION UNDER|THE PRESIDENT OF THE REPUBLIC OF AZERBAIJAN",
+        "examCenter": "STATE EXAMINATION CENTER",
+        "unesco": "NATIONAL COMMISSION OF THE REPUBLIC OF AZERBAIJAN|FOR UNESCO",
+        "azertac": "AZERBAIJAN STATE NEWS AGENCY|AZERTAC",
+        "intellectual": "INTELLECTUAL PROPERTY AGENCY",
+        "heydar-aliyev-fond": "HEYDƏR ALİYEV FOND",
+        "azerbaycan-portal": "AZERBAIJAN PORTAL",
+        "virtual-qarabagh": "VIRTUAL QARABAGH"
+
+      }
     }
   },
   "news": {
