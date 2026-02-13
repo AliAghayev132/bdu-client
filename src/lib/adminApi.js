@@ -14,7 +14,7 @@ class AdminAPI {
   }
 
   async request(endpoint, options = {}) {
-    const token = localStorage.getItem('admin_access_token');
+    const token = localStorage.getItem('adminToken');
     
     const headers = {
       'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ class AdminAPI {
 
       if (!response.ok) {
         if (response.status === 401) {
-          localStorage.removeItem('admin_access_token');
+          localStorage.removeItem('adminToken');
           window.location.href = '/admin/login';
         }
         throw new Error(data.message || 'Request failed');
@@ -56,7 +56,7 @@ class AdminAPI {
     });
 
     if (data.success && data.accessToken) {
-      localStorage.setItem('admin_access_token', data.accessToken);
+      localStorage.setItem('adminToken', data.accessToken);
       localStorage.setItem('admin_user', JSON.stringify(data.admin));
     }
 
@@ -67,7 +67,7 @@ class AdminAPI {
     try {
       await this.request('/admin/auth/logout', { method: 'POST' });
     } finally {
-      localStorage.removeItem('admin_access_token');
+      localStorage.removeItem('adminToken');
       localStorage.removeItem('admin_user');
       window.location.href = '/admin/login';
     }
@@ -79,7 +79,7 @@ class AdminAPI {
     });
 
     if (data.success && data.accessToken) {
-      localStorage.setItem('admin_access_token', data.accessToken);
+      localStorage.setItem('adminToken', data.accessToken);
     }
 
     return data;
@@ -130,7 +130,7 @@ class AdminAPI {
     const formData = new FormData();
     formData.append('image', file);
 
-    const token = localStorage.getItem('admin_access_token');
+    const token = localStorage.getItem('adminToken');
     const response = await fetch(`${this.baseURL}/admin/news/upload-image`, {
       method: 'POST',
       headers: {
@@ -181,7 +181,7 @@ class AdminAPI {
     const formData = new FormData();
     formData.append('image', file);
 
-    const token = localStorage.getItem('admin_access_token');
+    const token = localStorage.getItem('adminToken');
     const response = await fetch(`${this.baseURL}/admin/blogs/upload-image`, {
       method: 'POST',
       headers: {

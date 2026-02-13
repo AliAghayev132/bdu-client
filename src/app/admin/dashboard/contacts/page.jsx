@@ -1,16 +1,21 @@
 'use client';
 
+// React
 import { useState } from 'react';
+
+// API
 import { useGetContactsQuery, useDeleteContactMutation, useRestoreContactMutation, usePermanentDeleteContactMutation, useUpdateContactStatusMutation, useGetContactStatsQuery } from '@store/api/contactApi';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Table from '@components/admin/ui/Table';
-import Modal from '@components/admin/ui/Modal';
-import Input from '@components/admin/ui/Input';
-import Textarea from '@components/admin/ui/Textarea';
+
+// UI Components
+import { Card, Button, Table, Modal, Input, Textarea, SearchInput, SelectFilter, FilterBar } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
-import { Search, Mail, MailOpen, CheckCircle, Archive, RotateCcw, Trash, Trash2 } from 'lucide-react';
+
+// Icons
+import { Mail, MailOpen, CheckCircle, Archive, RotateCcw, Trash, Trash2 } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
+import { confirmDialog } from '@utils/confirmDialog';
 
 export default function ContactsPage() {
   const [page, setPage] = useState(1);
@@ -19,7 +24,6 @@ export default function ContactsPage() {
   const [showDeleted, setShowDeleted] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, permanent: false });
   const [detailModal, setDetailModal] = useState({ isOpen: false, data: null });
   const [statusModal, setStatusModal] = useState({ isOpen: false, id: null, currentStatus: '', adminNotes: '' });
 
@@ -39,16 +43,24 @@ export default function ContactsPage() {
   const [permanentDeleteContact, { isLoading: isPermanentDeleting }] = usePermanentDeleteContactMutation();
   const [updateStatus, { isLoading: isUpdatingStatus }] = useUpdateContactStatusMutation();
 
-  const handleDelete = async () => {
+  const handleDelete = async (id, permanent = false) => {
+    const confirmed = await confirmDialog({
+      title: permanent ? 'Tamamilə silinsin?' : 'Müraciəti sil?',
+      text: permanent
+        ? 'Bu müraciət tamamilə silinəcək və bərpa edilə bilməyəcək.'
+        : 'Bu müraciəti silmək istədiyinizdən əminsiniz?',
+      confirmButtonText: permanent ? 'Tamamilə sil' : 'Bəli, sil',
+      icon: permanent ? 'error' : 'warning',
+    });
+    if (!confirmed) return;
     try {
-      if (deleteModal.permanent) {
-        await permanentDeleteContact(deleteModal.id).unwrap();
+      if (permanent) {
+        await permanentDeleteContact(id).unwrap();
         toast.success('Müraciət tamamilə silindi');
       } else {
-        await deleteContact(deleteModal.id).unwrap();
+        await deleteContact(id).unwrap();
         toast.success('Müraciət silindi');
       }
-      setDeleteModal({ isOpen: false, id: null, permanent: false });
       refetch();
     } catch (error) {
       toast.error('Xəta baş verdi');
@@ -188,7 +200,7 @@ export default function ContactsPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setDeleteModal({ isOpen: true, id: row._id, permanent: false });
+                  handleDelete(row._id, false);
                 }}
                 className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 title="Sil"
@@ -211,7 +223,7 @@ export default function ContactsPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setDeleteModal({ isOpen: true, id: row._id, permanent: true });
+                  handleDelete(row._id, true);
                 }}
                 className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 title="Tamamilə sil"
@@ -293,46 +305,17 @@ export default function ContactsPage() {
       )}
 
       <Card>
-        <div className="mb-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <Input
-                placeholder="Müraciət axtar..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-secondary outline-none transition-all"
-            >
-              <option value="all">Bütün statuslar</option>
-              <option value="new">📧 Yeni</option>
-              <option value="read">📖 Oxunub</option>
-              <option value="replied">✅ Cavablandı</option>
-              <option value="archived">📦 Arxivləşdirilib</option>
-            </select>
-
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              placeholder="Başlanğıc tarixi"
-            />
-
-            <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              placeholder="Son tarix"
-            />
-          </div>
-
-          <div className="flex items-center gap-4">
+        <FilterBar
+          showClear={!!(search || status !== 'all' || startDate || endDate || showDeleted)}
+          onClear={() => {
+            setSearch('');
+            setStatus('all');
+            setStartDate('');
+            setEndDate('');
+            setShowDeleted(false);
+            setPage(1);
+          }}
+          checkboxes={
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -342,86 +325,52 @@ export default function ContactsPage() {
               />
               <span className="text-sm font-medium text-secondary">Silinmiş müraciətləri göstər</span>
             </label>
+          }
+        >
+          <SearchInput
+            placeholder="Müraciət axtar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-            {(search || status !== 'all' || startDate || endDate || showDeleted) && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSearch('');
-                  setStatus('all');
-                  setStartDate('');
-                  setEndDate('');
-                  setShowDeleted(false);
-                  setPage(1);
-                }}
-              >
-                Filterləri təmizlə
-              </Button>
-            )}
-          </div>
-        </div>
+          <SelectFilter
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            options={[
+              { value: 'all', label: 'Bütün statuslar' },
+              { value: 'new', label: '📧 Yeni' },
+              { value: 'read', label: '📖 Oxunub' },
+              { value: 'replied', label: '✅ Cavablandı' },
+              { value: 'archived', label: '📦 Arxivləşdirilib' },
+            ]}
+          />
+
+          <Input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            placeholder="Başlanğıc tarixi"
+          />
+
+          <Input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            placeholder="Son tarix"
+          />
+        </FilterBar>
 
         <Table
           columns={columns}
           data={data?.contacts || []}
           loading={isLoading}
+          pagination={{
+            currentPage: page,
+            totalPages: data?.totalPages || 1,
+            onPageChange: setPage,
+          }}
         />
-
-        {data?.totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              Əvvəlki
-            </Button>
-            <span className="text-sm text-gray-600">
-              Səhifə {page} / {data.totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page + 1)}
-              disabled={page === data.totalPages}
-            >
-              Növbəti
-            </Button>
-          </div>
-        )}
       </Card>
-
-      <Modal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, id: null, permanent: false })}
-        title={deleteModal.permanent ? "Müraciəti tamamilə sil" : "Müraciəti sil"}
-        size="sm"
-      >
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            {deleteModal.permanent 
-              ? "Bu müraciət tamamilə silinəcək və bərpa edilə bilməyəcək. Davam etmək istədiyinizdən əminsiniz?"
-              : "Bu müraciəti silmək istədiyinizdən əminsiniz? Sonradan bərpa edə biləcəksiniz."}
-          </p>
-          <div className="flex items-center gap-3 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => setDeleteModal({ isOpen: false, id: null, permanent: false })}
-            >
-              Ləğv et
-            </Button>
-            <Button
-              variant="danger"
-              onClick={handleDelete}
-              loading={isDeleting || isPermanentDeleting}
-            >
-              {deleteModal.permanent ? 'Tamamilə sil' : 'Sil'}
-            </Button>
-          </div>
-        </div>
-      </Modal>
 
       <Modal
         isOpen={detailModal.isOpen}

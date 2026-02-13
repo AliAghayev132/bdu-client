@@ -11,7 +11,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 export async function getAllMenus() {
   try {
     const res = await fetch(`${API_URL}/misc/menu`, {
-      next: { revalidate: 3600 }, // 1 saat cache
+      next: { revalidate: 60 }, // 1 dəqiqə cache
     });
 
     if (!res.ok) {

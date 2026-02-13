@@ -111,6 +111,17 @@ export default function HeaderTop({ onMenuToggle }) {
           </div>
         </div>
       </div>
+
+      {/* 1919 Banner */}
+      <div className="hidden lg:block">
+        <div className="max-w-[1540px] mx-auto px-15">
+          <div className="flex items-center gap-4" style={{ marginLeft: '100px', marginRight: '100px' }}>
+            <div className="flex-1 h-[2px] bg-[#aa9674]" />
+            <span className="text-[#aa9674] text-[11px] font-semibold tracking-[0.3em] py-[3px] shrink-0" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>1919</span>
+            <div className="flex-1 h-[2px] bg-[#aa9674]" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

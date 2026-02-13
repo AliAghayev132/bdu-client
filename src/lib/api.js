@@ -54,8 +54,8 @@ export async function fetchAllRoutes() {
  * Extract all routes from menuData structure
  * menuData-dan bütün route-ları çıxarır (fallback)
  */
-function extractRoutesFromMenuData() {
-  const { menuData } = require('@/data/menuData');
+async function extractRoutesFromMenuData() {
+  const { menuData } = await import('@/data/menuData');
   const routes = [];
   
   function traverseMenu(items, locale) {

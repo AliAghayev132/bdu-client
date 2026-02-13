@@ -5,19 +5,56 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
+import ImageBase from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
+import Color from "@tiptap/extension-color";
+import { TextStyle } from "@tiptap/extension-text-style";
+
+import { Table } from "@tiptap/extension-table";
+import { TableRow } from "@tiptap/extension-table-row";
+import { TableCell } from "@tiptap/extension-table-cell";
+import { TableHeader } from "@tiptap/extension-table-header";
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough, Code,
   Heading1, Heading2, Heading3, Heading4, List, ListOrdered, Quote,
   Undo, Redo, Link as LinkIcon, Unlink, ImageIcon, AlignLeft,
   AlignCenter, AlignRight, AlignJustify, Highlighter, Eye, Edit3,
-  Type, ChevronDown, Minus, RotateCcw, Maximize2, Minimize2,
-  Copy, Check, FileText, Hash
+  Type, ChevronDown, Minus as MinusIcon, RotateCcw, Maximize2, Minimize2,
+  Copy, Check, FileText, Hash, Superscript as SuperscriptIcon,
+  Subscript as SubscriptIcon, TableIcon, RemoveFormatting, CodeXml,
+  Palette, Indent, Outdent, Grid3X3,
+  AlignStartVertical, AlignCenterVertical, AlignEndVertical,
+  Trash2, Plus, Rows3, Columns3
 } from "lucide-react";
+import Swal from "sweetalert2";
+
+const Image = ImageBase.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      style: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('style'),
+        renderHTML: (attributes) => {
+          if (!attributes.style) return {};
+          return { style: attributes.style };
+        },
+      },
+    };
+  },
+});
+
+const EDITOR_COLORS = [
+  "#000000", "#434343", "#666666", "#999999",
+  "#E03131", "#C2255C", "#9C36B5", "#6741D9",
+  "#3B5BDB", "#1971C2", "#0C8599", "#099268",
+  "#2F9E44", "#66A80F", "#F08C00", "#E8590C",
+];
 
 export default function TiptapEditor({
   content = "",
@@ -33,9 +70,14 @@ export default function TiptapEditor({
   const [linkUrl, setLinkUrl] = useState("");
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showTableGrid, setShowTableGrid] = useState(false);
+  const [tableGridHover, setTableGridHover] = useState({ rows: 0, cols: 0 });
   const fileInputRef = useRef(null);
   const editorContainerRef = useRef(null);
   const headingMenuRef = useRef(null);
+  const colorPickerRef = useRef(null);
+  const tableGridRef = useRef(null);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -44,7 +86,15 @@ export default function TiptapEditor({
         heading: { levels: [1, 2, 3, 4] },
       }),
       Underline,
+      Subscript,
+      Superscript,
+      TextStyle,
+      Color,
       Highlight.configure({ multicolor: true }),
+      Table.configure({ resizable: true }),
+      TableRow,
+      TableCell,
+      TableHeader,
       Link.configure({
         openOnClick: false,
         autolink: true,
@@ -82,6 +132,12 @@ export default function TiptapEditor({
     const handleClickOutside = (e) => {
       if (headingMenuRef.current && !headingMenuRef.current.contains(e.target)) {
         setShowHeadingMenu(false);
+      }
+      if (colorPickerRef.current && !colorPickerRef.current.contains(e.target)) {
+        setShowColorPicker(false);
+      }
+      if (tableGridRef.current && !tableGridRef.current.contains(e.target)) {
+        setShowTableGrid(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -136,10 +192,40 @@ export default function TiptapEditor({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const clearContent = () => {
-    if (window.confirm("Bütün məzmunu silmək istədiyinizə əminsiniz?")) {
+  const clearContent = async () => {
+    const result = await Swal.fire({
+      title: 'Əminsiniz?',
+      text: 'Bütün məzmun silinəcək.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#2C4B62',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Bəli, təmizlə',
+      cancelButtonText: 'Ləğv et',
+      reverseButtons: true,
+    });
+    if (result.isConfirmed) {
       editor.commands.clearContent();
     }
+  };
+
+  const isImageSelected = editor?.isActive('image');
+
+  const setImageFloat = (position) => {
+    if (!isImageSelected) return;
+    const { from } = editor.state.selection;
+    const node = editor.state.doc.nodeAt(from);
+    if (!node || node.type.name !== 'image') return;
+
+    const attrs = { ...node.attrs };
+    if (position === 'left') {
+      attrs.style = 'float: left; margin-right: 16px; margin-bottom: 8px; max-width: 50%;';
+    } else if (position === 'right') {
+      attrs.style = 'float: right; margin-left: 16px; margin-bottom: 8px; max-width: 50%;';
+    } else {
+      attrs.style = 'display: block; margin-left: auto; margin-right: auto; max-width: 100%;';
+    }
+    editor.chain().focus().setImage(attrs).run();
   };
 
   const ToolbarButton = ({ onClick, isActive, disabled, children, title, className = "" }) => (
@@ -187,7 +273,7 @@ export default function TiptapEditor({
     <div
       ref={editorContainerRef}
       className={`bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 ${
-        isFullscreen ? "fixed inset-4 z-50 flex flex-col" : ""
+        isFullscreen ? "fixed inset-0 z-[100] flex flex-col rounded-none border-none" : ""
       }`}
     >
       {/* Toolbar */}
@@ -286,6 +372,47 @@ export default function TiptapEditor({
             >
               <Code size={16} />
             </ToolbarButton>
+
+            {/* Color Picker */}
+            <div className="relative" ref={colorPickerRef}>
+              <ToolbarButton
+                onClick={() => setShowColorPicker(!showColorPicker)}
+                title="Mətn rəngi"
+              >
+                <Palette size={16} />
+              </ToolbarButton>
+              {showColorPicker && (
+                <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-200 p-2 z-50 w-[176px]">
+                  <div className="grid grid-cols-4 gap-1">
+                    {EDITOR_COLORS.map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          editor.chain().focus().setColor(color).run();
+                          setShowColorPicker(false);
+                        }}
+                        className="w-8 h-8 rounded-md border border-gray-200 hover:scale-110 transition-transform"
+                        style={{ backgroundColor: color }}
+                        title={color}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      editor.chain().focus().unsetColor().run();
+                      setShowColorPicker(false);
+                    }}
+                    className="w-full mt-1 py-1 text-xs text-gray-500 hover:bg-gray-50 rounded"
+                  >
+                    Rəngi sıfırla
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           <Divider />
@@ -348,12 +475,148 @@ export default function TiptapEditor({
               <Quote size={16} />
             </ToolbarButton>
             <ToolbarButton
+              onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+              isActive={editor.isActive("codeBlock")}
+              title="Kod bloku"
+            >
+              <CodeXml size={16} />
+            </ToolbarButton>
+            <ToolbarButton
               onClick={() => editor.chain().focus().setHorizontalRule().run()}
               title="Xətt əlavə et"
             >
-              <Minus size={16} />
+              <MinusIcon size={16} />
             </ToolbarButton>
           </div>
+
+          <Divider />
+
+          {/* Superscript, Subscript, Table */}
+          <div className="flex items-center gap-0.5">
+            <ToolbarButton
+              onClick={() => editor.chain().focus().toggleSuperscript().run()}
+              isActive={editor.isActive("superscript")}
+              title="Yuxarı indeks"
+            >
+              <SuperscriptIcon size={16} />
+            </ToolbarButton>
+            <ToolbarButton
+              onClick={() => editor.chain().focus().toggleSubscript().run()}
+              isActive={editor.isActive("subscript")}
+              title="Aşağı indeks"
+            >
+              <SubscriptIcon size={16} />
+            </ToolbarButton>
+
+            {/* Table Grid Picker */}
+            <div className="relative" ref={tableGridRef}>
+              <ToolbarButton
+                onClick={() => setShowTableGrid(!showTableGrid)}
+                isActive={editor.isActive("table")}
+                title="Cədvəl əlavə et"
+              >
+                <TableIcon size={16} />
+              </ToolbarButton>
+              {showTableGrid && (
+                <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-200 p-3 z-50">
+                  <p className="text-xs text-gray-500 mb-2 font-medium">
+                    {tableGridHover.rows > 0 ? `${tableGridHover.rows} × ${tableGridHover.cols}` : 'Ölçü seçin'}
+                  </p>
+                  <div className="grid gap-[3px]" style={{ gridTemplateColumns: 'repeat(8, 1fr)' }}>
+                    {Array.from({ length: 8 }, (_, row) =>
+                      Array.from({ length: 8 }, (_, col) => (
+                        <button
+                          key={`${row}-${col}`}
+                          type="button"
+                          onMouseEnter={() => setTableGridHover({ rows: row + 1, cols: col + 1 })}
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            editor.chain().focus().insertTable({ rows: row + 1, cols: col + 1, withHeaderRow: true }).run();
+                            setShowTableGrid(false);
+                            setTableGridHover({ rows: 0, cols: 0 });
+                          }}
+                          className={`w-5 h-5 rounded-sm border transition-colors ${
+                            row < tableGridHover.rows && col < tableGridHover.cols
+                              ? 'bg-secondary/30 border-secondary/50'
+                              : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                          }`}
+                        />
+                      ))
+                    )}
+                  </div>
+                  {editor.isActive('table') && (
+                    <div className="border-t border-gray-100 mt-2 pt-2 space-y-1">
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => { editor.chain().focus().addRowAfter().run(); setShowTableGrid(false); }}
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-gray-600 hover:bg-gray-50 rounded"
+                      >
+                        <Rows3 size={14} /> Sətir əlavə et
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => { editor.chain().focus().addColumnAfter().run(); setShowTableGrid(false); }}
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-gray-600 hover:bg-gray-50 rounded"
+                      >
+                        <Columns3 size={14} /> Sütun əlavə et
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => { editor.chain().focus().deleteRow().run(); setShowTableGrid(false); }}
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-red-500 hover:bg-red-50 rounded"
+                      >
+                        <MinusIcon size={14} /> Sətri sil
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => { editor.chain().focus().deleteColumn().run(); setShowTableGrid(false); }}
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-red-500 hover:bg-red-50 rounded"
+                      >
+                        <MinusIcon size={14} /> Sütunu sil
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => { editor.chain().focus().deleteTable().run(); setShowTableGrid(false); }}
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded font-medium"
+                      >
+                        <Trash2 size={14} /> Cədvəli sil
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <ToolbarButton
+              onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
+              title="Formatı təmizlə"
+            >
+              <RemoveFormatting size={16} />
+            </ToolbarButton>
+          </div>
+
+          {/* Image Position (shown when image selected) */}
+          {isImageSelected && (
+            <>
+              <Divider />
+              <div className="flex items-center gap-0.5">
+                <ToolbarButton onClick={() => setImageFloat('left')} title="Sola yerləşdir">
+                  <AlignStartVertical size={16} />
+                </ToolbarButton>
+                <ToolbarButton onClick={() => setImageFloat('center')} title="Mərkəzə yerləşdir">
+                  <AlignCenterVertical size={16} />
+                </ToolbarButton>
+                <ToolbarButton onClick={() => setImageFloat('right')} title="Sağa yerləşdir">
+                  <AlignEndVertical size={16} />
+                </ToolbarButton>
+              </div>
+            </>
+          )}
 
           <Divider />
 
@@ -491,7 +754,7 @@ export default function TiptapEditor({
       <div className={`${isFullscreen ? "flex-1 overflow-auto" : ""}`} style={isFullscreen ? {} : { minHeight }}>
         {isPreview ? (
           <div
-            className="p-6"
+            className="p-6 ProseMirror"
             style={{ minHeight: isFullscreen ? "100%" : minHeight }}
             dangerouslySetInnerHTML={{ __html: editor.getHTML() }}
           />
@@ -513,13 +776,6 @@ export default function TiptapEditor({
         className="hidden"
       />
 
-      {/* Fullscreen backdrop */}
-      {isFullscreen && (
-        <div
-          className="fixed inset-0 bg-black/50 -z-10"
-          onClick={() => setIsFullscreen(false)}
-        />
-      )}
     </div>
   );
 }

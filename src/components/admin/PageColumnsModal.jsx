@@ -40,16 +40,12 @@ export default function PageColumnsModal({ isOpen, onClose, page, onSuccess }) {
       title: { az: '', en: '' },
       persons: [],
       order: columns.length,
+      centered: false,
       isNew: true,
     });
   };
 
   const handleSaveColumn = async () => {
-    if (!editingColumn.title.az || !editingColumn.title.en) {
-      toast.error('Başlıq hər iki dildə doldurulmalıdır');
-      return;
-    }
-
     try {
       if (editingColumn.isNew) {
         await addColumn({
@@ -58,6 +54,7 @@ export default function PageColumnsModal({ isOpen, onClose, page, onSuccess }) {
             title: editingColumn.title,
             persons: editingColumn.persons,
             order: editingColumn.order,
+            centered: editingColumn.centered || false,
           },
         }).unwrap();
         toast.success('Sütun əlavə edildi');
@@ -69,6 +66,7 @@ export default function PageColumnsModal({ isOpen, onClose, page, onSuccess }) {
             title: editingColumn.title,
             persons: editingColumn.persons,
             order: editingColumn.order,
+            centered: editingColumn.centered || false,
           },
         }).unwrap();
         toast.success('Sütun yeniləndi');
@@ -171,6 +169,7 @@ export default function PageColumnsModal({ isOpen, onClose, page, onSuccess }) {
                               <h4 className="font-medium text-gray-900">{column.title?.az}</h4>
                               <p className="text-sm text-gray-500">
                                 {column.persons?.length || 0} şəxs
+                                {column.centered && ' · Mərkəzləşdirilmiş'}
                               </p>
                             </div>
                           </div>
@@ -212,8 +211,7 @@ export default function PageColumnsModal({ isOpen, onClose, page, onSuccess }) {
                 {/* Title */}
                 <div className="grid grid-cols-2 gap-4">
                   <Input
-                    label="Başlıq (AZ)"
-                    required
+                    label="Başlıq (AZ) - İstəyə bağlı"
                     value={editingColumn.title?.az || ''}
                     onChange={(e) => setEditingColumn({
                       ...editingColumn,
@@ -221,14 +219,30 @@ export default function PageColumnsModal({ isOpen, onClose, page, onSuccess }) {
                     })}
                   />
                   <Input
-                    label="Başlıq (EN)"
-                    required
+                    label="Başlıq (EN) - İstəyə bağlı"
                     value={editingColumn.title?.en || ''}
                     onChange={(e) => setEditingColumn({
                       ...editingColumn,
                       title: { ...editingColumn.title, en: e.target.value }
                     })}
                   />
+                </div>
+
+                {/* Centered Option */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <input
+                    type="checkbox"
+                    id="centered"
+                    checked={editingColumn.centered || false}
+                    onChange={(e) => setEditingColumn({
+                      ...editingColumn,
+                      centered: e.target.checked
+                    })}
+                    className="w-4 h-4 text-blue-600 rounded"
+                  />
+                  <label htmlFor="centered" className="text-sm font-medium text-gray-700">
+                    Elementləri mərkəzləşdir
+                  </label>
                 </div>
 
                 {/* Persons Selection */}

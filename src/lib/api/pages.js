@@ -1,31 +1,22 @@
 /**
  * Pages API Helper Functions
- * Server-side fetch for dynamic page data
+ * Dinamik səhifə data fetching
  */
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 /**
- * Get page by path
- * @param {string} path - Page path like /leadership or /rehberlik
- * @param {string} locale - az/en
+ * Path ilə səhifə gətir (multi-segment dəstəkləyir: /rehberlik, /a/b/c)
  */
 export async function getPageByPath(path, locale = "az") {
   try {
-    // Normalize path - remove leading slash for URL
-    const normalizedPath = path.startsWith('/') ? path.substring(1) : path;
-    
-    const res = await fetch(`${API_URL}/misc/pages/path/${normalizedPath}?locale=${locale}`, {
-      next: { revalidate: 3600 }, // 1 saat cache
+    const cleanPath = path.startsWith("/") ? path.substring(1) : path;
+
+    const res = await fetch(`${API_URL}/misc/pages/path/${cleanPath}?locale=${locale}`, {
+      next: { revalidate: 60 },
     });
 
-    if (!res.ok) {
-      if (res.status === 404) {
-        return null;
-      }
-      console.error("Failed to fetch page by path:", res.status);
-      return null;
-    }
+    if (!res.ok) return null;
 
     const data = await res.json();
     return data.data || null;
@@ -36,20 +27,15 @@ export async function getPageByPath(path, locale = "az") {
 }
 
 /**
- * Get all pages
- * @param {string} locale - az/en
- * @param {number} limit - number of pages to fetch
+ * Bütün səhifələri gətir
  */
 export async function getAllPages(locale = "az", limit = 50) {
   try {
     const res = await fetch(`${API_URL}/misc/pages?locale=${locale}&limit=${limit}`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 60 },
     });
 
-    if (!res.ok) {
-      console.error("Failed to fetch pages:", res.status);
-      return [];
-    }
+    if (!res.ok) return [];
 
     const data = await res.json();
     return data.data || [];
@@ -60,7 +46,7 @@ export async function getAllPages(locale = "az", limit = 50) {
 }
 
 /**
- * Transform page data for frontend
+ * Səhifə datasını frontend üçün transform et
  */
 export function transformPageData(page, locale = "az") {
   if (!page) return null;

@@ -1,16 +1,21 @@
 'use client';
 
+// React
 import { useState } from 'react';
+
+// API
 import { useGetRectorAppealsQuery, useDeleteRectorAppealMutation, useRestoreRectorAppealMutation, useUpdateRectorAppealMutation, useGetRectorAppealStatsQuery } from '@store/api/rectorAppealsApi';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Table from '@components/admin/ui/Table';
-import Modal from '@components/admin/ui/Modal';
-import Input from '@components/admin/ui/Input';
-import Textarea from '@components/admin/ui/Textarea';
+
+// UI Components
+import { Card, Button, Table, Modal, Input, Textarea, SearchInput, SelectFilter, FilterBar } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
-import { Search, Mail, MailOpen, CheckCircle, Archive, RotateCcw, Trash, AlertCircle, Clock, MessageSquare } from 'lucide-react';
+
+// Icons
+import { Mail, MailOpen, CheckCircle, Archive, RotateCcw, Trash, AlertCircle, Clock, MessageSquare } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
+import { confirmDialog } from '@utils/confirmDialog';
 
 export default function RectorAppealsPage() {
   const [page, setPage] = useState(1);
@@ -19,7 +24,6 @@ export default function RectorAppealsPage() {
   const [category, setCategory] = useState('all');
   const [priority, setPriority] = useState('all');
   const [showDeleted, setShowDeleted] = useState(false);
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null });
   const [detailModal, setDetailModal] = useState({ isOpen: false, data: null });
   const [responseModal, setResponseModal] = useState({ 
     isOpen: false, 
@@ -44,11 +48,16 @@ export default function RectorAppealsPage() {
   const [restoreAppeal] = useRestoreRectorAppealMutation();
   const [updateAppeal, { isLoading: isUpdating }] = useUpdateRectorAppealMutation();
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
+    const confirmed = await confirmDialog({
+      title: 'Müraciəti sil?',
+      text: 'Bu müraciəti silmək istədiyinizdən əminsiniz?',
+      confirmButtonText: 'Bəli, sil',
+    });
+    if (!confirmed) return;
     try {
-      await deleteAppeal(deleteModal.id).unwrap();
+      await deleteAppeal(id).unwrap();
       toast.success('Müraciət silindi');
-      setDeleteModal({ isOpen: false, id: null });
       refetch();
     } catch (error) {
       toast.error('Xəta baş verdi');
@@ -217,7 +226,7 @@ export default function RectorAppealsPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setDeleteModal({ isOpen: true, id: row._id })}
+                onClick={() => handleDelete(row._id)}
               >
                 <Trash size={16} className="text-red-500" />
               </Button>
@@ -264,60 +273,72 @@ export default function RectorAppealsPage() {
       </div>
 
       <Card>
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <Input
-              placeholder="Axtar..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <select
+        <FilterBar
+          showClear={!!(search || status !== 'all' || category !== 'all' || priority !== 'all' || showDeleted)}
+          onClear={() => {
+            setSearch('');
+            setStatus('all');
+            setCategory('all');
+            setPriority('all');
+            setShowDeleted(false);
+            setPage(1);
+          }}
+          checkboxes={
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showDeleted}
+                onChange={(e) => setShowDeleted(e.target.checked)}
+                className="w-4 h-4 text-primary rounded focus:ring-primary border-gray-300"
+              />
+              <span className="text-sm font-medium text-secondary">Silinmişləri göstər</span>
+            </label>
+          }
+        >
+          <SearchInput
+            placeholder="Müraciət axtar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <SelectFilter
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="px-4 py-2 border rounded-lg"
-          >
-            <option value="all">Bütün statuslar</option>
-            <option value="new">Yeni</option>
-            <option value="read">Oxunub</option>
-            <option value="in_progress">İcrada</option>
-            <option value="replied">Cavablandı</option>
-            <option value="archived">Arxivləşdirilib</option>
-          </select>
-          <select
+            options={[
+              { value: 'all', label: 'Bütün statuslar' },
+              { value: 'new', label: 'Yeni' },
+              { value: 'read', label: 'Oxunub' },
+              { value: 'in_progress', label: 'İcrada' },
+              { value: 'replied', label: 'Cavablandı' },
+              { value: 'archived', label: 'Arxivləşdirilib' },
+            ]}
+          />
+
+          <SelectFilter
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-4 py-2 border rounded-lg"
-          >
-            <option value="all">Bütün kateqoriyalar</option>
-            <option value="academic">Akademik</option>
-            <option value="administrative">İnzibati</option>
-            <option value="complaint">Şikayət</option>
-            <option value="suggestion">Təklif</option>
-            <option value="other">Digər</option>
-          </select>
-          <select
+            options={[
+              { value: 'all', label: 'Bütün kateqoriyalar' },
+              { value: 'academic', label: 'Akademik' },
+              { value: 'administrative', label: 'İnzibati' },
+              { value: 'complaint', label: 'Şikayət' },
+              { value: 'suggestion', label: 'Təklif' },
+              { value: 'other', label: 'Digər' },
+            ]}
+          />
+
+          <SelectFilter
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            className="px-4 py-2 border rounded-lg"
-          >
-            <option value="all">Bütün prioritetlər</option>
-            <option value="low">Aşağı</option>
-            <option value="medium">Orta</option>
-            <option value="high">Yüksək</option>
-            <option value="urgent">Təcili</option>
-          </select>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={showDeleted}
-              onChange={(e) => setShowDeleted(e.target.checked)}
-            />
-            <span className="text-sm">Silinmişlər</span>
-          </label>
-        </div>
+            options={[
+              { value: 'all', label: 'Bütün prioritetlər' },
+              { value: 'low', label: 'Aşağı' },
+              { value: 'medium', label: 'Orta' },
+              { value: 'high', label: 'Yüksək' },
+              { value: 'urgent', label: 'Təcili' },
+            ]}
+          />
+        </FilterBar>
 
         <Table
           columns={columns}
@@ -465,22 +486,6 @@ export default function RectorAppealsPage() {
         </div>
       </Modal>
 
-      {/* Delete Modal */}
-      <Modal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, id: null })}
-        title="Müraciəti sil"
-      >
-        <p className="mb-4">Bu müraciəti silmək istədiyinizə əminsiniz?</p>
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => setDeleteModal({ isOpen: false, id: null })}>
-            Ləğv et
-          </Button>
-          <Button variant="danger" onClick={handleDelete} disabled={isDeleting}>
-            {isDeleting ? 'Silinir...' : 'Sil'}
-          </Button>
-        </div>
-      </Modal>
     </div>
   );
 }

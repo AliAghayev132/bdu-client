@@ -1,27 +1,31 @@
 'use client';
 
+// React & Next.js
 import { useState } from 'react';
-import { useGetEventsQuery, useDeleteEventMutation, useTogglePublishMutation, useCreateEventMutation, useUpdateEventMutation, useRestoreEventMutation, usePermanentDeleteEventMutation } from '@store/api/eventsApi';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Table from '@components/admin/ui/Table';
-import Modal from '@components/admin/ui/Modal';
-import EventsModal from '@components/admin/EventsModal';
-import Input from '@components/admin/ui/Input';
+import { useRouter } from 'next/navigation';
+
+// API
+import { useGetEventsQuery, useDeleteEventMutation, useTogglePublishEventMutation, useRestoreEventMutation, usePermanentDeleteEventMutation } from '@store/api/eventsApi';
+
+// UI Components
+import { Card, Button, Table, Input, SearchInput, SelectFilter, FilterBar } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
-import { Plus, Edit, Trash2, Eye, EyeOff, Search, Calendar, ExternalLink, RotateCcw, Trash } from 'lucide-react';
+
+// Icons
+import { Plus, Edit, Trash2, Eye, EyeOff, Calendar, ExternalLink, RotateCcw, Trash } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
+import { confirmDialog } from '@utils/confirmDialog';
 
 export default function EventsPage() {
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [showDeleted, setShowDeleted] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, permanent: false });
-  const [eventsModal, setEventsModal] = useState({ isOpen: false, data: null });
-
   const { data, isLoading, refetch } = useGetEventsQuery({ 
     page, 
     limit: 10, 
@@ -32,22 +36,28 @@ export default function EventsPage() {
     endDate
   });
   const [deleteEvent, { isLoading: isDeleting }] = useDeleteEventMutation();
-  const [togglePublish] = useTogglePublishMutation();
-  const [createEvent, { isLoading: isCreating }] = useCreateEventMutation();
-  const [updateEvent, { isLoading: isUpdating }] = useUpdateEventMutation();
+  const [togglePublish] = useTogglePublishEventMutation();
   const [restoreEvent] = useRestoreEventMutation();
   const [permanentDeleteEvent, { isLoading: isPermanentDeleting }] = usePermanentDeleteEventMutation();
 
-  const handleDelete = async () => {
+  const handleDelete = async (id, permanent = false) => {
+    const confirmed = await confirmDialog({
+      title: permanent ? 'Tamamilə silinsin?' : 'Tədbiri sil?',
+      text: permanent
+        ? 'Bu tədbir tamamilə silinəcək və bərpa edilə bilməyəcək.'
+        : 'Bu tədbiri silmək istədiyinizdən əminsiniz?',
+      confirmButtonText: permanent ? 'Tamamilə sil' : 'Bəli, sil',
+      icon: permanent ? 'error' : 'warning',
+    });
+    if (!confirmed) return;
     try {
-      if (deleteModal.permanent) {
-        await permanentDeleteEvent(deleteModal.id).unwrap();
+      if (permanent) {
+        await permanentDeleteEvent(id).unwrap();
         toast.success('Tədbir tamamilə silindi');
       } else {
-        await deleteEvent(deleteModal.id).unwrap();
+        await deleteEvent(id).unwrap();
         toast.success('Tədbir silindi');
       }
-      setDeleteModal({ isOpen: false, id: null, permanent: false });
       refetch();
     } catch (error) {
       toast.error('Xəta baş verdi');
@@ -65,9 +75,9 @@ export default function EventsPage() {
   };
 
   const handlePreview = (row) => {
-    const locale = 'az';
-    const slug = row.slug?.[locale] || row._id;
-    window.open(`http://localhost:3000/events/${slug}`, '_blank');
+    const slug = row.slug?.az || row._id;
+    const previewQuery = row.isPublished ? '' : '?preview=true';
+    window.open(`/az/tedbirler/${slug}${previewQuery}`, '_blank');
   };
 
   const handleTogglePublish = async (id) => {
@@ -80,35 +90,13 @@ export default function EventsPage() {
     }
   };
 
-  const handleCreateEvent = async (formData) => {
-    try {
-      await createEvent(formData).unwrap();
-      toast.success('Tədbir yaradıldı');
-      setEventsModal({ isOpen: false, data: null });
-      refetch();
-    } catch (error) {
-      toast.error(error?.data?.message || 'Xəta baş verdi');
-    }
-  };
-
-  const handleUpdateEvent = async (formData) => {
-    try {
-      await updateEvent({ id: eventsModal.data._id, formData }).unwrap();
-      toast.success('Tədbir yeniləndi');
-      setEventsModal({ isOpen: false, data: null });
-      refetch();
-    } catch (error) {
-      toast.error(error?.data?.message || 'Xəta baş verdi');
-    }
-  };
-
   const columns = [
     {
       key: 'title',
       label: 'Başlıq',
       render: (row) => (
         <div>
-          <p className="font-medium text-secondary">{row.title?.az || row.title}</p>
+          <p className="font-medium text-secondary">{row.title?.az || row.title?.en || 'Başlıqsız'}</p>
           <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
             <Calendar size={12} />
             {new Date(row.eventDate).toLocaleDateString('az-AZ')}
@@ -121,7 +109,7 @@ export default function EventsPage() {
       key: 'location',
       label: 'Yer',
       render: (row) => (
-        <span className="text-sm text-gray-600">{row.location?.az || row.location || '-'}</span>
+        <span className="text-sm text-gray-600">{row.location?.az || row.location?.en || '-'}</span>
       ),
     },
     {
@@ -193,7 +181,7 @@ export default function EventsPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setEventsModal({ isOpen: true, data: row });
+                  router.push(`/admin/dashboard/events/${row._id}/edit`);
                 }}
                 className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 title="Redaktə et"
@@ -203,7 +191,7 @@ export default function EventsPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setDeleteModal({ isOpen: true, id: row._id, permanent: false });
+                  handleDelete(row._id, false);
                 }}
                 className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                 title="Sil"
@@ -226,7 +214,7 @@ export default function EventsPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setDeleteModal({ isOpen: true, id: row._id, permanent: true });
+                  handleDelete(row._id, true);
                 }}
                 className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 title="Tamamilə sil"
@@ -246,55 +234,24 @@ export default function EventsPage() {
         title="Tədbirlər" 
         description="Bütün tədbirləri idarə edin"
       >
-        <Button onClick={() => setEventsModal({ isOpen: true, data: null })}>
+        <Button onClick={() => router.push('/admin/dashboard/events/create')}>
           <Plus size={20} className="mr-2" />
           Yeni Tədbir
         </Button>
       </AdminPageHeader>
 
       <Card>
-        <div className="mb-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <Input
-                placeholder="Tədbir axtar..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-secondary outline-none transition-all"
-            >
-              <option value="all">Bütün kateqoriyalar</option>
-              <option value="conference">🎤 Konfrans</option>
-              <option value="seminar">📚 Seminar</option>
-              <option value="workshop">🛠️ Workshop</option>
-              <option value="ceremony">🎓 Mərasim</option>
-              <option value="competition">🏆 Müsabiqə</option>
-              <option value="other">📌 Digər</option>
-            </select>
-
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              placeholder="Başlanğıc tarixi"
-            />
-
-            <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              placeholder="Son tarix"
-            />
-          </div>
-
-          <div className="flex items-center gap-4">
+        <FilterBar
+          showClear={!!(search || category !== 'all' || startDate || endDate || showDeleted)}
+          onClear={() => {
+            setSearch('');
+            setCategory('all');
+            setStartDate('');
+            setEndDate('');
+            setShowDeleted(false);
+            setPage(1);
+          }}
+          checkboxes={
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -304,94 +261,56 @@ export default function EventsPage() {
               />
               <span className="text-sm font-medium text-secondary">Silinmiş tədbirləri göstər</span>
             </label>
+          }
+        >
+          <SearchInput
+            placeholder="Tədbir axtar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-            {(search || category !== 'all' || startDate || endDate || showDeleted) && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSearch('');
-                  setCategory('all');
-                  setStartDate('');
-                  setEndDate('');
-                  setShowDeleted(false);
-                  setPage(1);
-                }}
-              >
-                Filterləri təmizlə
-              </Button>
-            )}
-          </div>
-        </div>
+          <SelectFilter
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            options={[
+              { value: 'all', label: 'Bütün kateqoriyalar' },
+              { value: 'conference', label: '🍤 Konfrans' },
+              { value: 'seminar', label: '📚 Seminar' },
+              { value: 'workshop', label: '🛠️ Workshop' },
+              { value: 'ceremony', label: '🎓 Mərasim' },
+              { value: 'competition', label: '🏆 Müsabiqə' },
+              { value: 'other', label: '📌 Digər' },
+            ]}
+          />
+
+          <Input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            placeholder="Başlanğıc tarixi"
+          />
+
+          <Input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            placeholder="Son tarix"
+          />
+        </FilterBar>
 
         <Table
           columns={columns}
           data={data?.events || []}
           loading={isLoading}
+          pagination={{
+            currentPage: page,
+            totalPages: data?.totalPages || 1,
+            onPageChange: setPage,
+          }}
         />
-
-        {data?.totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              Əvvəlki
-            </Button>
-            <span className="text-sm text-gray-600">
-              Səhifə {page} / {data.totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page + 1)}
-              disabled={page === data.totalPages}
-            >
-              Növbəti
-            </Button>
-          </div>
-        )}
       </Card>
 
-      <Modal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, id: null, permanent: false })}
-        title={deleteModal.permanent ? "Tədbirı tamamilə sil" : "Tədbirı sil"}
-        size="sm"
-      >
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            {deleteModal.permanent 
-              ? "Bu tədbir tamamilə silinəcək və bərpa edilə bilməyəcək. Davam etmək istədiyinizdən əminsiniz?"
-              : "Bu tədbirı silmək istədiyinizdən əminsiniz? Sonradan bərpa edə biləcəksiniz."}
-          </p>
-          <div className="flex items-center gap-3 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => setDeleteModal({ isOpen: false, id: null, permanent: false })}
-            >
-              Ləğv et
-            </Button>
-            <Button
-              variant="danger"
-              onClick={handleDelete}
-              loading={isDeleting || isPermanentDeleting}
-            >
-              {deleteModal.permanent ? 'Tamamilə sil' : 'Sil'}
-            </Button>
-          </div>
-        </div>
-      </Modal>
 
-      <EventsModal
-        isOpen={eventsModal.isOpen}
-        onClose={() => setEventsModal({ isOpen: false, data: null })}
-        onSubmit={eventsModal.data ? handleUpdateEvent : handleCreateEvent}
-        initialData={eventsModal.data}
-        isLoading={isCreating || isUpdating}
-      />
     </div>
   );
 }

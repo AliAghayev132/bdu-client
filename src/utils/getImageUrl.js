@@ -68,10 +68,12 @@ export function getImageUrl(imagePath) {
  * @returns {boolean}
  */
 export function isValidImageUrl(url) {
-  if (!url || typeof url !== "string") return false;
+  if (!url) return false;
 
   // Object (Next.js static import)
   if (typeof url === "object" && url.src) return true;
+
+  if (typeof url !== "string") return false;
 
   // URL formatını yoxla
   try {

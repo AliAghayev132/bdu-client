@@ -1,22 +1,27 @@
 'use client';
 
+// React
 import { useState } from 'react';
+
+// API
 import { useGetFacultiesQuery, useDeleteFacultyMutation, useToggleActiveFacultyMutation, useCreateFacultyMutation, useUpdateFacultyMutation } from '@store/api/facultiesApi';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Table from '@components/admin/ui/Table';
-import Modal from '@components/admin/ui/Modal';
-import FacultyModal from '@components/admin/FacultyModal';
-import Input from '@components/admin/ui/Input';
+
+// UI Components
+import { Card, Button, Table, SearchInput, FilterBar } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
-import { Plus, Edit, Trash2, Eye, EyeOff, Search, Building2, ExternalLink } from 'lucide-react';
+import FacultyModal from '@components/admin/FacultyModal';
+
+// Icons
+import { Plus, Edit, Trash2, Eye, EyeOff, Building2, ExternalLink } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
+import { confirmDialog } from '@utils/confirmDialog';
 
 export default function FacultiesPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [showInactive, setShowInactive] = useState(false);
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null });
   const [facultyModal, setFacultyModal] = useState({ isOpen: false, data: null });
 
   const { data, isLoading, refetch } = useGetFacultiesQuery({ 
@@ -30,11 +35,17 @@ export default function FacultiesPage() {
   const [createFaculty, { isLoading: isCreating }] = useCreateFacultyMutation();
   const [updateFaculty, { isLoading: isUpdating }] = useUpdateFacultyMutation();
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
+    const confirmed = await confirmDialog({
+      title: 'Fakültəni sil?',
+      text: 'Bu fakültəni silmək istədiyinizdən əminsiniz? Bu əməliyyat fakültəyə aid bütün məlumatları silə bilər.',
+      confirmButtonText: 'Bəli, sil',
+      icon: 'error',
+    });
+    if (!confirmed) return;
     try {
-      await deleteFaculty(deleteModal.id).unwrap();
+      await deleteFaculty(id).unwrap();
       toast.success('Fakültə silindi');
-      setDeleteModal({ isOpen: false, id: null });
       refetch();
     } catch (error) {
       toast.error('Xəta baş verdi');
@@ -173,7 +184,7 @@ export default function FacultiesPage() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              setDeleteModal({ isOpen: true, id: row._id });
+              handleDelete(row._id);
             }}
             className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
             title="Sil"
@@ -198,104 +209,43 @@ export default function FacultiesPage() {
       </AdminPageHeader>
 
       <Card>
-        <div className="mb-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <Input
-                placeholder="Fakültə axtar..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
+        <FilterBar
+          showClear={!!(search || showInactive)}
+          onClear={() => {
+            setSearch('');
+            setShowInactive(false);
+            setPage(1);
+          }}
+          checkboxes={
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showInactive}
+                onChange={(e) => setShowInactive(e.target.checked)}
+                className="w-4 h-4 text-primary rounded focus:ring-primary border-gray-300"
               />
-            </div>
-
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={showInactive}
-                  onChange={(e) => setShowInactive(e.target.checked)}
-                  className="w-4 h-4 text-primary rounded focus:ring-primary border-gray-300"
-                />
-                <span className="text-sm font-medium text-secondary">Deaktivləri göstər</span>
-              </label>
-
-              {(search || showInactive) && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setSearch('');
-                    setShowInactive(false);
-                    setPage(1);
-                  }}
-                >
-                  Filterləri təmizlə
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
+              <span className="text-sm font-medium text-secondary">Deaktivləri göstər</span>
+            </label>
+          }
+        >
+          <SearchInput
+            placeholder="Fakültə axtar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </FilterBar>
 
         <Table
           columns={columns}
           data={data?.faculties || []}
           loading={isLoading}
+          pagination={{
+            currentPage: page,
+            totalPages: data?.totalPages || 1,
+            onPageChange: setPage,
+          }}
         />
-
-        {data?.totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              Əvvəlki
-            </Button>
-            <span className="text-sm text-gray-600">
-              Səhifə {page} / {data.totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page + 1)}
-              disabled={page === data.totalPages}
-            >
-              Növbəti
-            </Button>
-          </div>
-        )}
       </Card>
-
-      <Modal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, id: null })}
-        title="Fakültəni sil"
-        size="sm"
-      >
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            Bu fakültəni silmək istədiyinizdən əminsiniz? Bu əməliyyat fakültəyə aid bütün məlumatları silə bilər.
-          </p>
-          <div className="flex items-center gap-3 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => setDeleteModal({ isOpen: false, id: null })}
-            >
-              Ləğv et
-            </Button>
-            <Button
-              variant="danger"
-              onClick={handleDelete}
-              loading={isDeleting}
-            >
-              Sil
-            </Button>
-          </div>
-        </div>
-      </Modal>
 
       <FacultyModal
         isOpen={facultyModal.isOpen}

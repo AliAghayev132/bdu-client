@@ -1,27 +1,31 @@
 'use client';
 
+// React & Next.js
 import { useState } from 'react';
-import { useGetNewsQuery, useDeleteNewsMutation, useTogglePublishMutation, useCreateNewsMutation, useUpdateNewsMutation, useRestoreNewsMutation, usePermanentDeleteNewsMutation } from '@store/api/newsApi';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Table from '@components/admin/ui/Table';
-import Modal from '@components/admin/ui/Modal';
-import NewsModal from '@components/admin/NewsModal';
-import Input from '@components/admin/ui/Input';
+import { useRouter } from 'next/navigation';
+
+// API
+import { useGetNewsQuery, useDeleteNewsMutation, useTogglePublishMutation, useRestoreNewsMutation, usePermanentDeleteNewsMutation } from '@store/api/newsApi';
+
+// UI Components
+import { Card, Button, Table, Input, SearchInput, SelectFilter, FilterBar, PageLoading } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
-import { Plus, Edit, Trash2, Eye, EyeOff, Search, ExternalLink, RotateCcw, Trash } from 'lucide-react';
+
+// Icons
+import { Plus, Edit, Trash2, Eye, EyeOff, ExternalLink, RotateCcw, Trash } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
+import { confirmDialog } from '@utils/confirmDialog';
 
 export default function NewsPage() {
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [showDeleted, setShowDeleted] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, permanent: false });
-  const [newsModal, setNewsModal] = useState({ isOpen: false, data: null });
-
   const { data, isLoading, refetch } = useGetNewsQuery({ 
     page, 
     limit: 10, 
@@ -33,21 +37,27 @@ export default function NewsPage() {
   });
   const [deleteNews, { isLoading: isDeleting }] = useDeleteNewsMutation();
   const [togglePublish] = useTogglePublishMutation();
-  const [createNews, { isLoading: isCreating }] = useCreateNewsMutation();
-  const [updateNews, { isLoading: isUpdating }] = useUpdateNewsMutation();
   const [restoreNews] = useRestoreNewsMutation();
   const [permanentDeleteNews, { isLoading: isPermanentDeleting }] = usePermanentDeleteNewsMutation();
 
-  const handleDelete = async () => {
+  const handleDelete = async (id, permanent = false) => {
+    const confirmed = await confirmDialog({
+      title: permanent ? 'Tamamilə silinsin?' : 'Xəbəri sil?',
+      text: permanent
+        ? 'Bu xəbər tamamilə silinəcək və bərpa edilə bilməyəcək.'
+        : 'Bu xəbəri silmək istədiyinizdən əminsiniz? Sonradan bərpa edə biləcəksiniz.',
+      confirmButtonText: permanent ? 'Tamamilə sil' : 'Bəli, sil',
+      icon: permanent ? 'error' : 'warning',
+    });
+    if (!confirmed) return;
     try {
-      if (deleteModal.permanent) {
-        await permanentDeleteNews(deleteModal.id).unwrap();
+      if (permanent) {
+        await permanentDeleteNews(id).unwrap();
         toast.success('Xəbər tamamilə silindi');
       } else {
-        await deleteNews(deleteModal.id).unwrap();
+        await deleteNews(id).unwrap();
         toast.success('Xəbər silindi');
       }
-      setDeleteModal({ isOpen: false, id: null, permanent: false });
       refetch();
     } catch (error) {
       toast.error('Xəta baş verdi');
@@ -65,9 +75,9 @@ export default function NewsPage() {
   };
 
   const handlePreview = (row) => {
-    const locale = 'az';
-    const slug = row.slug?.[locale] || row._id;
-    window.open(`http://localhost:3000/news/${slug}`, '_blank');
+    const slug = row.slug?.az || row._id;
+    const previewQuery = row.isPublished ? '' : '?preview=true';
+    window.open(`/az/xeberler/${slug}${previewQuery}`, '_blank');
   };
 
   const handleTogglePublish = async (id) => {
@@ -77,28 +87,6 @@ export default function NewsPage() {
       refetch();
     } catch (error) {
       toast.error('Xəta baş verdi');
-    }
-  };
-
-  const handleCreateNews = async (formData) => {
-    try {
-      await createNews(formData).unwrap();
-      toast.success('Xəbər yaradıldı');
-      setNewsModal({ isOpen: false, data: null });
-      refetch();
-    } catch (error) {
-      toast.error(error?.data?.message || 'Xəta baş verdi');
-    }
-  };
-
-  const handleUpdateNews = async (formData) => {
-    try {
-      await updateNews({ id: newsModal.data._id, formData }).unwrap();
-      toast.success('Xəbər yeniləndi');
-      setNewsModal({ isOpen: false, data: null });
-      refetch();
-    } catch (error) {
-      toast.error(error?.data?.message || 'Xəta baş verdi');
     }
   };
 
@@ -183,7 +171,7 @@ export default function NewsPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setNewsModal({ isOpen: true, data: row });
+                  router.push(`/admin/dashboard/news/${row._id}/edit`);
                 }}
                 className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 title="Redaktə et"
@@ -193,7 +181,7 @@ export default function NewsPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setDeleteModal({ isOpen: true, id: row._id, permanent: false });
+                  handleDelete(row._id, false);
                 }}
                 className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                 title="Sil"
@@ -216,7 +204,7 @@ export default function NewsPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setDeleteModal({ isOpen: true, id: row._id, permanent: true });
+                  handleDelete(row._id, true);
                 }}
                 className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 title="Tamamilə sil"
@@ -236,54 +224,24 @@ export default function NewsPage() {
         title="Xəbərlər" 
         description="Bütün xəbərləri idarə edin"
       >
-        <Button onClick={() => setNewsModal({ isOpen: true, data: null })}>
+        <Button onClick={() => router.push('/admin/dashboard/news/create')}>
           <Plus size={20} className="mr-2" />
           Yeni Xəbər
         </Button>
       </AdminPageHeader>
 
       <Card>
-        <div className="mb-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <Input
-                placeholder="Xəbər axtar..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-secondary outline-none transition-all"
-            >
-              <option value="all">Bütün kateqoriyalar</option>
-              <option value="university">🏛️ Universitet</option>
-              <option value="education">📚 Təhsil</option>
-              <option value="science">🔬 Elm</option>
-              <option value="events">🎉 Tədbirlər</option>
-              <option value="other">📌 Digər</option>
-            </select>
-
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              placeholder="Başlanğıc tarixi"
-            />
-
-            <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              placeholder="Son tarix"
-            />
-          </div>
-
-          <div className="flex items-center gap-4">
+        <FilterBar
+          showClear={!!(search || category !== 'all' || startDate || endDate || showDeleted)}
+          onClear={() => {
+            setSearch('');
+            setCategory('all');
+            setStartDate('');
+            setEndDate('');
+            setShowDeleted(false);
+            setPage(1);
+          }}
+          checkboxes={
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -293,94 +251,55 @@ export default function NewsPage() {
               />
               <span className="text-sm font-medium text-secondary">Silinmiş xəbərləri göstər</span>
             </label>
+          }
+        >
+          <SearchInput
+            placeholder="Xəbər axtar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-            {(search || category !== 'all' || startDate || endDate || showDeleted) && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSearch('');
-                  setCategory('all');
-                  setStartDate('');
-                  setEndDate('');
-                  setShowDeleted(false);
-                  setPage(1);
-                }}
-              >
-                Filterləri təmizlə
-              </Button>
-            )}
-          </div>
-        </div>
+          <SelectFilter
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            options={[
+              { value: 'all', label: 'Bütün kateqoriyalar' },
+              { value: 'university', label: '🏛️ Universitet' },
+              { value: 'education', label: '📚 Təhsil' },
+              { value: 'science', label: '🔬 Elm' },
+              { value: 'events', label: '🎉 Tədbirlər' },
+              { value: 'other', label: '📌 Digər' },
+            ]}
+          />
+
+          <Input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            placeholder="Başlanğıc tarixi"
+          />
+
+          <Input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            placeholder="Son tarix"
+          />
+        </FilterBar>
 
         <Table
           columns={columns}
           data={data?.news || []}
           loading={isLoading}
+          pagination={{
+            currentPage: page,
+            totalPages: data?.totalPages || 1,
+            onPageChange: setPage,
+          }}
         />
-
-        {data?.totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              Əvvəlki
-            </Button>
-            <span className="text-sm text-gray-600">
-              Səhifə {page} / {data.totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page + 1)}
-              disabled={page === data.totalPages}
-            >
-              Növbəti
-            </Button>
-          </div>
-        )}
       </Card>
 
-      <Modal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, id: null, permanent: false })}
-        title={deleteModal.permanent ? "Xəbəri tamamilə sil" : "Xəbəri sil"}
-        size="sm"
-      >
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            {deleteModal.permanent 
-              ? "Bu xəbər tamamilə silinəcək və bərpa edilə bilməyəcək. Davam etmək istədiyinizdən əminsiniz?"
-              : "Bu xəbəri silmək istədiyinizdən əminsiniz? Sonradan bərpa edə biləcəksiniz."}
-          </p>
-          <div className="flex items-center gap-3 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => setDeleteModal({ isOpen: false, id: null, permanent: false })}
-            >
-              Ləğv et
-            </Button>
-            <Button
-              variant="danger"
-              onClick={handleDelete}
-              loading={isDeleting || isPermanentDeleting}
-            >
-              {deleteModal.permanent ? 'Tamamilə sil' : 'Sil'}
-            </Button>
-          </div>
-        </div>
-      </Modal>
 
-      <NewsModal
-        isOpen={newsModal.isOpen}
-        onClose={() => setNewsModal({ isOpen: false, data: null })}
-        onSubmit={newsModal.data ? handleUpdateNews : handleCreateNews}
-        initialData={newsModal.data}
-        isLoading={isCreating || isUpdating}
-      />
     </div>
   );
 }

@@ -5,31 +5,33 @@ import Image from "next/image";
 import Breadcrumbs from "@/app/(routes)/[locale]/[category]/[...slug]/(components)/Breadcrumbs";
 import { Mail, Phone, Award, BookOpen, Briefcase, GraduationCap } from "lucide-react";
 
-export default function PersonDetailContent({ person, locale }) {
+export default function PersonDetailContent({ person, locale, parentPage }) {
   const name = person.name?.[locale] || person.name?.az || "";
   const position = person.position?.[locale] || person.position?.az || "";
   const bio = person.bio?.[locale] || person.bio?.az || "";
 
-  console.log(person);
-  
-  
-  
+  // Dinamik breadcrumbs — parentPage varsa ondan istifadə et
   const breadcrumbs = [
     { label: locale === "az" ? "Ana səhifə" : "Home", href: "/" },
-    { label: locale === "az" ? "Universitet" : "University", href: locale === "az" ? "/universitet" : "/university" },
-    { label: locale === "az" ? "Rəhbərlik" : "Leadership", href: locale === "az" ? "/universitet/rehberlik" : "/university/leadership" },
-    { label: name, href: "#" },
   ];
+
+  if (parentPage) {
+    breadcrumbs.push({
+      label: parentPage.title,
+      href: parentPage.path,
+    });
+  }
+
+  breadcrumbs.push({ label: name, href: "#" });
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
-    // If it's already a full URL, return as is
-    if (imagePath.startsWith('http')) return imagePath;
-    // Otherwise build the URL
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:3001';
+    if (imagePath.startsWith("http")) return imagePath;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
+      "http://localhost:3001";
     return `${baseUrl}${imagePath}`;
   };
-
 
   return (
     <>
@@ -63,7 +65,7 @@ export default function PersonDetailContent({ person, locale }) {
             {/* Profile Info */}
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-secondary mb-3">
-                {person.name.az + " " + person.name.en}
+                {name}
               </h1>
               <p className="text-xl text-primary font-semibold mb-6">
                 {position}
@@ -108,7 +110,7 @@ export default function PersonDetailContent({ person, locale }) {
               {locale === "az" ? "Bioqrafiya" : "Biography"}
             </h2>
             <div
-              className="prose prose-lg max-w-none text-gray-700 leading-relaxed"
+              className="ProseMirror prose prose-lg max-w-none text-gray-700 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: bio }}
             />
           </div>
@@ -161,7 +163,9 @@ export default function PersonDetailContent({ person, locale }) {
                   </p>
                   {(exp.startYear || exp.endYear) && (
                     <p className="text-sm text-gray-500 mt-1">
-                      {exp.startYear} - {exp.endYear || (locale === "az" ? "Davam edir" : "Present")}
+                      {exp.startYear} -{" "}
+                      {exp.endYear ||
+                        (locale === "az" ? "Davam edir" : "Present")}
                     </p>
                   )}
                 </div>
@@ -181,7 +185,10 @@ export default function PersonDetailContent({ person, locale }) {
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {person.awards.map((award, index) => (
-                <div key={index} className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-4 border border-primary/20">
+                <div
+                  key={index}
+                  className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-4 border border-primary/20"
+                >
                   <h3 className="font-bold text-secondary mb-1">
                     {award.title?.[locale] || award.title?.az}
                   </h3>
@@ -205,7 +212,10 @@ export default function PersonDetailContent({ person, locale }) {
             </h2>
             <div className="space-y-3">
               {person.publications.map((pub, index) => (
-                <div key={index} className="border-b border-gray-100 pb-3 last:border-0">
+                <div
+                  key={index}
+                  className="border-b border-gray-100 pb-3 last:border-0"
+                >
                   <p className="text-gray-700 font-medium">
                     {pub.title?.[locale] || pub.title?.az}
                   </p>

@@ -73,7 +73,7 @@ export const eventsApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: 'Events', id: 'LIST' }],
     }),
 
-    togglePublish: builder.mutation({
+    togglePublishEvent: builder.mutation({
       query: (id) => ({
         url: `/admin/events/${id}/toggle-publish`,
         method: 'PATCH',
@@ -84,7 +84,7 @@ export const eventsApi = baseApi.injectEndpoints({
       ],
     }),
 
-    uploadImage: builder.mutation({
+    uploadEventImage: builder.mutation({
       query: (formData) => ({
         url: '/admin/events/upload-image',
         method: 'POST',
@@ -116,8 +116,8 @@ export const {
   useCreateEventMutation,
   useUpdateEventMutation,
   useDeleteEventMutation,
-  useTogglePublishMutation,
-  useUploadImageMutation,
+  useTogglePublishEventMutation,
+  useUploadEventImageMutation,
   useRestoreEventMutation,
   usePermanentDeleteEventMutation,
 } = eventsApi;

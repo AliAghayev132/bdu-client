@@ -83,6 +83,19 @@ export default function AnnouncementDetailContent({ announcement, locale, altern
             <Breadcrumbs breadcrumbs={breadcrumbs} />
 
             <article className="wrapper mx-auto px-4 py-6">
+                {/* Cover Image */}
+                {announcement.coverImage && (
+                    <div className="relative w-full max-w-4xl mx-auto h-64 sm:h-80 md:h-96 rounded-2xl overflow-hidden mb-8">
+                        <Image
+                            src={announcement.coverImage.startsWith("http") ? announcement.coverImage : `${process.env.NEXT_PUBLIC_IMAGE_URL || ""}${announcement.coverImage}`}
+                            alt={announcement.title}
+                            fill
+                            className="object-cover"
+                            priority
+                        />
+                    </div>
+                )}
+
                 {/* Header */}
                 <header className="mb-8 max-w-4xl mx-auto">
                     {/* Type Badge */}
@@ -159,7 +172,7 @@ export default function AnnouncementDetailContent({ announcement, locale, altern
                     {announcement.content && (
                         <article className="prose prose-lg max-w-none">
                             <div
-                                className="py-2 sm:text-base text-sm 
+                                className="ProseMirror py-2 sm:text-base text-sm 
                   prose-headings:text-secondary prose-headings:font-bold
                   prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4
                   prose-a:text-[#B8956A] prose-a:underline hover:prose-a:text-[#B8956A]/80

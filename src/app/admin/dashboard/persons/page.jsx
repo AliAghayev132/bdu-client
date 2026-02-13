@@ -1,22 +1,27 @@
 'use client';
 
+// React
 import { useState } from 'react';
+
+// API
 import { useGetPersonsQuery, useDeletePersonMutation, useTogglePersonActiveMutation } from '@store/api/personsApi';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Table from '@components/admin/ui/Table';
-import Modal from '@components/admin/ui/Modal';
-import Input from '@components/admin/ui/Input';
+
+// UI Components
+import { Card, Button, Table, SearchInput, SelectFilter, FilterBar } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
 import PersonModal from '@components/admin/PersonModal';
-import { Plus, Edit, Trash2, Eye, EyeOff, Search } from 'lucide-react';
+
+// Icons
+import { Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+
+// Utilities
 import toast from 'react-hot-toast';
+import { confirmDialog } from '@utils/confirmDialog';
 
 export default function PersonsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null });
   const [personModal, setPersonModal] = useState({ isOpen: false, data: null });
 
   const { data, isLoading, refetch } = useGetPersonsQuery({ 
@@ -29,11 +34,16 @@ export default function PersonsPage() {
   const [deletePerson, { isLoading: isDeleting }] = useDeletePersonMutation();
   const [toggleActive] = useTogglePersonActiveMutation();
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
+    const confirmed = await confirmDialog({
+      title: 'Şəxsi sil?',
+      text: 'Bu şəxsi silmək istədiyinizdən əminsiniz? Bu əməliyyat geri qaytarıla bilməz.',
+      confirmButtonText: 'Bəli, sil',
+    });
+    if (!confirmed) return;
     try {
-      await deletePerson(deleteModal.id).unwrap();
+      await deletePerson(id).unwrap();
       toast.success('Şəxs silindi');
-      setDeleteModal({ isOpen: false, id: null });
       refetch();
     } catch (error) {
       toast.error('Xəta baş verdi');
@@ -51,9 +61,8 @@ export default function PersonsPage() {
   };
 
   const handlePreview = (row) => {
-    const locale = 'az';
-    const slug = row.slug?.[locale] || row._id;
-    window.open(`http://localhost:3000/university/leadership/${slug}`, '_blank');
+    const slug = row.slug?.az || row._id;
+    window.open(`http://localhost:3000/rehberlik/${slug}`, '_blank');
   };
 
   const columns = [
@@ -130,7 +139,7 @@ export default function PersonsPage() {
     {
       label: 'Sil',
       icon: Trash2,
-      onClick: (row) => setDeleteModal({ isOpen: true, id: row._id }),
+      onClick: (row) => handleDelete(row._id),
       variant: 'danger',
     },
   ];
@@ -140,36 +149,39 @@ export default function PersonsPage() {
       <AdminPageHeader
         title="Şəxslər"
         description="Rəhbərlik və heyət üzvlərini idarə edin"
-      />
+      >
+        <Button onClick={() => setPersonModal({ isOpen: true, data: null })}>
+          <Plus size={20} className="mr-2" />
+          Yeni Şəxs
+        </Button>
+      </AdminPageHeader>
 
       <Card>
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <Input
-                placeholder="Ad, vəzifə və ya email ilə axtar..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          </div>
-          <select
+        <FilterBar
+          showClear={!!(search || category !== 'all')}
+          onClear={() => {
+            setSearch('');
+            setCategory('all');
+            setPage(1);
+          }}
+        >
+          <SearchInput
+            placeholder="Ad, vəzifə və ya email ilə axtar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <SelectFilter
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="all">Bütün Kateqoriyalar</option>
-            <option value="leadership">Rəhbərlik</option>
-            <option value="faculty">Fakültə</option>
-            <option value="staff">Heyət</option>
-          </select>
-          <Button onClick={() => setPersonModal({ isOpen: true, data: null })}>
-            <Plus size={18} className="mr-2" />
-            Yeni Şəxs
-          </Button>
-        </div>
+            options={[
+              { value: 'all', label: 'Bütün Kateqoriyalar' },
+              { value: 'leadership', label: 'Rəhbərlik' },
+              { value: 'faculty', label: 'Fakültə' },
+              { value: 'staff', label: 'Heyət' },
+            ]}
+          />
+        </FilterBar>
 
         <Table
           columns={columns}
@@ -183,31 +195,6 @@ export default function PersonsPage() {
           }}
         />
       </Card>
-
-      {/* Delete Modal */}
-      <Modal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, id: null })}
-        title="Şəxsi sil"
-        size="sm"
-      >
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            Bu şəxsi silmək istədiyinizdən əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
-          </p>
-          <div className="flex items-center gap-3 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => setDeleteModal({ isOpen: false, id: null })}
-            >
-              Ləğv et
-            </Button>
-            <Button variant="danger" onClick={handleDelete} loading={isDeleting}>
-              Sil
-            </Button>
-          </div>
-        </div>
-      </Modal>
 
       {/* Person Modal */}
       <PersonModal

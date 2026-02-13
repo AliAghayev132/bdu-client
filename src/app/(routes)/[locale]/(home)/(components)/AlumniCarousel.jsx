@@ -4,69 +4,33 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import heydaraliyev from "@/assets/images/heydaraliyev.png"
-// Mock data - şəkilləri sonra dəyişə bilərsiniz
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+// Fallback data
 const FEATURED_PERSON = {
     id: 0,
-    name: "Heydər Əliyev",
-    title: "Ümummilli Lider",
+    name: { az: "Heydər Əliyev", en: "Heydar Aliyev" },
+    title: { az: "Ümummilli Lider", en: "National Leader" },
     image: heydaraliyev,
 };
 
-const ALUMNI_DATA = [
-    {
-        id: 1,
-        name: "Rəsul Rza",
-        title: "Xalq Şairi",
-        image: heydaraliyev,
-    },
-    {
-        id: 2,
-        name: "Mirvarid Dilbazi",
-        title: "Xalq Şairi",
-        image: heydaraliyev,
-    },
-    {
-        id: 3,
-        name: "Bəxtiyar Vahabzadə",
-        title: "Xalq Şairi",
-        image: heydaraliyev,
-    },
-    {
-        id: 4,
-        name: "Nəriman Nərimanov",
-        title: "Dövlət Xadimi",
-        image: heydaraliyev,
-    },
-    {
-        id: 5,
-        name: "Şövkət Ələkbərova",
-        title: "Xalq Artisti",
-        image: heydaraliyev,
-    },
-    {
-        id: 6,
-        name: "Müslüm Maqomayev",
-        title: "Xalq Artisti",
-        image: heydaraliyev,
-    },
-    {
-        id: 7,
-        name: "Lütfi Zadə",
-        title: "Alim",
-        image: heydaraliyev,
-    },
-    {
-        id: 8,
-        name: "Zərifə Əliyeva",
-        title: "Akademik",
-        image: heydaraliyev,
-    },
+const FALLBACK_ALUMNI = [
+    { id: 1, name: { az: "Rəsul Rza", en: "Rasul Rza" }, title: { az: "Xalq Şairi", en: "People's Poet" }, image: heydaraliyev },
+    { id: 2, name: { az: "Mirvarid Dilbazi", en: "Mirvarid Dilbazi" }, title: { az: "Xalq Şairi", en: "People's Poet" }, image: heydaraliyev },
+    { id: 3, name: { az: "Bəxtiyar Vahabzadə", en: "Bakhtiyar Vahabzade" }, title: { az: "Xalq Şairi", en: "People's Poet" }, image: heydaraliyev },
+    { id: 4, name: { az: "Nəriman Nərimanov", en: "Nariman Narimanov" }, title: { az: "Dövlət Xadimi", en: "Statesman" }, image: heydaraliyev },
+    { id: 5, name: { az: "Şövkət Ələkbərova", en: "Shovkat Alakbarova" }, title: { az: "Xalq Artisti", en: "People's Artist" }, image: heydaraliyev },
+    { id: 6, name: { az: "Müslüm Maqomayev", en: "Muslim Magomayev" }, title: { az: "Xalq Artisti", en: "People's Artist" }, image: heydaraliyev },
+    { id: 7, name: { az: "Lütfi Zadə", en: "Lotfi Zadeh" }, title: { az: "Alim", en: "Scientist" }, image: heydaraliyev },
+    { id: 8, name: { az: "Zərifə Əliyeva", en: "Zarifa Aliyeva" }, title: { az: "Akademik", en: "Academician" }, image: heydaraliyev },
 ];
 
-export default function AlumniCarousel() {
+export default function AlumniCarousel({ apiPrides }) {
+    const locale = useLocale();
     const t = useTranslations("home");
     const [emblaRef, emblaApi] = useEmblaCarousel({
         loop: true,
@@ -120,6 +84,17 @@ export default function AlumniCarousel() {
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => setIsHovered(false);
 
+    // Use API prides if available, otherwise fallback
+    const alumniData = (apiPrides && apiPrides.length > 0)
+        ? apiPrides.filter(p => p.isActive !== false).map((p) => ({
+            ...p,
+            id: p._id,
+            name: p.fullName || p.name,
+            title: p.title,
+            image: p.image?.startsWith('/') ? `${API_BASE}${p.image}` : p.image,
+        }))
+        : FALLBACK_ALUMNI;
+
     return (
         <section className="wrapper sm:py-10 py-4">
             <div className="bg-primary/5 xl:border-2 border-primary/20 sm:py-8 sm:px-8 py-6 px-4">
@@ -144,7 +119,7 @@ export default function AlumniCarousel() {
                             <div className="relative aspect-square w-full">
                                 <Image
                                     src={FEATURED_PERSON.image}
-                                    alt={FEATURED_PERSON.name}
+                                    alt={typeof FEATURED_PERSON.name === 'object' ? FEATURED_PERSON.name[locale] : FEATURED_PERSON.name}
                                     fill
                                     className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                                     sizes="200px"
@@ -152,8 +127,8 @@ export default function AlumniCarousel() {
                                 {/* Hover Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                                    <h3 className="text-white font-bold text-lg">{FEATURED_PERSON.name}</h3>
-                                    <p className="text-white/80 text-sm">{FEATURED_PERSON.title}</p>
+                                    <h3 className="text-white font-bold text-lg">{typeof FEATURED_PERSON.name === 'object' ? FEATURED_PERSON.name[locale] : FEATURED_PERSON.name}</h3>
+                                    <p className="text-white/80 text-sm">{typeof FEATURED_PERSON.title === 'object' ? FEATURED_PERSON.title[locale] : FEATURED_PERSON.title}</p>
                                 </div>
                             </div>
                         </div>
@@ -173,7 +148,7 @@ export default function AlumniCarousel() {
                                         <div className="relative aspect-square">
                                             <Image
                                                 src={FEATURED_PERSON.image}
-                                                alt={FEATURED_PERSON.name}
+                                                alt={typeof FEATURED_PERSON.name === 'object' ? FEATURED_PERSON.name[locale] : FEATURED_PERSON.name}
                                                 fill
                                                 className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                                                 sizes="160px"
@@ -181,41 +156,54 @@ export default function AlumniCarousel() {
                                             {/* Hover Overlay */}
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                             <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                                                <h3 className="text-white font-bold text-sm">{FEATURED_PERSON.name}</h3>
-                                                <p className="text-white/80 text-xs">{FEATURED_PERSON.title}</p>
+                                                <h3 className="text-white font-bold text-sm">{typeof FEATURED_PERSON.name === 'object' ? FEATURED_PERSON.name[locale] : FEATURED_PERSON.name}</h3>
+                                                <p className="text-white/80 text-xs">{typeof FEATURED_PERSON.title === 'object' ? FEATURED_PERSON.title[locale] : FEATURED_PERSON.title}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 {/* Alumni Cards */}
-                                {ALUMNI_DATA.map((person, index) => (
+                                {alumniData.map((person, index) => {
+                                    const personName = typeof person.name === 'object' ? person.name[locale] : person.name;
+                                    const personTitle = typeof person.title === 'object' ? person.title[locale] : person.title;
+                                    const isApiImage = typeof person.image === 'string';
+                                    return (
                                     <div
-                                        key={person.id}
+                                        key={person.id || person._id || index}
                                         className="flex-shrink-0 w-[140px] sm:w-[160px] lg:w-[160px] xl:w-[180px] pl-3"
                                     >
                                         <div className="group relative overflow-hidden bg-gray-100 cursor-pointer">
                                             <div className="relative aspect-square">
-                                                <Image
-                                                    src={person.image}
-                                                    alt={person.name}
-                                                    fill
-                                                    className="object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
-                                                    sizes="180px"
-                                                />
+                                                {isApiImage ? (
+                                                    <img
+                                                        src={person.image}
+                                                        alt={personName || ''}
+                                                        className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                                                    />
+                                                ) : (
+                                                    <Image
+                                                        src={person.image}
+                                                        alt={personName || ''}
+                                                        fill
+                                                        className="object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                                                        sizes="180px"
+                                                    />
+                                                )}
                                                 {/* Shadow overlay from bottom on hover */}
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                                                 {/* Name and title - slides up on hover */}
                                                 <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
                                                     <h3 className="text-white font-bold text-sm lg:text-base leading-tight">
-                                                        {person.name}
+                                                        {personName}
                                                     </h3>
-                                                    <p className="text-white/80 text-xs mt-0.5">{person.title}</p>
+                                                    <p className="text-white/80 text-xs mt-0.5">{personTitle}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 

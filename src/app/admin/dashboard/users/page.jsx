@@ -1,12 +1,14 @@
 'use client';
 
+// React
 import { useState } from 'react';
-import Card from '@components/admin/ui/Card';
-import Button from '@components/admin/ui/Button';
-import Input from '@components/admin/ui/Input';
-import Table from '@components/admin/ui/Table';
+
+// UI Components
+import { Card, Button, Input, Table, SearchInput } from '@components/admin/ui';
 import AdminPageHeader from '@components/admin/AdminPageHeader';
-import { Plus, Search, Edit, Trash2, Shield, User } from 'lucide-react';
+
+// Icons
+import { Plus, Edit, Trash2, Shield, User } from 'lucide-react';
 
 export default function UsersPage() {
   const [search, setSearch] = useState('');
@@ -85,16 +87,12 @@ export default function UsersPage() {
       </AdminPageHeader>
 
       <Card>
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-            <Input
-              placeholder="İstifadəçi axtar..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+        <div className="mb-6 max-w-md">
+          <SearchInput
+            placeholder="İstifadəçi axtar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
         <Table columns={columns} data={users} />

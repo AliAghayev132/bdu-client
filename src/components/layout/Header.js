@@ -6,18 +6,30 @@ import HeaderTop from './HeaderTop';
 import Navbar from './Navbar';
 import { getMegaMenus } from '@/lib/api/menu';
 
-export default function Header({ onMenuToggle }) {
+export default function Header({ onMenuToggle, onSearchOpen }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [navbarTop, setNavbarTop] = useState(0);
   const [menuData, setMenuData] = useState({});
   const headerTopRef = useRef(null);
   const navbarRef = useRef(null);
 
-  // Fetch mega menu data
+  // Fetch mega menu data with stale-while-revalidate
   useEffect(() => {
+    const cacheKey = 'bdu_mega_menus';
+
+    // 1) Show cached data instantly if available
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) setMenuData(JSON.parse(cached));
+    } catch { }
+
+    // 2) Always fetch fresh data in background
     async function fetchMenus() {
       const menus = await getMegaMenus();
-      setMenuData(menus);
+      if (menus && Object.keys(menus).length > 0) {
+        setMenuData(menus);
+        try { sessionStorage.setItem(cacheKey, JSON.stringify(menus)); } catch { }
+      }
     }
     fetchMenus();
   }, []);
@@ -27,7 +39,7 @@ export default function Header({ onMenuToggle }) {
     const handleScroll = () => {
       const scrolled = window.scrollY > 50;
       setIsScrolled(scrolled);
-      
+
       // Navbar-ın actual bottom position-unu calculate et
       if (navbarRef.current) {
         const rect = navbarRef.current.getBoundingClientRect();
@@ -37,10 +49,10 @@ export default function Header({ onMenuToggle }) {
 
     // Initial calculation
     handleScroll();
-    
+
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleScroll);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
@@ -60,7 +72,7 @@ export default function Header({ onMenuToggle }) {
   //         duration: 0.3,
   //         ease: 'power2.out',
   //       });
-        
+
   //       // Navbar shadow artır
   //       gsap.to(navbarRef.current, {
   //         boxShadow: 'none',
@@ -75,7 +87,7 @@ export default function Header({ onMenuToggle }) {
   //         duration: 0.3,
   //         ease: 'power2.out',
   //       });
-        
+
   //       // Navbar shadow azalır
   //       gsap.to(navbarRef.current, {
   //         boxShadow: 'none',
@@ -91,7 +103,7 @@ export default function Header({ onMenuToggle }) {
   return (
     <>
       {/* Header Top - Fixed position */}
-      <div 
+      <div
         ref={headerTopRef}
         className="bdu-header lg:static fixed top-0 left-0 right-0 z-40"
       >
@@ -102,11 +114,11 @@ export default function Header({ onMenuToggle }) {
       <div className="h-[72px] lg:hidden block" />
 
       {/* Navbar - Sticky */}
-      <div 
+      <div
         ref={navbarRef}
         className="bdu-navbar w-full mx-auto sticky top-0 z-50 bg-[#849DB3]"
       >
-        <Navbar onMenuToggle={onMenuToggle} navbarTop={navbarTop} menuData={menuData} />
+        <Navbar onMenuToggle={onMenuToggle} navbarTop={navbarTop} menuData={menuData} onSearchOpen={onSearchOpen} />
       </div>
     </>
   );

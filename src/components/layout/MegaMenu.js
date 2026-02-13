@@ -258,14 +258,14 @@ export default function MegaMenu({
   const currentItem = menuData[activeMenu];
   if (!currentItem || !currentItem.columns) return null;
 
-  // Create sections with column titles
+  // Create sections with column titles, sorting items by order
   const sections = currentItem.columns.map((column) => ({
     title: column.title,
-    items: column.items,
+    items: [...(column.items || [])].sort((a, b) => (a.order || 0) - (b.order || 0)),
   }));
 
   // Flatten all items for indexing (keep for backward compatibility)
-  const allItems = currentItem.columns.flatMap((column) => column.items);
+  const allItems = sections.flatMap((section) => section.items);
 
   return (
     <div

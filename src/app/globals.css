@@ -314,7 +314,18 @@ button{
 .ProseMirror img {
   max-width: 100%;
   height: auto;
-  display: block;
+}
+
+.ProseMirror img.ProseMirror-selectednode {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.ProseMirror p::after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 .ProseMirror ::selection,
@@ -332,4 +343,52 @@ button{
 
 .tiptap-editor {
   min-height: 400px;
+}
+
+.ProseMirror table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+  table-layout: fixed !important;
+  overflow: hidden !important;
+}
+
+.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid #d1d5db !important;
+  padding: 0.5rem 0.75rem !important;
+  position: relative !important;
+  vertical-align: top !important;
+  min-width: 80px !important;
+}
+
+.ProseMirror th {
+  background-color: #f3f4f6 !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+}
+
+.ProseMirror .selectedCell {
+  background-color: rgba(57, 102, 176, 0.1) !important;
+}
+
+.ProseMirror .column-resize-handle {
+  position: absolute !important;
+  right: -2px !important;
+  top: 0 !important;
+  bottom: -2px !important;
+  width: 4px !important;
+  background-color: #3b82f6 !important;
+  pointer-events: none !important;
+}
+
+.ProseMirror sup {
+  vertical-align: super !important;
+  font-size: 0.75em !important;
+}
+
+.ProseMirror sub {
+  vertical-align: sub !important;
+  font-size: 0.75em !important;
 }

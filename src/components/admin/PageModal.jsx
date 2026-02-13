@@ -183,7 +183,7 @@ export default function PageModal({ isOpen, onClose, onSubmit, initialData = nul
 
           <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
             {currentStep === 1 ? (
-              <div className="space-y-8 max-w-5xl mx-auto">
+              <div className="space-y-8">
                 <Input
                   label={`Path/URL (${currentLang.toUpperCase()})`}
                   required
